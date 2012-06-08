@@ -53,8 +53,11 @@ class Lattice{
   
   virtual void initLat(vector<int> sizes_in, Phase phase_in, Interaction itr_in)=0;
   virtual Site* get_site(vector<int> coords)=0;
-  void metro_move();
   virtual void printLat() = 0;
+
+  void metro_move();
+  void optimize();
+  void opt_metro_move();
 
   double getE(){return E/n_sites;}
   double get_phi(){p = find_initial_phi(); return p;}
@@ -92,7 +95,7 @@ class Lattice{
   MTRand* rng;
   bool new_rng;
 
-  double J, Q, Q2;
+  Site::pvec params;
   int R;
   double T;
 

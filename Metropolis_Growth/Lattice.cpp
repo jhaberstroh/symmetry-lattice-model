@@ -19,9 +19,14 @@ const Lattice::Interaction Lattice::itrdef = NEMATIC;
 
 Lattice::Lattice(double J_in, double Q_in,     double Q2_in, int R_in,
                  double T_in, double pdel_in, MTRand* rng_in)
-  : J(J_in), Q(Q_in), Q2(Q2_in), R(R_in), T(T_in), pdel(pdel_in)
+  : R(R_in), T(T_in), pdel(pdel_in)
 {
   //initLat(t_in,dim_in,sizes_in,phase_in,R_in,rng_in); CANNOT CALL THIS! Call individually in each sub-constructor.
+  params = Site::pvec(3); //constructor for a vector<double> to hold parameters
+  params[0] = J_in;
+  params[1] = Q_in;
+  params[2] =Q2_in;
+
   if (rng_in == 0){
     new_rng = 1;
     rng = new MTRand();
@@ -43,10 +48,6 @@ Lattice::~Lattice(){
 }
 
 
-
-
-
-
 void Lattice::metro_move(){
   int pulled = pull_random_site();
   Site::svec neighbors = pull_neighbors(pulled);
@@ -55,12 +56,32 @@ void Lattice::metro_move(){
   
   if (sites[pulled]->get_occ()){
     if (rng->rand() < pdel)
-      E += sites[pulled]->attempt_occ(neighbors, pdel);
+      E += sites[pulled]->attempt_occ(neighbors, pdel, T, params);
     else
-      E += sites[pulled]->attempt_rot(neighbors);
+      E += sites[pulled]->attempt_rot(neighbors, T, params);
   }
   else
-    E += sites[pulled]->attempt_occ(neighbors, pdel);
+    E += sites[pulled]->attempt_occ(neighbors, pdel, T, params);
+}
+
+void Lattice::optimize(){
+  for (int i = 0 ; i < n_sites ; i++)
+    sites[i]->set_neigh(pull_neighbors(i));
+}
+
+void Lattice::opt_metro_move(){
+  int pulled = pull_random_site();
+    
+  if (sites[pulled]->get_occ()){
+    if (rng->rand() < pdel) //pdel controls the percentage of moves which go to rotation
+      E += sites[pulled]->attempt_occ(pdel, T, params);
+    else
+      E += sites[pulled]->attempt_rot(T, params);
+  }
+  else
+    E += sites[pulled]->attempt_occ(pdel, T, params);
+
+
 }
 
 
@@ -96,13 +117,13 @@ void SquareLattice::initLat(vector<int> sizes_in, Phase phase_in, Interaction it
     case GAS:
       //for a gas, the occupation probability will be zero.
       if (itr_in == NEMATIC){
-        sites[i] = new NemSite(4, 0, rng, J, Q, Q2, R);
+        sites[i] = new NemSite(4, 0, rng, R);
       }
       break;
     case LIQUID:
       //for a vapor, the occupation probability will be 1/2.
       if (itr_in == NEMATIC){
-        sites[i] = new NemSite(4, .5, rng, J, Q, Q2, R);
+        sites[i] = new NemSite(4, .5, rng, R);
       }
       break;
     default:
@@ -130,10 +151,10 @@ double SquareLattice::find_initial_energy(){
       currentSite = get_site(pos);
 
       pos[0]=i+1; pos[1]=j;
-      energy += currentSite->curr_interaction(get_site(pos));
+      energy += currentSite->curr_interaction(get_site(pos), params);
 
       pos[0]=i;   pos[1]=j+1;
-      energy += currentSite->curr_interaction(get_site(pos));
+      energy += currentSite->curr_interaction(get_site(pos), params);
     }
   }
   return energy;

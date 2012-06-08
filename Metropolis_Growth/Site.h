@@ -30,7 +30,8 @@ class Site{
  public:
   Site(int z_in = 0, double occ_p = 0, MTRand* rng_in = 0, int R_in = 0);
   ~Site();
-  typedef vector<Site*> svec;
+  typedef vector<Site*> svec;  //Site vector
+  typedef vector<double> pvec; //Parameter vector 
 
 
   /*--------------------------------------------------
@@ -39,29 +40,33 @@ class Site{
 
   bool   get_occ() {return occ;}
   int    get_rot() {return rot;}
-  double get_T()   {return T;}
   int    get_R()   {return R;}
   int    get_z()   {return z;}
 
   void   set_rot(int rot_in){rot = rot_in;}
-  void   set_T(double T_in) {T = T_in;}
+  void   set_neigh(svec neigh_in){nghbors = neigh_in;}
 
   //returns interaction energy between site and the input array
-  virtual double curr_interaction(Site* s, vector<int> params)=0;
-  virtual double curr_interaction(Site::svec sites, vector<int> params)=0;
+  virtual double curr_interaction(Site* s, pvec params)=0;
+  virtual double curr_interaction(Site::svec sites, pvec params)=0;
 
 
 
-  double attempt_occ(Site::svec neighbors, double pdel, vector<int> params);
-  double attempt_occ(Site::svec neighbors, double pdel, double T_in, vector<int> params);
-  double attempt_rot(Site::svec neighbors, vector<int> params);
-  double attempt_rot(Site::svec neighbors, double T_in, vector<int> params);
+  double attempt_occ(svec neighbors, double pdel, double T_in, pvec params);
+  double attempt_rot(svec neighbors, double T_in, pvec params);
+
+  //uses local neighbors
+  double attempt_occ(double pdel, double T, pvec params){
+    return attempt_occ(nghbors, pdel, T, params);}
+  double attempt_rot(double T, pvec params){
+    return attempt_rot(nghbors, T, params);}
+
 
 
  protected:
-  virtual double occ_dE(Site::svec sites, vector<int> params)=0;
-  virtual double rot_dE(Site::svec sites, int r_try, vector<int> params)=0;
-  virtual double chem_potential(vector<int> params)=0;
+  virtual double occ_dE(svec sites, pvec params)=0;
+  virtual double rot_dE(svec sites, int r_try, pvec params)=0;
+  virtual double chem_potential(double T, pvec params)=0;
   int rand_rot(){return rng->randInt(R-1);}
 
 
@@ -79,7 +84,10 @@ class Site{
     Variables
     --------------------------------------------------*/
   int R;         //number of directional states
+
   int z;         //number of nearest neighbors (for optimization)
+  svec nghbors;  //A vector of neighboring sites (for optimiziation)
+
   bool occ;
   int rot;
   MTRand* rng;
@@ -100,13 +108,12 @@ class NemSite : public Site{
    : Site(z_in, occ_p, rng_in, R_in){};
   
   
-  void set_interaction(double J_in, double Q_in, double Q2_in);
   
-  double curr_interaction(Site* s, vector<int> params);
-  double curr_interaction(Site::svec sites);
-  double occ_dE(Site::svec sites);
-  double rot_dE(Site::svec sites, int r_try);
-  double chem_potential();
+  double curr_interaction(Site* s, pvec params);
+  double curr_interaction(Site::svec sites, pvec params);
+  double occ_dE(Site::svec sites, pvec params);
+  double rot_dE(Site::svec sites, int r_try, pvec params);
+  double chem_potential(double T, pvec params);
   
 
 };
