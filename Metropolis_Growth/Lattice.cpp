@@ -35,6 +35,14 @@ Lattice::Lattice(double J_in, double Q_in,     double Q2_in, int R_in,
     new_rng = 0;
     rng = rng_in;
   }
+
+
+  //filename = ostringstream();
+  filename.setf(ios::fixed, ios::floatfield);
+  filename.precision(4);
+  filename.str("");
+  filename << "metro_simulation_J_"<<params[0]<<"_Q_"<<params[1]<<"_Q2_"<<params[2]<<".txt";
+
 }
 
 
@@ -56,12 +64,12 @@ void Lattice::metro_move(){
   
   if (sites[pulled]->get_occ()){
     if (rng->rand() < pdel)
-      E += sites[pulled]->attempt_occ(neighbors, pdel, T, params);
+      E += sites[pulled]->attempt_occ(neighbors, pdel, T, params, &orders);
     else
-      E += sites[pulled]->attempt_rot(neighbors, T, params);
+      E += sites[pulled]->attempt_rot(neighbors, T, params, &orders);
   }
   else
-    E += sites[pulled]->attempt_occ(neighbors, pdel, T, params);
+    E += sites[pulled]->attempt_occ(neighbors, pdel, T, params, &orders);
 }
 
 void Lattice::optimize(){
@@ -74,22 +82,54 @@ void Lattice::opt_metro_move(){
     
   if (sites[pulled]->get_occ()){
     if (rng->rand() < pdel) //pdel controls the percentage of moves which go to rotation
-      E += sites[pulled]->attempt_occ(pdel, T, params);
+      E += sites[pulled]->attempt_occ(pdel, T, params, &orders);
     else
-      E += sites[pulled]->attempt_rot(T, params);
+      E += sites[pulled]->attempt_rot(T, params, &orders);
   }
   else
-    E += sites[pulled]->attempt_occ(pdel, T, params);
+    E += sites[pulled]->attempt_occ(pdel, T, params, &orders);
 
 
 }
 
+
+
+void Lattice::track(){
+  //Note: Can be modified in the future to account for different
+  //      order parameters.
+
+  pFile = fopen(filename.str().c_str(),"a");
+  
+  fprintf(pFile, "%5.4f \t %1.4f \t %1.4f \t %1.4f \n", getE(),get_rho(),get_tau(),get_omega());
+  fclose(pFile);
+
+}
+
+
+
+void Lattice::file_setup(){
+
+};
 
 
 
 int Lattice::pull_random_site(){
   return rng->rand(n_sites-1); //A random number between [0,sites-1]
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -135,7 +175,11 @@ void SquareLattice::initLat(vector<int> sizes_in, Phase phase_in, Interaction it
   cout << "Current size of m_sites array: "<<sites.size() <<endl;
 
 
-  find_initial_energy();
+  E = find_initial_energy();
+  orders = Site::ovec(3);
+  orders[0] = find_initial_rho();
+  orders[1] = find_initial_tau();
+  orders[2] = find_initial_omega();
 }
  
  
@@ -160,7 +204,7 @@ double SquareLattice::find_initial_energy(){
   return energy;
 }
 
-double SquareLattice::find_initial_phi(){
+double SquareLattice::find_initial_rho(){
   double rho = 0;
   vector<int> pos(2);
   Site* currentSite;
@@ -172,7 +216,7 @@ double SquareLattice::find_initial_phi(){
       rho += currentSite->get_occ();
     }
   }
-  return ((rho/n_sites)*2)-1;
+  return rho;
 }
 
 double SquareLattice::find_initial_tau(){
@@ -198,7 +242,7 @@ double SquareLattice::find_initial_tau(){
       tau -= (currentSite->get_rot() == (otherSite->get_rot()+R/2)%R);
     }
   }
-  return tau/n_sites/2;
+  return tau/2.0;
 }
 
 double SquareLattice::find_initial_omega(){
@@ -228,8 +272,24 @@ double SquareLattice::find_initial_omega(){
       omega -= (currentSite->get_rot() == (otherSite->get_rot()+  R/4)%R);
     }
   }
-  return omega/n_sites/2;
+  return omega/2.0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

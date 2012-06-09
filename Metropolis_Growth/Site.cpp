@@ -1,6 +1,8 @@
 //Site.cpp
 #include "Site.h"
 
+Site::ovec Site::dOrder = Site::ovec(3);
+
 
 
 Site::Site(int z_in, double occ_p, MTRand* rng_in, int R_in)
@@ -34,13 +36,22 @@ Site::~Site(){
 
 
 
+
+
+
+
+
+
+
+
+
 /*--------------------------------------------------
   Monte Carlo attempts
   (for any temperature and parameters in)
   --------------------------------------------------*/
 
 
-double Site::attempt_occ(Site::svec neighbors, double pdel, double T, pvec params){
+double Site::attempt_occ(Site::svec neighbors, double pdel, double T, pvec params, ovec* order){
   if (!occ)
     set_rot(rand_rot());
 
@@ -59,24 +70,43 @@ double Site::attempt_occ(Site::svec neighbors, double pdel, double T, pvec param
 
   if (rng->rand() < temp_prob){ //canBeOptimized
     change_occ();     
+    (*order)[0] += dOrder[0];
+    (*order)[1] += dOrder[1];
+    (*order)[2] += dOrder[2];
+    
     return dE;
   }
   return 0; //if all attempts fail, there is no energy change to report
 }
 
-double Site::attempt_rot(Site::svec neighbors, double T, pvec params){
+double Site::attempt_rot(Site::svec neighbors, double T, pvec params, ovec* order){
   if (occ){
     int plus_minus = ((rng->rand() < .5) * 2) - 1;
     double dE = rot_dE(neighbors, ((rot + plus_minus)+R) % R, params);
     
     if (rng->rand() < exp(-dE/T)){ //canBeOptimized
       move_rot(plus_minus);
+      (*order)[0] += dOrder[0];
+      (*order)[1] += dOrder[1];
+      (*order)[2] += dOrder[2];
+        
       return dE;
     }
   }
   
   return 0;  
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -172,9 +202,16 @@ double NemSite::occ_dE(Site::svec sites, pvec params){
   }
 
 
-  if (occ)
+  if (occ){
+    dOrder[0] = -1;
+    dOrder[1] = -nAlnQ/2.0;
+    dOrder[2] = -nAlnQ2/2.0;
     return  params[0] * nOcc + params[1] * nAlnQ + params[2] * nAlnQ2;
+  }
   else
+    dOrder[0] = 1;
+    dOrder[1] = nAlnQ/2.0;
+    dOrder[2] = nAlnQ2/2.0;
     return -params[0] * double(nOcc) - params[1] * double(nAlnQ) - params[2] * double(nAlnQ2);
   
 }
@@ -228,6 +265,9 @@ double NemSite::rot_dE(Site::svec sites, int r_try, pvec params){
     }
   }
 
+  dOrder[0] = 0;
+  dOrder[1] = nAlnQ/2.0;
+  dOrder[2] = nAlnQ2/2.0;
   return -params[1] * nAlnQ - params[2] * nAlnQ2;
 
 }

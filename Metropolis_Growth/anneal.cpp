@@ -1,9 +1,9 @@
-#include <time.h>
 #include "Lattice.h"
+#include "Site.h"
 
 int main(){
   clock_t t1, t2;
-  int sweeps = 10000;
+  int sweeps = 2000;
 
   //Usage:
   //SquareLattice(J,Q,Q2,R,T,pdel, MTRand* rng_in, vector<int> sizes,
@@ -14,9 +14,17 @@ int main(){
   int n_sites = siz[0] * siz[1];
 
 
-  SquareLattice wowza( 3.4, .2, 1.77, 
+  SquareLattice wowza( 1.6, 0, 0, 
                        24, 1,
                        .1, 0, siz);
+
+
+  Site::pvec params(3);
+  params[0] = 1;
+  params[1] = 0;
+  params[2] = 0;
+
+
   cout<< "Initial Energy: "<<wowza.getE()<<"\n";
   cout<< "Initial Phi: "<<wowza.get_phi()<<endl;
   cout<< "Initial Tau: "<<wowza.get_tau()<<endl;
@@ -27,17 +35,34 @@ int main(){
   wowza.optimize();
   t1 = clock();
 
-  for (int i = 0 ; i < sweeps ; i++){
-    wowza.t_opt_metro_move();
-    for (int j = 0 ; j < n_sites-1 ; j++){
-      wowza.opt_metro_move();
+  int a = sweeps/10;
+  int b = n_sites * 10 - 1;
+
+  for (int k = 0 ; k < 10 ; k ++){
+    params[0] += .05;
+    wowza.set_params(params);
+    
+    for (int i = 0 ; i < a ; i++){
+      wowza.t_opt_metro_move();
+      for (int j = 0 ; j < b ; j++){
+        wowza.opt_metro_move();
+      }
     }
+    wowza.printLat();
   }
+
+
+
+
+
+
+
+
 
 
   t2 = clock();
   float diff((float)t2 - (float) t1);
-  cout << "To run optimized for "<<sweeps*n_sites<<" moves, it took: "<< diff/CLOCKS_PER_SEC <<"s"<<endl;
+  cout << "To run optimized for "<<10*a*(b+1)<<" moves, it took: "<< diff/CLOCKS_PER_SEC <<"s"<<endl;
   
   
 
@@ -53,7 +78,6 @@ int main(){
   t2 = clock();
   diff = float((float)t2 - (float) t1) ;  
   cout << "To run regular for "<<moves<<" moves, it took: "<< diff/CLOCKS_PER_SEC <<"s"<<endl;
-
   */
 
 
@@ -64,4 +88,10 @@ int main(){
   wowza.printLat();
 
   return 0;
+  
+
+
+
+
+
 }

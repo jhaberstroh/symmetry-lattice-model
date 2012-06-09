@@ -32,6 +32,7 @@ class Site{
   ~Site();
   typedef vector<Site*> svec;  //Site vector
   typedef vector<double> pvec; //Parameter vector 
+  typedef vector<double> ovec; //Order Parameter vector
 
 
   /*--------------------------------------------------
@@ -52,14 +53,14 @@ class Site{
 
 
 
-  double attempt_occ(svec neighbors, double pdel, double T_in, pvec params);
-  double attempt_rot(svec neighbors, double T_in, pvec params);
+  double attempt_occ(svec neighbors, double pdel, double T_in, pvec params, ovec* order);
+  double attempt_rot(svec neighbors, double T_in, pvec params, ovec* order);
 
   //uses local neighbors
-  double attempt_occ(double pdel, double T, pvec params){
-    return attempt_occ(nghbors, pdel, T, params);}
-  double attempt_rot(double T, pvec params){
-    return attempt_rot(nghbors, T, params);}
+  double attempt_occ(double pdel, double T, pvec params, ovec* order){
+    return attempt_occ(nghbors, pdel, T, params, order);}
+  double attempt_rot(double T, pvec params, ovec* order){
+    return attempt_rot(nghbors, T, params, order);}
 
 
 
@@ -92,6 +93,7 @@ class Site{
   int rot;
   MTRand* rng;
   bool rng_new;
+  static ovec dOrder;
 
 };
 
