@@ -12,7 +12,7 @@ const double Lattice::Tdft = 1;
 const double Lattice::pdeldft = .2;
 const int    Lattice::Rdft = 32;
 const vector<int> Lattice::sizedft (2,40);
-const Lattice::Phase  Lattice::phasedft = LIQUID;
+const Lattice::Phase  Lattice::phasedft = SOLID;
 const Lattice::Interaction Lattice::itrdef = NEMATIC;
 
 
@@ -21,6 +21,9 @@ Lattice::Lattice(double J_in, double Q_in,     double Q2_in, int R_in,
                  double T_in, double pdel_in, MTRand* rng_in)
   : R(R_in), T(T_in), pdel(pdel_in)
 {
+  //Should include some sort of check to assess whether R is a multiple of four...
+
+
   //initLat(t_in,dim_in,sizes_in,phase_in,R_in,rng_in); CANNOT CALL THIS! Call individually in each sub-constructor.
   params = Site::pvec(3); //constructor for a vector<double> to hold parameters
   params[0] = J_in;
@@ -35,6 +38,11 @@ Lattice::Lattice(double J_in, double Q_in,     double Q2_in, int R_in,
     new_rng = 0;
     rng = rng_in;
   }
+
+  //These are INITIALIZED in findInitialTau and findInitialOmega
+  //They are later UPDATED in metroMove and optMetroMove (NOT YET FINISHED June 12)
+  tauDir = vector<int>(R/2,0);
+  omgDir = vector<int>(R/4,0);
 
 
   //filename = ostringstream();
@@ -56,40 +64,38 @@ Lattice::~Lattice(){
 }
 
 
-void Lattice::metro_move(){
-  int pulled = pull_random_site();
-  Site::svec neighbors = pull_neighbors(pulled);
+void Lattice::metroMove(){
+  int pulled = pullRandomSite();
+  Site::svec neighbors = pullNeighbors(pulled);
 
   //pdel is a factor which controls ratios of occupy moves to rotation moves. 
   
-  if (sites[pulled]->get_occ()){
+  if (sites[pulled]->getOcc()){
     if (rng->rand() < pdel)
-      E += sites[pulled]->attempt_occ(neighbors, pdel, T, params, &orders);
+      E += sites[pulled]->attemptOcc(neighbors, pdel, T, params, &orders);
     else
-      E += sites[pulled]->attempt_rot(neighbors, T, params, &orders);
+      E += sites[pulled]->attemptRot(neighbors, T, params, &orders);
   }
   else
-    E += sites[pulled]->attempt_occ(neighbors, pdel, T, params, &orders);
+    E += sites[pulled]->attemptOcc(neighbors, pdel, T, params, &orders);
 }
 
 void Lattice::optimize(){
   for (int i = 0 ; i < n_sites ; i++)
-    sites[i]->set_neigh(pull_neighbors(i));
+    sites[i]->setNeigh(pullNeighbors(i));
 }
 
-void Lattice::opt_metro_move(){
-  int pulled = pull_random_site();
+void Lattice::optMetroMove(){
+  int pulled = pullRandomSite();
     
-  if (sites[pulled]->get_occ()){
+  if (sites[pulled]->getOcc()){
     if (rng->rand() < pdel) //pdel controls the percentage of moves which go to rotation
-      E += sites[pulled]->attempt_occ(pdel, T, params, &orders);
+      E += sites[pulled]->attemptOcc(pdel, T, params, &orders);
     else
-      E += sites[pulled]->attempt_rot(T, params, &orders);
+      E += sites[pulled]->attemptRot(T, params, &orders);
   }
   else
-    E += sites[pulled]->attempt_occ(pdel, T, params, &orders);
-
-
+    E += sites[pulled]->attemptOcc(pdel, T, params, &orders);
 }
 
 
@@ -100,20 +106,19 @@ void Lattice::track(){
 
   pFile = fopen(filename.str().c_str(),"a");
   
-  fprintf(pFile, "%5.4f \t %1.4f \t %1.4f \t %1.4f \n", getE(),get_rho(),get_tau(),get_omega());
+  fprintf(pFile, "%5.4f \t %1.4f \t %1.4f \t %1.4f \n", getE(),getRho(),getTau(),getOmega());
   fclose(pFile);
-
 }
 
 
 
-void Lattice::file_setup(){
+void Lattice::fileSetup(){
 
 };
 
 
 
-int Lattice::pull_random_site(){
+int Lattice::pullRandomSite(){
   return rng->rand(n_sites-1); //A random number between [0,sites-1]
 }
 
@@ -166,6 +171,12 @@ void SquareLattice::initLat(vector<int> sizes_in, Phase phase_in, Interaction it
         sites[i] = new NemSite(4, .5, rng, R);
       }
       break;
+    case SOLID:
+      //for a solid, the occupation probability will be 1.
+      if (itr_in == NEMATIC){
+        sites[i] = new NemSite(4, 1, rng, R);
+      }
+      break;
     default:
       cout << "Other initial phases are not yet defined.\n";
     }
@@ -175,15 +186,15 @@ void SquareLattice::initLat(vector<int> sizes_in, Phase phase_in, Interaction it
   cout << "Current size of m_sites array: "<<sites.size() <<endl;
 
 
-  E = find_initial_energy();
+  E = findInitialEnergy();
   orders = Site::ovec(3);
-  orders[0] = find_initial_rho();
-  orders[1] = find_initial_tau();
-  orders[2] = find_initial_omega();
+  orders[0] = findInitialRho();
+  orders[1] = findInitialTau();
+  orders[2] = findInitialOmega();
 }
  
  
-double SquareLattice::find_initial_energy(){
+double SquareLattice::findInitialEnergy(){
   double energy = 0;
   vector<int> pos(2);
   Site* currentSite;
@@ -192,34 +203,37 @@ double SquareLattice::find_initial_energy(){
       //cout << "Current size of m_sites array: "<<sites.size() <<endl;
 
       pos[0]=i;   pos[1]=j;
-      currentSite = get_site(pos);
+      currentSite = getSite(pos);
 
       pos[0]=i+1; pos[1]=j;
-      energy += currentSite->curr_interaction(get_site(pos), params);
+      energy += currentSite->currInteraction(getSite(pos), params);
 
       pos[0]=i;   pos[1]=j+1;
-      energy += currentSite->curr_interaction(get_site(pos), params);
+      energy += currentSite->currInteraction(getSite(pos), params);
+
+      if (currentSite -> getOcc())
+        energy -= currentSite->chemPotential(T, params);
     }
   }
   return energy;
 }
 
-double SquareLattice::find_initial_rho(){
+double SquareLattice::findInitialRho(){
   double rho = 0;
   vector<int> pos(2);
   Site* currentSite;
   for (int i = 0 ; i < sizes[0] ; i++){
     for (int j = 0 ; j < sizes[1] ; j++){
       pos[0]=i;   pos[1]=j;
-      currentSite = get_site(pos);
+      currentSite = getSite(pos);
 
-      rho += currentSite->get_occ();
+      rho += currentSite->getOcc();
     }
   }
   return rho;
 }
 
-double SquareLattice::find_initial_tau(){
+double SquareLattice::findInitialTau(){
   double tau = 0;
   vector<int> pos(2);
   Site* currentSite;
@@ -229,23 +243,23 @@ double SquareLattice::find_initial_tau(){
       //cout << "Current size of m_sites array: "<<sites.size() <<endl;
 
       pos[0]=i;   pos[1]=j;
-      currentSite = get_site(pos);
-
-      pos[0]=i+1; pos[1]=j;
-      otherSite = get_site(pos);
-      tau += (currentSite->get_rot() ==  otherSite->get_rot() );
-      tau -= (currentSite->get_rot() == (otherSite->get_rot()+R/2)%R);
-
-      pos[0]=i;   pos[1]=j+1;
-      otherSite = get_site(pos);
-      tau += (currentSite->get_rot() ==  otherSite->get_rot() );
-      tau -= (currentSite->get_rot() == (otherSite->get_rot()+R/2)%R);
+      currentSite = getSite(pos);
+      
+      
+      //maps rotation in the first half to +1, in the second half to -1
+      if (currentSite->getOcc()){
+        tauDir[currentSite->getRot() % (R/2)] += (currentSite->getRot() * (-2)) + 1;
+      }
     }
   }
-  return tau/2.0;
+  
+  //Selects the direction with the maximum number of non-cancelling entries (largest direction)
+  //Note: The order parameter is tau = <occ_i delta_ferro(rot_i, **some directions)>
+  return max(abs(max_element(tauDir.begin(), tauDir.end())),
+             abs(min_element(tauDir.begin(), tauDir.end())));
 }
 
-double SquareLattice::find_initial_omega(){
+double SquareLattice::findInitialOmega(){
   double omega = 0;
   vector<int> pos(2);
   Site* currentSite;
@@ -255,39 +269,16 @@ double SquareLattice::find_initial_omega(){
       //cout << "Current size of m_sites array: "<<sites.size() <<endl;
 
       pos[0]=i;   pos[1]=j;
-      currentSite = get_site(pos);
-
-      pos[0]=i+1; pos[1]=j;
-      otherSite = get_site(pos);
-      omega += (currentSite->get_rot() ==  otherSite->get_rot() );
-      omega += (currentSite->get_rot() == (otherSite->get_rot()+  R/2)%R);
-      omega -= (currentSite->get_rot() == (otherSite->get_rot()+3*R/4)%R);
-      omega -= (currentSite->get_rot() == (otherSite->get_rot()+  R/4)%R);
-
-      pos[0]=i;   pos[1]=j+1;
-      otherSite = get_site(pos);
-      omega += (currentSite->get_rot() ==  otherSite->get_rot() );
-      omega += (currentSite->get_rot() == (otherSite->get_rot()+  R/2)%R);
-      omega -= (currentSite->get_rot() == (otherSite->get_rot()+3*R/4)%R);
-      omega -= (currentSite->get_rot() == (otherSite->get_rot()+  R/4)%R);
+      currentSite = getSite(pos);
+      
+      if (currentSite->getOcc()){
+        omgDir[currentSite->getRot() % (R/4)] += ((currentSite->getRot() % 2) * (-2)) + 1;
+      }
     }
   }
-  return omega/2.0;
+  return max(abs(max_element(omgDir.begin(), omgDir.end())),
+             abs(min_element(omgDir.begin(), omgDir.end())));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -296,25 +287,25 @@ double SquareLattice::find_initial_omega(){
 
 //This function returns a site, given by periodic boundary conditions
 //First input is row, second is column.
-Site* SquareLattice::get_site(vector<int> coords){
+Site* SquareLattice::getSite(vector<int> coords){
   if (coords.size() != 2){
     cout << "Number of coordinates given: " << coords.size() << endl;
-    cout << "SquareLattice::get_site(int[]) must recieve two integers for coordinates!. Returning Null pointer.\n";
+    cout << "SquareLattice::getSite(int[]) must recieve two integers for coordinates!. Returning Null pointer.\n";
     return 0;
   }
   return sites[(((coords[0] % sizes[0]) + sizes[0]) % sizes[0] )* sizes[0] + 
                (((coords[1] % sizes[1]) + sizes[1]) % sizes[1])];
-
+  
 }
 
 
-Site::svec SquareLattice::pull_neighbors(int site){
+Site::svec SquareLattice::pullNeighbors(int site){
   if (site >= n_sites){
-    cout << "In SquareLattice::pull_neighbors(int), the input number was larger than the array size.\n\tIt was shifted modulo n_sites down for covenience.\n ";
+    cout << "In SquareLattice::pullNeighbors(int), the input number was larger than the array size.\n\tIt was shifted modulo n_sites down for covenience.\n ";
     site = site % n_sites;
   }
   if (site < 0){
-    cout << "In SquareLattice::pull_neighbors(int), the input number was negative.\n\tIt was shifted modulo n_sites up for covenience.\n";
+    cout << "In SquareLattice::pullNeighbors(int), the input number was negative.\n\tIt was shifted modulo n_sites up for covenience.\n";
     site = ((site % n_sites)+n_sites)%n_sites;
   }
 
@@ -339,7 +330,7 @@ Site::svec SquareLattice::pull_neighbors(int site){
   }
 
   else{
-    cout << "Major error in SquareLattice::pull_neighbors";
+    cout << "Major error in SquareLattice::pullNeighbors";
     exit(3);
   }
   
@@ -392,11 +383,11 @@ void SquareLattice::printLat(){
       pos[0] = i;
       pos[1] = j;
 
-      posSite = get_site(pos);
+      posSite = getSite(pos);
       
-      if (posSite->get_occ()){
+      if (posSite->getOcc()){
 
-        posRot = posSite->get_rot();
+        posRot = posSite->getRot();
         if (posRot < 10)
           cout << "  " << posRot;
         else if (posRot < 100)

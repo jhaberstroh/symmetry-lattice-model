@@ -26,7 +26,7 @@ Site::Site(int z_in, double occ_p, MTRand* rng_in, int R_in)
     occ = 1;
   else 
     occ = 0;
-  rot = rand_rot();
+  rot = randRot();
 }
 
 Site::~Site(){
@@ -51,13 +51,13 @@ Site::~Site(){
   --------------------------------------------------*/
 
 
-double Site::attempt_occ(Site::svec neighbors, double pdel, double T, pvec params, ovec* order){
+double Site::attemptOcc(Site::svec neighbors, double pdel, double T, pvec params, ovec* order){
   if (!occ)
-    set_rot(rand_rot());
+    setRot(randRot());
 
-  double dE = occ_dE(neighbors, params);
+  double dE = occDE(neighbors, params);
   //NOTE :: chemical potential has a different sign depending on the occupation
-  dE += chem_potential(T, params) * ((occ * 2.0) - 1.0); 
+  dE += chemPotential(T, params) * ((occ * 2.0) - 1.0); 
   double temp_prob = 0;
 
   if (occ){
@@ -69,7 +69,7 @@ double Site::attempt_occ(Site::svec neighbors, double pdel, double T, pvec param
 
 
   if (rng->rand() < temp_prob){ //canBeOptimized
-    change_occ();     
+    changeOcc();     
     (*order)[0] += dOrder[0];
     (*order)[1] += dOrder[1];
     (*order)[2] += dOrder[2];
@@ -79,13 +79,13 @@ double Site::attempt_occ(Site::svec neighbors, double pdel, double T, pvec param
   return 0; //if all attempts fail, there is no energy change to report
 }
 
-double Site::attempt_rot(Site::svec neighbors, double T, pvec params, ovec* order){
+double Site::attemptRot(Site::svec neighbors, double T, pvec params, ovec* order){
   if (occ){
     int plus_minus = ((rng->rand() < .5) * 2) - 1;
-    double dE = rot_dE(neighbors, ((rot + plus_minus)+R) % R, params);
+    double dE = rotDE(neighbors, ((rot + plus_minus)+R) % R, params);
     
     if (rng->rand() < exp(-dE/T)){ //canBeOptimized
-      move_rot(plus_minus);
+      moveRot(plus_minus);
       (*order)[0] += dOrder[0];
       (*order)[1] += dOrder[1];
       (*order)[2] += dOrder[2];
@@ -117,35 +117,42 @@ double Site::attempt_rot(Site::svec neighbors, double T, pvec params, ovec* orde
    ---------------------------------------------------------------------*/
 
 
-double NemSite::curr_interaction(Site* s, pvec params){
+double NemSite::currInteraction(Site* s, pvec params){
   if (!occ){
     return 0;
   }
   else{
-    int nAlnQ = 0;
-    int nAlnQ2= 0;
-    if (s->get_rot()==((rot + R/2)%R)){
-      nAlnQ--;
-      nAlnQ2++;
+    if (s->getOcc()){
+      //nAln are allowed to be negative to institute the energy penalty
+      int alnQ = 0;
+      int alnQ2= 0;
+      if (s->getRot()==(rot)){
+        alnQ  = 1;
+        alnQ2 = 1;
+      }
+      if (s->getRot()==((rot + R/2)%R)){
+        alnQ  =-1;
+        alnQ2 = 1;
+      }
+      if (s->getRot()==((rot +  R/4)%R))
+        alnQ2 =-1;
+      if (s->getRot()==((rot +3*R/4)%R))
+        alnQ2 =-1;
+      
+      //cout << s->getOcc() *(-params[0] - params[1] * nAlnQ - params[2] * nAlnQ2);
+      
+      return -params[0] - params[1] * alnQ - params[2] * alnQ2;
     }
-    if (s->get_rot()==((rot +  R/4)%R))
-      nAlnQ2--;
-    if (s->get_rot()==((rot +3*R/4)%R))
-      nAlnQ2--;
-
-    //cout << s->get_occ() *(-params[0] - params[1] * nAlnQ - params[2] * nAlnQ2);
-
-    return s->get_occ() *(-params[0] - params[1] * nAlnQ - params[2] * nAlnQ2);
+    else
+      return 0;
   }
                                  
 }
 
 
-double NemSite::curr_interaction(Site::svec sites, pvec params){
-  int nOcc = 0;
-  //nAln are allowed to be negative to institute the energy penalty
-  int nAlnQ = 0;
-  int nAlnQ2 = 0;
+double NemSite::currInteraction(Site::svec sites, pvec params){
+
+  double dE = 0;
 
   //Selects a new rotational direction, chosen first to allow for the 
   //neighbor checking step to accurately compute energy difference.
@@ -154,49 +161,35 @@ double NemSite::curr_interaction(Site::svec sites, pvec params){
   }
   else{
     for (int i=0; i < z; i++){
-      if (sites[i]->get_occ()){
-        nOcc++;
-        if (sites[i]->get_rot()==rot){ 
-          nAlnQ++; 
-          nAlnQ2++; 
-        }
-        if (sites[i]->get_rot()==((rot + R/2)%R)){
-          nAlnQ--;
-          nAlnQ2++;
-        }
-        if (sites[i]->get_rot()==((rot +  R/4)%R))
-          nAlnQ2--;
-        if (sites[i]->get_rot()==((rot +3*R/4)%R))
-          nAlnQ2--;
-      }
+      dE += currInteraction(sites[i], params);
     }
   }
-  return -params[0] * nOcc - params[1] * nAlnQ - params[2] * nAlnQ2;
+  return dE;
 }
 
 
 //Note: This does not change the rotational state; that must be
 //      performed independently!
-double NemSite::occ_dE(Site::svec sites, pvec params){
+double NemSite::occDE(Site::svec sites, pvec params){
   int nOcc = 0;
   //nAln are allowed to be negative to institute the energy penalty
   int nAlnQ = 0;
   int nAlnQ2 = 0;
   
   for (int i=0; i < z; i++){
-    if (sites[i]->get_occ()){
+    if (sites[i]->getOcc()){
       nOcc++;
-      if (sites[i]->get_rot()==rot){ 
+      if (sites[i]->getRot()==rot){ 
         nAlnQ++; 
         nAlnQ2++; 
       }
-      if (sites[i]->get_rot()==((rot + R/2)%R)){
+      if (sites[i]->getRot()==((rot + R/2)%R)){
         nAlnQ--;
         nAlnQ2++;
       }
-      if (sites[i]->get_rot()==((rot +  R/4)%R))
+      if (sites[i]->getRot()==((rot +  R/4)%R))
         nAlnQ2--;
-      if (sites[i]->get_rot()==((rot +3*R/4)%R))
+      if (sites[i]->getRot()==((rot +3*R/4)%R))
         nAlnQ2--;
     }
   }
@@ -216,7 +209,7 @@ double NemSite::occ_dE(Site::svec sites, pvec params){
   
 }
 
-double NemSite::rot_dE(Site::svec sites, int r_try, pvec params){
+double NemSite::rotDE(Site::svec sites, int r_try, pvec params){
   //The output is (E_new - E_old)
 
   //Negative values are considered "penalties", while positive
@@ -224,42 +217,40 @@ double NemSite::rot_dE(Site::svec sites, int r_try, pvec params){
   int nAlnQ = 0;
   int nAlnQ2 = 0;
 
-  //Selects a new rotational direction, chosen first to allow for the 
-  //neighbor checking step to accurately compute energy difference.
 
   if (!occ)
     return 0;
   else{
     for (int i=0; i < z; i++){
-      if (sites[i]->get_occ()){
+      if (sites[i]->getOcc()){
         
         //Original configuration energy:
-        if (sites[i]->get_rot()==rot){ 
+        if (sites[i]->getRot()==rot){ 
           nAlnQ--; 
           nAlnQ2--; 
         }
-        if (sites[i]->get_rot()==((rot + R/2)%R)){
+        if (sites[i]->getRot()==((rot + R/2)%R)){
           nAlnQ++;
           nAlnQ2--;
         }
-        if (sites[i]->get_rot()==((rot +  R/4)%R))
+        if (sites[i]->getRot()==((rot +  R/4)%R))
           nAlnQ2++;
-        if (sites[i]->get_rot()==((rot +3*R/4)%R))
+        if (sites[i]->getRot()==((rot +3*R/4)%R))
           nAlnQ2++;
 
 
         //Trial configuration energy (opposite effects!):
-        if (sites[i]->get_rot()==r_try){
+        if (sites[i]->getRot()==r_try){
           nAlnQ++;
           nAlnQ2++;
         }
-        if (sites[i]->get_rot()==((r_try + R/2)%R)){
+        if (sites[i]->getRot()==((r_try + R/2)%R)){
           nAlnQ--;
           nAlnQ2++;
         }
-        if (sites[i]->get_rot()==((r_try +  R/4)%R))
+        if (sites[i]->getRot()==((r_try +  R/4)%R))
           nAlnQ2--;
-        if (sites[i]->get_rot()==((r_try +3*R/4)%R))
+        if (sites[i]->getRot()==((r_try +3*R/4)%R))
           nAlnQ2--;
       }
     }
@@ -272,6 +263,6 @@ double NemSite::rot_dE(Site::svec sites, int r_try, pvec params){
 
 }
 
-double NemSite::chem_potential(double T, pvec params){
+double NemSite::chemPotential(double T, pvec params){
   return -params[0] * z / 2.0 - T * log(R);
 }

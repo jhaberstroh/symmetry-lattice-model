@@ -39,43 +39,43 @@ class Site{
     Gets and Sets
     --------------------------------------------------*/
 
-  bool   get_occ() {return occ;}
-  int    get_rot() {return rot;}
-  int    get_R()   {return R;}
-  int    get_z()   {return z;}
+  bool   getOcc() {return occ;}
+  int    getRot() {return rot;}
+  int    getR()   {return R;}
+  int    getz()   {return z;}
 
-  void   set_rot(int rot_in){rot = rot_in;}
-  void   set_neigh(svec neigh_in){nghbors = neigh_in;}
+  void   setRot(int rot_in){rot = rot_in;}
+  void   setNeigh(svec neigh_in){nghbors = neigh_in;}
 
   //returns interaction energy between site and the input array
-  virtual double curr_interaction(Site* s, pvec params)=0;
-  virtual double curr_interaction(Site::svec sites, pvec params)=0;
+  virtual double currInteraction(Site* s, pvec params)=0;
+  virtual double currInteraction(Site::svec sites, pvec params)=0;
 
 
 
-  double attempt_occ(svec neighbors, double pdel, double T_in, pvec params, ovec* order);
-  double attempt_rot(svec neighbors, double T_in, pvec params, ovec* order);
+  double attemptOcc(svec neighbors, double pdel, double T_in, pvec params, ovec* order);
+  double attemptRot(svec neighbors, double T_in, pvec params, ovec* order);
 
   //uses local neighbors
-  double attempt_occ(double pdel, double T, pvec params, ovec* order){
-    return attempt_occ(nghbors, pdel, T, params, order);}
-  double attempt_rot(double T, pvec params, ovec* order){
-    return attempt_rot(nghbors, T, params, order);}
+  double attemptOcc(double pdel, double T, pvec params, ovec* order){
+    return attemptOcc(nghbors, pdel, T, params, order);}
+  double attemptRot(double T, pvec params, ovec* order){
+    return attemptRot(nghbors, T, params, order);}
 
+  virtual double chemPotential(double T, pvec params)=0;
 
 
  protected:
-  virtual double occ_dE(svec sites, pvec params)=0;
-  virtual double rot_dE(svec sites, int r_try, pvec params)=0;
-  virtual double chem_potential(double T, pvec params)=0;
-  int rand_rot(){return rng->randInt(R-1);}
+  virtual double occDE(svec sites, pvec params)=0;
+  virtual double rotDE(svec sites, int r_try, pvec params)=0;
+  int randRot(){return rng->randInt(R-1);}
 
 
   // Users may not manually set order params; they must create
   //  a derived class which initializes the lattice as is
   //  suitable for their needs.
-  void change_occ(){if (occ == 1) occ = 0; else occ = 1;}
-  void move_rot(int plus_minus){
+  void changeOcc(){if (occ == 1) occ = 0; else occ = 1;}
+  void moveRot(int plus_minus){
     if (plus_minus == 1) rot = (rot + 1)%R ; 
     if (plus_minus ==-1) rot = ((rot - 1)+R)%R;
   } 
@@ -111,11 +111,11 @@ class NemSite : public Site{
   
   
   
-  double curr_interaction(Site* s, pvec params);
-  double curr_interaction(Site::svec sites, pvec params);
-  double occ_dE(Site::svec sites, pvec params);
-  double rot_dE(Site::svec sites, int r_try, pvec params);
-  double chem_potential(double T, pvec params);
+  double currInteraction(Site* s, pvec params);
+  double currInteraction(Site::svec sites, pvec params);
+  double occDE(Site::svec sites, pvec params);
+  double rotDE(Site::svec sites, int r_try, pvec params);
+  double chemPotential(double T, pvec params);
   
 
 };

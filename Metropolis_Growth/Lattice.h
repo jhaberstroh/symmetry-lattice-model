@@ -29,7 +29,7 @@ using namespace std;
 class Lattice{
  public:
   enum Interaction{   NEMATIC  };
-  enum Phase{ GAS, LIQUID  };
+  enum Phase{ GAS, LIQUID, SOLID };
 
   /*--------------------------------------------------
     Default Values
@@ -56,16 +56,25 @@ class Lattice{
   virtual void printLat() = 0;
 
   double getE(){return E/n_sites;}
-  double get_phi(){return (orders[0] * 2.0 / n_sites) - 1;}
-  double get_rho(){return orders[0] / n_sites;}
-  double get_tau(){return orders[1] / n_sites;}
-  double get_omega(){return orders[2] / n_sites;}
-  virtual Site* get_site(vector<int> coords)=0;
+  double getPhiMacro(){return (orders[0] * 2.0) - 1;}
+  double getPhi(){return (orders[0] * 2.0 / n_sites) - 1;}
+  double getPhiSq(){return ((orders[0] * 2.0) - 1)*((orders[0] * 2.0) - 1);}
+  double getRho(){return orders[0] / n_sites;}
+  double getTau(){return orders[1] / n_sites;}
+  double getTauSq(){return orders[1]*orders[1];} // does nothing...
+  double getOmega(){return orders[2] / n_sites;}
+  virtual Site* getSite(vector<int> coords)=0;
 
-  void set_params(Site::pvec p_in){params = p_in;}
-  void set_T(double T_in){T = T_in;}
+  void setParams(Site::pvec p_in){
+    params = p_in;
+    E = findInitialEnergy();
+    orders[0] = findInitialRho();
+    orders[1] = findInitialTau();
+    orders[2] = findInitialOmega();
+  }
+  void setT(double T_in){T = T_in;}
                                                    
-  void file_setup();
+  void fileSetup();
 
 
 
@@ -74,18 +83,18 @@ class Lattice{
     --------------------------------------------------*/  
 
 
-  void metro_move();       //Standard metropolis MC move
-  void optimize();         //Only application is running before opt_metro_move()
-  void opt_metro_move();   //Optimized, requires call to optimize() before use
-  void t_opt_metro_move(){ //Tracking and optimized, requires call to optimize() before use
-    opt_metro_move();
+  void metroMove();       //Standard metropolis MC move
+  void optimize();         //Only application is running before optMetroMove()
+  void optMetroMove();   //Optimized, requires call to optimize() before use
+  void t_optMetroMove(){ //Tracking and optimized, requires call to optimize() before use
+    optMetroMove();
     track();
   }
 
 
  protected:
   
-  int pull_random_site();
+  int pullRandomSite();
   void track();
 
   /*
@@ -93,12 +102,12 @@ class Lattice{
     It could use pull_neighbors, and construct a visited-edge array.
     But it is not worth developing at the current time.
   */
-  virtual double find_initial_energy() =0; 
-  virtual double find_initial_rho() =0;
-  virtual double find_initial_tau() =0;
-  virtual double find_initial_omega() =0;
+  virtual double findInitialEnergy() =0; 
+  virtual double findInitialRho() =0;
+  virtual double findInitialTau() =0;
+  virtual double findInitialOmega() =0;
 
-  virtual Site::svec pull_neighbors(int site) =0;
+  virtual Site::svec pullNeighbors(int site) =0;
 
 
 
@@ -122,6 +131,8 @@ class Lattice{
   double E;
  
   Site::ovec orders;   //   phi, tau, and omega, order parameters
+  vector<int> tauDir;
+  vector<int> omgDir;
   Site::pvec params;//   any number of interaction paramters
   int R;
   double T;
@@ -148,22 +159,31 @@ class SquareLattice: public Lattice
   
  SquareLattice(double J_in = Jdft, double Q_in = Qdft, double Q2_in = Q2dft, int R_in = Rdft,
                double T_in = Tdft, double pdel_in = pdeldft, MTRand* rng_in = 0,
-               vector<int> sizes_in = sizedft, Phase phase_in = phasedft, Interaction itr_in = itrdef)           
+               vector<int> sizes_in = sizedft, Phase phase_in = phasedft, Interaction itr_in = itrdef) 
    : Lattice(J_in, Q_in, Q2_in, R_in, T_in, pdel_in, rng_in)  
     {
       initLat(sizes_in, phase_in, itr_in);
     }
+
+  SquareLattice(Site::pvec par_in,int R_in = Rdft,
+                double T_in = Tdft, double pdel_in = pdeldft, MTRand* rng_in = 0,
+                vector<int> sizes_in = sizedft, Phase phase_in = phasedft, Interaction itr_in = itrdef)
+    : Lattice(par_in[0], par_in[1], par_in[2],R_in, T_in, pdel_in, rng_in)  
+    {
+      initLat(sizes_in, phase_in, itr_in);
+    }
+
   
   void initLat(vector<int> sizes_in, Phase phase_in, Interaction itr_in);
-  Site* get_site(vector<int> coords);
+  Site* getSite(vector<int> coords);
   void printLat();
     
  protected:
-  double find_initial_energy();
-  double find_initial_rho();
-  double find_initial_tau();
-  double find_initial_omega();
-  Site::svec pull_neighbors(int site);
+  double findInitialEnergy();
+  double findInitialRho();
+  double findInitialTau();
+  double findInitialOmega();
+  Site::svec pullNeighbors(int site);
 
 };
 
