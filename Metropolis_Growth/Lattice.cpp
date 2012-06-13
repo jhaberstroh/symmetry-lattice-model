@@ -41,8 +41,11 @@ Lattice::Lattice(double J_in, double Q_in,     double Q2_in, int R_in,
 
   //These are INITIALIZED in findInitialTau and findInitialOmega
   //They are later UPDATED in metroMove and optMetroMove (NOT YET FINISHED June 12)
-  tauDir = vector<int>(R/2,0);
-  omgDir = vector<int>(R/4,0);
+  directions = Site::dirtable();
+  vector<int> tauDir(R/2,0);
+  vector<int> omgDir(R/4,0);
+  directions.push_back(tauDir);
+  directions.push_back(omgDir);
 
 
   //filename = ostringstream();
@@ -52,7 +55,6 @@ Lattice::Lattice(double J_in, double Q_in,     double Q2_in, int R_in,
   filename << "metro_simulation_J_"<<params[0]<<"_Q_"<<params[1]<<"_Q2_"<<params[2]<<".txt";
 
 }
-
 
 
 Lattice::~Lattice(){
@@ -72,12 +74,12 @@ void Lattice::metroMove(){
   
   if (sites[pulled]->getOcc()){
     if (rng->rand() < pdel)
-      E += sites[pulled]->attemptOcc(neighbors, pdel, T, params, &orders);
+      E += sites[pulled]->attemptOcc(neighbors, pdel, T, params, &orders, &directions);
     else
-      E += sites[pulled]->attemptRot(neighbors, T, params, &orders);
+      E += sites[pulled]->attemptRot(neighbors, T, params, &orders, &directions);
   }
   else
-    E += sites[pulled]->attemptOcc(neighbors, pdel, T, params, &orders);
+    E += sites[pulled]->attemptOcc(neighbors, pdel, T, params, &orders, &directions);
 }
 
 void Lattice::optimize(){
@@ -90,12 +92,12 @@ void Lattice::optMetroMove(){
     
   if (sites[pulled]->getOcc()){
     if (rng->rand() < pdel) //pdel controls the percentage of moves which go to rotation
-      E += sites[pulled]->attemptOcc(pdel, T, params, &orders);
+      E += sites[pulled]->attemptOcc(pdel, T, params, &orders, &directions);
     else
-      E += sites[pulled]->attemptRot(T, params, &orders);
+      E += sites[pulled]->attemptRot(T, params, &orders, &directions);
   }
   else
-    E += sites[pulled]->attemptOcc(pdel, T, params, &orders);
+    E += sites[pulled]->attemptOcc(pdel, T, params, &orders, &directions);
 }
 
 
@@ -234,10 +236,17 @@ double SquareLattice::findInitialRho(){
 }
 
 double SquareLattice::findInitialTau(){
-  double tau = 0;
   vector<int> pos(2);
   Site* currentSite;
-  Site* otherSite;
+  
+  for (int i = 0 ; i < directions.size() ; i++){
+    cout << "Size of "<< i << "th element: " << directions[i].size() << endl;
+    for (int j = 0 ; j < directions[i].size(); j++){
+      directions[i][j] = 0;
+    }
+  }
+
+
   for (int i = 0 ; i < sizes[0] ; i++){
     for (int j = 0 ; j < sizes[1] ; j++){
       //cout << "Current size of m_sites array: "<<sites.size() <<endl;
@@ -248,22 +257,27 @@ double SquareLattice::findInitialTau(){
       
       //maps rotation in the first half to +1, in the second half to -1
       if (currentSite->getOcc()){
-        tauDir[currentSite->getRot() % (R/2)] += (currentSite->getRot() * (-2)) + 1;
+        //tauDir  is directions[0]
+        //The index finds the slot for that direction
+        //The adding part makes sure that "opposite" directions subtract
+        directions[0][currentSite->getRot() % (R/2)] += (((currentSite->getRot() / (R/2)) % 2) * (-2)) + 1;
       }
     }
   }
   
   //Selects the direction with the maximum number of non-cancelling entries (largest direction)
   //Note: The order parameter is tau = <occ_i delta_ferro(rot_i, **some directions)>
-  return max(abs(max_element(tauDir.begin(), tauDir.end())),
-             abs(min_element(tauDir.begin(), tauDir.end())));
+  cout << "Max element is: "<< abs(*max_element(directions[0].begin(), 
+                                                directions[0].end(),
+                                                abs_compare)) << endl;
+  return abs(*max_element(directions[0].begin(), 
+                          directions[0].end(),
+                          abs_compare));
 }
 
 double SquareLattice::findInitialOmega(){
-  double omega = 0;
   vector<int> pos(2);
   Site* currentSite;
-  Site* otherSite;
   for (int i = 0 ; i < sizes[0] ; i++){
     for (int j = 0 ; j < sizes[1] ; j++){
       //cout << "Current size of m_sites array: "<<sites.size() <<endl;
@@ -272,12 +286,15 @@ double SquareLattice::findInitialOmega(){
       currentSite = getSite(pos);
       
       if (currentSite->getOcc()){
-        omgDir[currentSite->getRot() % (R/4)] += ((currentSite->getRot() % 2) * (-2)) + 1;
+        //omgDir  is directions[1]
+        directions[1][currentSite->getRot() % (R/4)] += (((currentSite->getRot() / (R/4)) % 2) * (-2)) + 1;
       }
     }
   }
-  return max(abs(max_element(omgDir.begin(), omgDir.end())),
-             abs(min_element(omgDir.begin(), omgDir.end())));
+  return abs(*max_element(directions[1].begin(), 
+                          directions[1].end(),
+                          abs_compare));
+
 }
 
 

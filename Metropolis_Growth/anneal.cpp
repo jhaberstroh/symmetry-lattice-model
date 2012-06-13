@@ -131,13 +131,21 @@ int main(int argc, char** argv){
   diff = float((float)t2 - (float) t1) ;  
   cout << "To run regular for "<<moves<<" moves, it took: "<< diff/CLOCKS_PER_SEC <<"s"<<endl;
   */
+  wowza.printLat();  
 
 
   cout<< "Final Energy: "<<wowza.getE()<<endl;
   cout<< "Final Phi: "<<wowza.getPhi()<<endl;
   cout<< "Final Tau: "<<wowza.getTau()<<endl;
   cout<< "Final Omega: "<<wowza.getOmega()<<endl;
-  wowza.printLat();
+
+  wowza.resetOP();
+
+  cout<< "Final Energy: "<<wowza.getE()<<endl;
+  cout<< "Final Phi: "<<wowza.getPhi()<<endl;
+  cout<< "Final Tau: "<<wowza.getTau()<<endl;
+  cout<< "Final Omega: "<<wowza.getOmega()<<endl;
+
 
   return 0;
   

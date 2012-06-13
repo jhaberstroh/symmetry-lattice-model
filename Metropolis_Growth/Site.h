@@ -32,7 +32,8 @@ class Site{
   ~Site();
   typedef vector<Site*> svec;  //Site vector
   typedef vector<double> pvec; //Parameter vector 
-  typedef vector<double> ovec; //Order Parameter vector
+  typedef vector<int> ovec; //Order parameters, integer counts for precision
+  typedef vector<vector<int> > dirtable;
 
 
   /*--------------------------------------------------
@@ -53,14 +54,14 @@ class Site{
 
 
 
-  double attemptOcc(svec neighbors, double pdel, double T_in, pvec params, ovec* order);
-  double attemptRot(svec neighbors, double T_in, pvec params, ovec* order);
+  double attemptOcc(svec neighbors, double pdel, double T_in, pvec params, ovec* order, dirtable* directions);
+  double attemptRot(svec neighbors, double T_in, pvec params, ovec* order, dirtable* directions);
 
-  //uses local neighbors
-  double attemptOcc(double pdel, double T, pvec params, ovec* order){
-    return attemptOcc(nghbors, pdel, T, params, order);}
-  double attemptRot(double T, pvec params, ovec* order){
-    return attemptRot(nghbors, T, params, order);}
+  //Overloaded for optimization; these use local neighbors
+  double attemptOcc(double pdel, double T, pvec params, ovec* order, dirtable* directions){
+    return attemptOcc(nghbors, pdel, T, params, order, directions);}
+  double attemptRot(double T, pvec params, ovec* order, dirtable* directions){
+    return attemptRot(nghbors, T, params, order, directions);}
 
   virtual double chemPotential(double T, pvec params)=0;
 
@@ -78,7 +79,10 @@ class Site{
   void moveRot(int plus_minus){
     if (plus_minus == 1) rot = (rot + 1)%R ; 
     if (plus_minus ==-1) rot = ((rot - 1)+R)%R;
-  } 
+  }
+ 
+  void changeOcc(ovec* order, dirtable* directions);
+  void moveRot(int plus_minus, ovec* order, dirtable* directions);
 
 
   /*--------------------------------------------------
@@ -93,8 +97,6 @@ class Site{
   int rot;
   MTRand* rng;
   bool rng_new;
-  static ovec dOrder;
-
 };
 
 
@@ -120,6 +122,8 @@ class NemSite : public Site{
 
 };
 
-
+static bool abs_compare(int a, int b){
+  return (abs(a) < abs(b));
+}
 
 #endif // __SITE_H_INCLUDED__

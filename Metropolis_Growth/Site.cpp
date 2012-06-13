@@ -1,8 +1,6 @@
 //Site.cpp
 #include "Site.h"
 
-Site::ovec Site::dOrder = Site::ovec(3);
-
 
 
 Site::Site(int z_in, double occ_p, MTRand* rng_in, int R_in)
@@ -39,19 +37,13 @@ Site::~Site(){
 
 
 
-
-
-
-
-
-
 /*--------------------------------------------------
   Monte Carlo attempts
   (for any temperature and parameters in)
   --------------------------------------------------*/
 
 
-double Site::attemptOcc(Site::svec neighbors, double pdel, double T, pvec params, ovec* order){
+double Site::attemptOcc(Site::svec neighbors, double pdel, double T, pvec params, ovec* order, dirtable* directions){
   if (!occ)
     setRot(randRot());
 
@@ -69,27 +61,21 @@ double Site::attemptOcc(Site::svec neighbors, double pdel, double T, pvec params
 
 
   if (rng->rand() < temp_prob){ //canBeOptimized
-    changeOcc();     
-    (*order)[0] += dOrder[0];
-    (*order)[1] += dOrder[1];
-    (*order)[2] += dOrder[2];
+    changeOcc(order, directions);
     
     return dE;
   }
   return 0; //if all attempts fail, there is no energy change to report
 }
 
-double Site::attemptRot(Site::svec neighbors, double T, pvec params, ovec* order){
+
+double Site::attemptRot(Site::svec neighbors, double T, pvec params, ovec* order, dirtable* directions){
   if (occ){
     int plus_minus = ((rng->rand() < .5) * 2) - 1;
     double dE = rotDE(neighbors, ((rot + plus_minus)+R) % R, params);
     
     if (rng->rand() < exp(-dE/T)){ //canBeOptimized
-      moveRot(plus_minus);
-      (*order)[0] += dOrder[0];
-      (*order)[1] += dOrder[1];
-      (*order)[2] += dOrder[2];
-        
+      moveRot(plus_minus, order, directions);
       return dE;
     }
   }
@@ -98,10 +84,45 @@ double Site::attemptRot(Site::svec neighbors, double T, pvec params, ovec* order
 }
 
 
+void Site::changeOcc(ovec* order, dirtable* directions){
+  changeOcc();
+
+  (*order)[0] += (occ * 2) - 1; //If current occ = 1, add one. If occ = 0, subtract one.
+  (*directions)[0][rot % (R/2)] += (occ * 2) - 1;
+  (*directions)[1][rot % (R/4)] += (occ * 2) - 1;
+
+  (*order)[1] = abs(*max_element( (*directions)[0].begin(), 
+                                  (*directions)[0].end(), 
+                                  abs_compare));
+                    
+  (*order)[2] = abs(*max_element( (*directions)[1].begin(), 
+                                  (*directions)[1].end(), 
+                                  abs_compare));
+}
 
 
+void Site::moveRot(int plus_minus, ovec* order, dirtable* directions){
+  (*directions)[0][rot % (R/2)] -= 1; 
+  (*directions)[1][rot % (R/4)] -= 1;
+  //cout << "PRE MOVE: "<<rot<<endl;
 
 
+  moveRot(plus_minus);
+
+  //addition of R to [(rot - plus_minus)] to prevent underflow
+  (*directions)[0][rot % (R/2)] += 1;
+  (*directions)[1][rot % (R/4)] += 1;
+  //cout << "POST MOVE: "<<rot<<endl;
+
+  (*order)[1] = abs(*max_element( (*directions)[0].begin(), 
+                                  (*directions)[0].end(), 
+                                  abs_compare));
+                    
+  (*order)[2] = abs(*max_element( (*directions)[1].begin(), 
+                                  (*directions)[1].end(), 
+                                  abs_compare));
+
+}
 
 
 
@@ -196,15 +217,9 @@ double NemSite::occDE(Site::svec sites, pvec params){
 
 
   if (occ){
-    dOrder[0] = -1;
-    dOrder[1] = -nAlnQ/2.0;
-    dOrder[2] = -nAlnQ2/2.0;
     return  params[0] * nOcc + params[1] * nAlnQ + params[2] * nAlnQ2;
   }
   else
-    dOrder[0] = 1;
-    dOrder[1] = nAlnQ/2.0;
-    dOrder[2] = nAlnQ2/2.0;
     return -params[0] * double(nOcc) - params[1] * double(nAlnQ) - params[2] * double(nAlnQ2);
   
 }
@@ -256,9 +271,6 @@ double NemSite::rotDE(Site::svec sites, int r_try, pvec params){
     }
   }
 
-  dOrder[0] = 0;
-  dOrder[1] = nAlnQ/2.0;
-  dOrder[2] = nAlnQ2/2.0;
   return -params[1] * nAlnQ - params[2] * nAlnQ2;
 
 }

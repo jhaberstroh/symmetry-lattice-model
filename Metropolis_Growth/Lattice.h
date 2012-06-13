@@ -56,13 +56,13 @@ class Lattice{
   virtual void printLat() = 0;
 
   double getE(){return E/n_sites;}
-  double getPhiMacro(){return (orders[0] * 2.0) - 1;}
-  double getPhi(){return (orders[0] * 2.0 / n_sites) - 1;}
-  double getPhiSq(){return ((orders[0] * 2.0) - 1)*((orders[0] * 2.0) - 1);}
-  double getRho(){return orders[0] / n_sites;}
-  double getTau(){return orders[1] / n_sites;}
-  double getTauSq(){return orders[1]*orders[1];} // does nothing...
-  double getOmega(){return orders[2] / n_sites;}
+  double getPhiMacro(){return (double(orders[0]) * 2.0) - 1;}
+  double getPhi(){return (double(orders[0]) * 2.0 / n_sites) - 1;}
+  double getPhiSq(){return ((double(orders[0]) * 2.0) - 1)*((orders[0] * 2.0) - 1);}
+  double getRho(){return double(orders[0]) / n_sites;}
+  double getTau(){return double(orders[1]) / n_sites;}
+  double getTauSq(){return double(orders[1])*orders[1];} // does nothing...
+  double getOmega(){return double(orders[2]) / n_sites;}
   virtual Site* getSite(vector<int> coords)=0;
 
   void setParams(Site::pvec p_in){
@@ -91,6 +91,12 @@ class Lattice{
     track();
   }
 
+  void resetOP(){
+    E = findInitialEnergy();
+    orders[0] = findInitialRho();
+    orders[1] = findInitialTau();
+    orders[2] = findInitialOmega();
+  }
 
  protected:
   
@@ -130,10 +136,9 @@ class Lattice{
   bool new_rng;
   double E;
  
-  Site::ovec orders;   //   phi, tau, and omega, order parameters
-  vector<int> tauDir;
-  vector<int> omgDir;
+  Site::ovec orders;   //   phi, tau, and omega, order parameters, all macroscopic and integer
   Site::pvec params;//   any number of interaction paramters
+  Site::dirtable directions;
   int R;
   double T;
   double pdel;      //   selects how many rotation moves to growth moves are used.
@@ -186,6 +191,8 @@ class SquareLattice: public Lattice
   Site::svec pullNeighbors(int site);
 
 };
+
+
 
 
 
