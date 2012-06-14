@@ -87,9 +87,11 @@ double Site::attemptRot(Site::svec neighbors, double T, pvec params, ovec* order
 void Site::changeOcc(ovec* order, dirtable* directions){
   changeOcc();
 
-  (*order)[0] += (occ * 2) - 1; //If current occ = 1, add one. If occ = 0, subtract one.
-  (*directions)[0][rot % (R/2)] += (occ * 2) - 1;
-  (*directions)[1][rot % (R/4)] += (occ * 2) - 1;
+  (*order)[0] += (occ * 2) - 1; 
+  //If current occ = 1, add one. If occ = 0, subtract one.
+  //The latter part tells you whether to add or subtract from that site, based on being in or against that direction.
+  (*directions)[0][rot % (R/2)] += ((occ * 2) - 1) * (((rot / (R/2)) % 2) * (-2)) + 1;
+  (*directions)[1][rot % (R/4)] += ((occ * 2) - 1) * (((rot / (R/4)) % 2) * (-2)) + 1; ;
 
   (*order)[1] = abs(*max_element( (*directions)[0].begin(), 
                                   (*directions)[0].end(), 
@@ -102,16 +104,16 @@ void Site::changeOcc(ovec* order, dirtable* directions){
 
 
 void Site::moveRot(int plus_minus, ovec* order, dirtable* directions){
-  (*directions)[0][rot % (R/2)] -= 1; 
-  (*directions)[1][rot % (R/4)] -= 1;
+  (*directions)[0][rot % (R/2)] -= (((rot / (R/2)) % 2) * (-2)) + 1; 
+  (*directions)[1][rot % (R/4)] -= (((rot / (R/4)) % 2) * (-2)) + 1; 
   //cout << "PRE MOVE: "<<rot<<endl;
 
 
   moveRot(plus_minus);
 
   //addition of R to [(rot - plus_minus)] to prevent underflow
-  (*directions)[0][rot % (R/2)] += 1;
-  (*directions)[1][rot % (R/4)] += 1;
+  (*directions)[0][rot % (R/2)] += (((rot / (R/2)) % 2) * (-2)) + 1;
+  (*directions)[1][rot % (R/4)] += (((rot / (R/4)) % 2) * (-2)) + 1; 
   //cout << "POST MOVE: "<<rot<<endl;
 
   (*order)[1] = abs(*max_element( (*directions)[0].begin(), 
