@@ -63,7 +63,17 @@ class Lattice{
   double getTau(){return double(orders[1]) / n_sites;}
   double getTauSq(){return double(orders[1])*orders[1];} // does nothing...
   double getOmega(){return double(orders[2]) / n_sites;}
-  virtual Site* getSite(vector<int> coords)=0;
+
+  Site* getSite(int siteNum){return sites[siteNum];}
+  Site* getSite(vector<int> coords){return getSite(coordToIndex(coords));}
+
+  virtual Site::svec pullNeighbors(int site) =0;
+  Site::svec pullNeighbors(vector<int> coords){return pullNeighbors(coordToIndex(coords));}
+  
+
+
+  vector<int> getSizes(){return sizes;}
+  int getR(){return R;};
 
   void setParams(Site::pvec p_in){
     params = p_in;
@@ -113,8 +123,7 @@ class Lattice{
   virtual double findInitialTau() =0;
   virtual double findInitialOmega() =0;
 
-  virtual Site::svec pullNeighbors(int site) =0;
-
+  virtual int coordToIndex(vector<int> coord)=0;
 
 
 
@@ -124,12 +133,9 @@ class Lattice{
 
 
 
-  //The array:
   Site::svec sites;
   int n_sites;
-  // # of dimensions
   int dim;
-  // size of dimensions
   vector<int> sizes; 
 
   MTRand* rng;      //   The random number generator, and whether it should be free'd
@@ -137,7 +143,7 @@ class Lattice{
   double E;
  
   Site::ovec orders;   //   phi, tau, and omega, order parameters, all macroscopic and integer
-  Site::pvec params;//   any number of interaction paramters
+  Site::pvec params;   //   any number of interaction paramters
   Site::dirtable directions;
   int R;
   double T;
@@ -180,15 +186,17 @@ class SquareLattice: public Lattice
 
   
   void initLat(vector<int> sizes_in, Phase phase_in, Interaction itr_in);
-  Site* getSite(vector<int> coords);
+  Site* getSite(vector<int>coords);
   void printLat();
+  Site::svec pullNeighbors(int site);
     
  protected:
   double findInitialEnergy();
   double findInitialRho();
   double findInitialTau();
   double findInitialOmega();
-  Site::svec pullNeighbors(int site);
+
+  int coordToIndex(vector<int> coord)=0;
 
 };
 

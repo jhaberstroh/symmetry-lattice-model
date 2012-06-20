@@ -355,6 +355,13 @@ Site::svec SquareLattice::pullNeighbors(int site){
 }
 
 
+int SquareLattice::coordToIndex(vector<int> coord){
+  return (  (((coord[0] % sizes[0]) + sizes[0]) % sizes[0])*sizes[0] 
+          + (((coord[1] % sizes[1]) + sizes[1]) % sizes[1])           );
+
+}
+
+
 void SquareLattice::printLat(){
 
   /*
