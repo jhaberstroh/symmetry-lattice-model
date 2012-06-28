@@ -1,6 +1,19 @@
 //Lattice.cpp
 #include "lattice.h"
 
+/*--------------------------------------------------
+  Indexing functions & utilities
+  --------------------------------------------------*/
+
+int FindIndexOf(vector<Site*> array, Site* s){
+  for (unsigned int i = 0 ; i < array.size() ; i++){
+    if (s == array[i])
+      return i;
+  }
+  return -1; //sentinel return value
+}
+
+
 
 //Result will treat input coordinates completely periodically;
 // thus, it will not be the highest performance if input value is bounded,
@@ -28,25 +41,6 @@ vector<int> SquareLattice::IndexToCoord(int index){
   coord_out[1] = index % m_measurements[1];
 
   return coord_out;
-}
-
-
-Lattice::NeighborVect SquareLattice::get_neighbors_init(int site_index){
-  vector<int> neighbor_coord(2,0);
-  NeighborVect neighbors(4);
-  neighbor_coord = IndexToCoord(site_index);
-  neighbor_coord[0] += 1;
-  neighbors[0] = get_site(neighbor_coord);
-  neighbor_coord = IndexToCoord(site_index);
-  neighbor_coord[0] -= 1;
-  neighbors[1] = get_site(neighbor_coord);
-  neighbor_coord = IndexToCoord(site_index);
-  neighbor_coord[1] += 1;
-  neighbors[2] = get_site(neighbor_coord);
-  neighbor_coord = IndexToCoord(site_index);
-  neighbor_coord[1] -= 1;
-  neighbors[3] = get_site(neighbor_coord);
-  return neighbors;
 }
 
 
@@ -110,33 +104,117 @@ void SquareLattice::Print(){
   }
 }
 
+/*--------------------------------------------------
+  Constructors, Destructors, Assignment (Non-trivial!)
+  --------------------------------------------------*/
+
+Lattice::~Lattice(){
+  for (unsigned int i = 0 ; i < m_lattice.size() ; i++){
+    delete m_lattice[i];
+  }
+}
+
+//Copy Constructor makes duplicates of all sites and repoints the neighbor vectors.
+Lattice::Lattice(const Lattice &cSource){
+  m_R = cSource.m_R;
+  m_z = cSource.m_z;
+  m_measurements = cSource.m_measurements;
+
+  m_lattice = SiteVect(cSource.m_lattice.size());
+  for (unsigned int i = 0 ; i < m_lattice.size() ; i++){
+    m_lattice[i] = new Site(*cSource.m_lattice[i]);
+  }
+
+  m_site_neighbors = vector<NeighborVect>(m_lattice.size());
+  for (unsigned int i = 0 ; i < m_site_neighbors.size() ; i++){
+    m_site_neighbors[i] = NeighborVect(cSource.m_site_neighbors[i].size());
+    for (unsigned int k = 0 ; k < m_site_neighbors[i].size() ; k++){
+      //Point to the same index, but on the new object!
+      m_site_neighbors[i][k] = m_lattice[
+                                         FindIndexOf(
+                                                     cSource.m_lattice, cSource.m_site_neighbors[i][k] )];
+    }
+  }
+}
+
+//This is a copy-paste of the destructor and the copy constructor
+Lattice& Lattice::operator=(const Lattice& cSource){
+  if (this == &cSource)
+    return *this;
+
+  for (unsigned int i = 0 ; i < m_lattice.size() ; i++){
+    delete m_lattice[i];
+  }
+
+  m_R = cSource.m_R;
+  m_z = cSource.m_z;
+  m_measurements = cSource.m_measurements;
+
+  m_lattice = SiteVect(cSource.m_lattice.size());
+  for (unsigned int i = 0 ; i < m_lattice.size() ; i++){
+    m_lattice[i] = new Site(*cSource.m_lattice[i]);
+  }
+
+  m_site_neighbors = vector<NeighborVect>(m_lattice.size());
+  for (unsigned int i = 0 ; i < m_site_neighbors.size() ; i++){
+    m_site_neighbors[i] = NeighborVect(cSource.m_site_neighbors[i].size());
+    for (unsigned int k = 0 ; k < m_site_neighbors[i].size() ; k++){
+      //Point to the same index, but on the new object!
+      m_site_neighbors[i][k] = m_lattice[
+                                         FindIndexOf(
+                                                     cSource.m_lattice, cSource.m_site_neighbors[i][k] )];
+    }
+  }
+
+  return *this;
+}
+
+
+
+
+void SquareLattice::get_neighbors_init(int site_index, Lattice::NeighborVect* output){
+  vector<int> neighbor_coord(2,0);
+  (*output) = NeighborVect(4);
+
+  neighbor_coord = IndexToCoord(site_index);
+  neighbor_coord[0] += 1;
+  (*output)[0] = get_site(neighbor_coord);
+
+  neighbor_coord = IndexToCoord(site_index);
+  neighbor_coord[0] -= 1;
+  (*output)[1] = get_site(neighbor_coord);
+
+  neighbor_coord = IndexToCoord(site_index);
+  neighbor_coord[1] += 1;
+  (*output)[2] = get_site(neighbor_coord);
+
+  neighbor_coord = IndexToCoord(site_index);
+  neighbor_coord[1] -= 1;
+  (*output)[3] = get_site(neighbor_coord);
+
+}
+
+
+
 
 SquareLattice::SquareLattice(Phase default_phase, const vector<int>& sizes, int R, MTRand* rng)
   : Lattice(R, 4, 2, sizes){
   if (m_measurements.size() == 2){
     vector<int> coord(2,0);
-    m_lattice = SiteVect(m_measurements[0]*m_measurements[1],Site(m_R, .00, 0, .00, rng));
-    // Reinitialize the sites with independent sites of random state.
+    m_lattice = SiteVect(m_measurements[0]*m_measurements[1]);
     for (int i = 0 ; i < m_measurements[0] ; i++){
       for (int j = 0 ; j < m_measurements[1] ; j++){
         coord[0] = i ; coord[1] = j ;
         switch (default_phase){
         case GAS:
-          m_lattice[CoordToIndex(coord)] = Site(m_R, 0.01, 0, .00, rng); break;
+          m_lattice[CoordToIndex(coord)] = new Site(m_R, 0.01, 0, .00, rng); break;
         case LIQUID:
-          m_lattice[CoordToIndex(coord)] = Site(m_R, 0.50, 0, .00, rng); break;
+          m_lattice[CoordToIndex(coord)] = new Site(m_R, 0.50, 0, .00, rng); break;
         case SOLID:
-          m_lattice[CoordToIndex(coord)] = Site(m_R, 0.99, 0, .00, rng); break;
+          m_lattice[CoordToIndex(coord)] = new Site(m_R, 0.99, 0, .00, rng); break;
         case FERRO:
-          m_lattice[CoordToIndex(coord)] = Site(m_R, 0.99, 1, .99, rng); break;
+          m_lattice[CoordToIndex(coord)] = new Site(m_R, 0.99, 1, .99, rng); break;
         }
-      }
-    }
-    m_site_neighbors = vector<NeighborVect>(m_measurements[0]*m_measurements[1]);
-    for (int i = 0 ; i < m_measurements[0] ; i++){
-      for (int j = 0 ; j < m_measurements[1] ; j++){
-        coord[0] = i; coord[1] = j;
-        m_site_neighbors[CoordToIndex(coord)] = get_neighbors_init(CoordToIndex(coord));
       }
     }
   }
@@ -146,7 +224,23 @@ SquareLattice::SquareLattice(Phase default_phase, const vector<int>& sizes, int 
   else{
     throw vector_size_error("Squarelattice::SquareLattice:m_measurements", 2, m_measurements.size());
   }
+
+  if (m_measurements.size() == 2){
+    vector<int> coord(2,0);
+    m_site_neighbors = vector<NeighborVect>(m_measurements[0]*m_measurements[1]);
+    for (int i = 0 ; i < m_measurements[0] ; i++){
+      for (int j = 0 ; j < m_measurements[1] ; j++){
+        coord[0] = i; coord[1] = j;
+        get_neighbors_init(CoordToIndex(coord), &m_site_neighbors[CoordToIndex(coord)]);
+      }
+    }
+  }
 }
+
+
+/*--------------------------------------------------
+  Order parameter computation functions
+  --------------------------------------------------*/
 
 
 int SquareLattice::ComputeNOcc(){
@@ -202,10 +296,10 @@ int SquareLattice::ComputeNBond(int symmetry_num){
       index = CoordToIndex(coord);
       current_site = get_site(index);
       if (current_site->occ()){
-        for (unsigned int k = 0 ; k < get_neighbors(index).size() ; k++){
-          if (get_neighbors(index)[k]->occ()){
-            n_bond += ((get_neighbors(index)[k]->rot() % symmetry_num) 
-                       ==         (current_site->rot() % symmetry_num)) * 2 - 1;
+        for (unsigned int k = 0 ; k < get_neighbors(index)->size() ; k++){
+          if (get_neighbors(index)->at(k)->occ()){
+            n_bond += ((get_neighbors(index)->at(k)->rot() % symmetry_num) 
+                       ==             (current_site->rot() % symmetry_num)) * 2 - 1;
           }
         }
       }
@@ -223,21 +317,21 @@ int TestLatticeCode(){
   MTRand rng;
   vector<int> dimensions;
   dimensions.push_back(5);dimensions.push_back(10);
-  SquareLattice l(Lattice::LIQUID, dimensions, 8, &rng);
+  SquareLattice l;
+  l = SquareLattice(Lattice::LIQUID, dimensions, 96, &rng);
                                                
   vector<int> coord(2,0);
   coord[0] = 2 ; coord[1] = 7;
   
-  //for some reason, the get_site(int) wraps around to the next row at 4.
   Site* s = l.get_site(coord);
-  Lattice::NeighborVect n = l.get_neighbors(coord);
+  Lattice::NeighborVect* n = l.get_neighbors(coord);
   
   l.Print();
   cout << "Site "<< coord[0] <<","<<coord[1]
        <<" has occ: " << s->occ() << " rot: "<<s->rot()<<endl;
 
-  for (unsigned int i = 0; i < n.size() ; i++){
-    cout << "Neighbor has occ: " << n[i]->occ() << " rot: "<<n[i]->rot()<<endl;
+  for (unsigned int i = 0; i < n->size() ; i++){
+    cout << "Neighbor has occ: " << n->at(i)->occ() << " rot: "<<n->at(i)->rot()<<endl;
     
   }
 
@@ -246,8 +340,8 @@ int TestLatticeCode(){
   cout << "Random Site"
        <<" has occ: " << s->occ() << " rot: "<<s->rot()<<endl;
 
-  for (unsigned int i = 0; i < n.size() ; i++){
-    cout << "Neighbor has occ: " << n[i]->occ() << " rot: "<<n[i]->rot()<<endl;
+  for (unsigned int i = 0; i < n->size() ; i++){
+    cout << "Neighbor has occ: " << n->at(i)->occ() << " rot: "<<n->at(i)->rot()<<endl;
     
   }
 

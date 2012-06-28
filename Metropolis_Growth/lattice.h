@@ -41,7 +41,7 @@ class container_value_mismatch_error : public runtime_error{
 class Lattice{
  public:
   typedef vector<Site*> NeighborVect; 
-  typedef vector<Site> SiteVect;  //Site vector
+  typedef vector<Site*> SiteVect;  //Site vector
   enum Phase{ GAS, LIQUID, SOLID, FERRO };
   /*----------------------------------------------------
     Variables
@@ -72,6 +72,10 @@ class Lattice{
   Lattice();
   Lattice(int R, int z, int dimensionality, const vector<int>& sizes)
 	: m_R(R), m_z(z), m_dimensionality(dimensionality), m_measurements(sizes) {};
+  ~Lattice();
+ Lattice(const Lattice &cSource);
+ Lattice& operator=(const Lattice& cSource);
+
   /*--------------------------------------------------
     Accessors and Mutators
     --------------------------------------------------*/
@@ -79,20 +83,21 @@ class Lattice{
   inline int            R()                              {return m_R;}
   inline int            z()                              {return m_z;}
   inline int 		number_of_sites()		 {return m_lattice.size();}
-  inline Site* 		random_site(MTRand& rng, NeighborVect* random_neighbors)	{
+  inline Site* 		random_site(MTRand& rng, NeighborVect** random_neighbors)	{
 	int site_index = rng.randInt(number_of_sites()-1);
 	(*random_neighbors) = get_neighbors(site_index);
-	return &m_lattice[site_index];
+	return m_lattice[site_index];
 	}
  protected:
-  inline Site*         	get_site     (int site_index)	 {return &m_lattice.at(site_index);}
-  inline NeighborVect& 	get_neighbors(int site_index)	 {return m_site_neighbors.at(site_index);}
+  inline Site*         	get_site     (int site_index)	 {return m_lattice[site_index];}
+  inline NeighborVect* 	get_neighbors(int site_index)	 {return &(m_site_neighbors[site_index]);}
+
  public:
 //calls virtual CoordToIndex function
   inline Site*         	get_site     (vector<int>& coords){return get_site     (CoordToIndex(coords));} 
-//calls virtual CoordToIndex function
-  inline NeighborVect& 	get_neighbors(vector<int>& coords){return get_neighbors(CoordToIndex(coords));} 
-  virtual NeighborVect get_neighbors_init(int site)=0;
+  inline NeighborVect* 	get_neighbors(vector<int>& coords){return get_neighbors(CoordToIndex(coords));} 
+
+  virtual void get_neighbors_init(int site, NeighborVect* output)=0;
   virtual void Print() = 0;
  protected:
   virtual vector<int> IndexToCoord(int index)=0;
@@ -110,7 +115,7 @@ class Lattice{
   //      i.e. symmetry_num = 2 is ferromagnetic, symmetry_num = 4 is nematic
 };
 
-
+int FindIndexOf(vector<Site*> array, Site* s);
 
 
   /*----------------------------------------------------
@@ -122,12 +127,14 @@ class SquareLattice : public Lattice
  public:
   //Constructor will throw vector_size_error if it does not receive exactly two sizes
   SquareLattice(Phase default_phase = LIQUID, const vector<int>& sizes = vector<int>(), int R = 8, MTRand* rng = 0);
-  NeighborVect get_neighbors_init(int site);
+  void get_neighbors_init(int site, NeighborVect* output);
   void Print();
+
  protected:
-  //CoordToIndex will throw vector_size_error if coord does not have exactly two inputs
   vector<int> IndexToCoord(int index);  
+  //CoordToIndex will throw vector_size_error if coord does not have exactly two inputs
   int CoordToIndex(vector<int>& coord);
+
  public:
   int ComputeNOcc();
   //ComputeNAligned will throw container_value_mismatch_error if m_R on a site does not match m_R on the lattice.

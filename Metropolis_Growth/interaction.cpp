@@ -53,17 +53,20 @@ double Interaction::get_interaction_energy(Site* s, Site* s_neighbor, int& retn_
 
 double Interaction::get_interaction_energy(Site* s, Lattice::NeighborVect neighbors, int& retn_N1_bond, int& retn_N2_bond){
   //TODO: (jhaberstroh@lbl.gov) optimize for redundant accesses on s.
-  double energy;
+  double energy = 0;
 
-  for (unsigned int i = 0; i < neighbors.size(); i++)
+  for (unsigned int i = 0; i < neighbors.size(); i++){
     energy += get_interaction_energy(s, neighbors[i], retn_N1_bond, retn_N2_bond);
+  }
+
   return energy;
 }
 
 
 double Interaction::get_chemical_potential(Site* s, double T){
-  if (m_lattice_being_tracked != 0)
-    return -m_J * m_lattice_being_tracked->z() / 2.0 - T * log(m_lattice_being_tracked->R());
+  if (m_lattice_being_tracked != 0){
+    return (-m_J * m_lattice_being_tracked->z() / 2.0) - T * log( m_lattice_being_tracked->R() );
+  }
   else
     return 0;
 }
@@ -88,24 +91,30 @@ void Interaction::update_order_parameters(OrderParameterType op, vector<int>& mo
   }
 }
 
+
 double Interaction::get_occ_energy_difference(Site* s, Lattice::NeighborVect neighbors, double T, vector<int>* delta_bonds){
   double dE = 0;
   int N1 = 0;
   int N2 = 0;
+  //Energy of unoccupied is always 0, we have easier computations!
   if (s->occ()){
-    //Energy of unoccupied is always 0, so it is easy co compute.
+    // (dE_insert = (dU_insert = 0 - U) - mu)
     dE = -get_interaction_energy(s, neighbors, N1, N2) + get_chemical_potential(s, T);
     (*delta_bonds)[0] = -N1 ; 
     (*delta_bonds)[1] = -N2;
     return dE;
   }
-  //Create a dummy occupied state
-  Site temp_site(s->R(), 1, s->rot(), 1);
-  dE = get_interaction_energy(s, neighbors, N1, N2) - get_chemical_potential(s, T);
-  (*delta_bonds)[0] = N1 ; 
-  (*delta_bonds)[1] = N2;
-  return dE;
+  else{
+    // (dE_insert = (dU_insert = U - 0) - mu)
+    //Create a dummy occupied state
+    Site temp_site(s->R(), 1, s->rot(), 1);
+    dE = get_interaction_energy(&temp_site, neighbors, N1, N2) - get_chemical_potential(s, T);
+    (*delta_bonds)[0] = N1; 
+    (*delta_bonds)[1] = N2;
+    return dE;
+  }
 }
+
 
 double Interaction::get_rot_energy_difference(Site* s, Lattice::NeighborVect neighbors, int plus_minus, vector<int>* delta_bonds){
   double dE = 0;
@@ -131,9 +140,10 @@ int TestInteractionCode(){
   MTRand rng;
   vector<int> dimensions;
   dimensions.push_back(5);dimensions.push_back(10);
-  SquareLattice my_lattice(Lattice::LIQUID, dimensions, 4, &rng);
-
-  Interaction my_interaction(1, .33, .7, 2, 4, &my_lattice);
+  SquareLattice my_lattice;
+  Interaction my_interaction;
+  my_lattice = SquareLattice(Lattice::LIQUID, dimensions, 4, &rng);
+  my_interaction = Interaction(1, .33, .7, 2, 4, &my_lattice);
   
 
   vector<int> coord(2,0);
@@ -141,27 +151,21 @@ int TestInteractionCode(){
   
   //for some reason, the get_site(int) wraps around to the next row at 4.
   Site* s = my_lattice.get_site(coord);
-  Lattice::NeighborVect n = my_lattice.get_neighbors(coord);
+  Lattice::NeighborVect* n = my_lattice.get_neighbors(coord);
 
   //Lattice function:
   my_lattice.Print();
 
-  cout << "Site "<< coord[0] <<","<<coord[1]
-       <<" has occ: " << s->occ() << " rot: "<<s->rot()<<endl;
 
-  for (unsigned int i = 0; i < n.size() ; i++){
-    cout << "Neighbor has occ: " << n[i]->occ() << " rot: "<<n[i]->rot()<<endl;
+  for (unsigned int i = 0; i < n->size() ; i++){
+    cout << "Neighbor has occ: " << n->at(i)->occ() << " rot: "<<n->at(i)->rot()<<endl;
     
   }
 
   //interaction behavior
   int N1_test, N2_test;
-  double my_interaction_energy = my_interaction.get_interaction_energy(s, n, N1_test,N2_test);
+  double my_interaction_energy = my_interaction.get_interaction_energy(s, *n, N1_test,N2_test);
 
-  cout << "Interaction energy at site "<<coord[0]<<","<<coord[1]<<": "
-       << my_interaction_energy << endl;
-  cout << "Number of N1 bonds: "<<N1_test<<endl;
-  cout << "Number of N2 bonds: "<<N2_test<<endl;
 
   return 0;
 }

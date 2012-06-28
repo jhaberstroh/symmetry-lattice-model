@@ -9,9 +9,9 @@
 #include "lattice.h"
 #include "site.h"
 
-static double Jdft = 0;
-static double Qdft = 0;
-static double Q2dft = 0;
+static double Jdft = 1;
+static double Qdft = .233;
+static double Q2dft = .0777;
 static double Rdft = 8;
 static double Tdft = 1;
 static double pdeldft = .5;
@@ -66,6 +66,8 @@ class MonteCarlo{
   void ResetOP(){};
   void Track();
   inline void PrintLattice(){  m_lattice.Print();}
+
+  void TestNeighborPointers();
 };
 
 
