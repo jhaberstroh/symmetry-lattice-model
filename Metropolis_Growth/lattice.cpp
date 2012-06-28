@@ -10,7 +10,8 @@ int FindIndexOf(vector<Site*> array, Site* s){
     if (s == array[i])
       return i;
   }
-  return -1; //sentinel return value
+  
+  return -1 + abs_compare(1,0); //sentinel return value
 }
 
 

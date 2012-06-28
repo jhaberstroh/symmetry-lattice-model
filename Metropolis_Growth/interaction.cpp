@@ -165,7 +165,8 @@ int TestInteractionCode(){
   //interaction behavior
   int N1_test, N2_test;
   double my_interaction_energy = my_interaction.get_interaction_energy(s, *n, N1_test,N2_test);
-
+  
+  cout <<"Interaction energy: " << my_interaction_energy <<endl;
 
   return 0;
 }

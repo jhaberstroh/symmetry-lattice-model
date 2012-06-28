@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -g
+CFLAGS = -Wall -g -Wno-unused-function 
 
 main: site.o lattice.o interaction.o monteCarlo.o main.cpp
 	${CC} ${CFLAGS} main.cpp site.o lattice.o interaction.o monteCarlo.o -o main.exe	
@@ -8,13 +8,13 @@ main: site.o lattice.o interaction.o monteCarlo.o main.cpp
 site.o: site.h site.cpp
 	${CC} ${CFLAGS} -c site.cpp 
 
-lattice.o: lattice.h lattice.cpp
+lattice.o: lattice.h lattice.cpp site.o
 	${CC} ${CFLAGS} -c lattice.cpp
 
-interaction.o: interaction.h interaction.cpp 
+interaction.o: interaction.h interaction.cpp lattice.o
 	${CC} ${CFLAGS} -c interaction.cpp
 
-monteCarlo.o: monteCarlo.h monteCarlo.cpp
+monteCarlo.o: monteCarlo.h monteCarlo.cpp interaction.o lattice.o
 	${CC} ${CFLAGS} -c monteCarlo.cpp
 
 tester.o: tester.cpp
