@@ -1,14 +1,28 @@
-Site.o: Site.h Site.cpp
-	g++ -Wall -g -c -O3 Site.cpp -o Site.o
+CC = g++
+CFLAGS = -Wall -g
 
-Lattice.o: Lattice.h Lattice.cpp Site.o
-	g++ -Wall -g -c -O3 Lattice.cpp -o Lattice.o
+main: site.o lattice.o interaction.o monteCarlo.o main.cpp
+	${CC} ${CFLAGS} main.cpp site.o lattice.o interaction.o monteCarlo.o -o main.exe	
 
-test: Site.o testSite.cpp
-	g++ -Wall -g testSite.cpp Site.o -o test.exe
 
-latTest: Site.o Lattice.o latTest.cpp
-	g++ -Wall -g -O3 latTest.cpp Site.o Lattice.o -o latTest.exe 
+site.o: site.h site.cpp
+	${CC} ${CFLAGS} -c site.cpp 
+
+lattice.o: lattice.h lattice.cpp
+	${CC} ${CFLAGS} -c lattice.cpp
+
+interaction.o: interaction.h interaction.cpp 
+	${CC} ${CFLAGS} -c interaction.cpp
+
+monteCarlo.o: monteCarlo.h monteCarlo.cpp
+	${CC} ${CFLAGS} -c monteCarlo.cpp
+
+tester.o: tester.cpp
+	${CC} ${CFLAGS} -c tester.cpp
+
+tester: tester.o site.o lattice.o interaction.o monteCarlo.o
+	${CC} ${CFLAGS} tester.o site.o lattice.o interaction.o monteCarlo.o -o tester.exe
+
 
 anneal: Site.o Lattice.o anneal.cpp
 	g++ -Wall -g -O3 anneal.cpp Site.o Lattice.o -o anneal.exe
