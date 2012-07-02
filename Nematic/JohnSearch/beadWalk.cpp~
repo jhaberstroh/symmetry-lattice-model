@@ -1,6 +1,17 @@
 #include "Bead.h"
+#include <stdexcept>
+
+using namespace std
+
+//class wrong_type : public invalid_argument{
+//  public:
+//   wrong_type(): invalid_argument("Wrong Type for input argument");
+//};
+
 
 int main(int argc, char** argv){
+  namespace po = boost::program_options
+	
   double T;
   int R;
   double dt;
@@ -20,6 +31,7 @@ int main(int argc, char** argv){
   /* ----------------------------------------
   /  Robust variable sized input (start)
   /---------------------------------------- */
+  try{
 
   if (argc < 2 || 
       sscanf(argv[1],"%d",&steps) != 1){
@@ -107,7 +119,7 @@ int main(int argc, char** argv){
     b.heun_step(T,R,J,Q,Q2);
   }
 
-
+  b.cout_phase(b.decide_phase());
   return 0;
 
 }

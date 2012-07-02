@@ -1,6 +1,16 @@
 #include "Bead.h"
+#include <stdexcept>
+
+using namespace std;
+
+//class wrong_type : public invalid_argument{
+//  public:
+//   wrong_type(): invalid_argument("Wrong Type for input argument");
+//};
 
 int main(int argc, char** argv){
+
+	
   double T;
   int R;
   double dt;
@@ -20,6 +30,7 @@ int main(int argc, char** argv){
   /* ----------------------------------------
   /  Robust variable sized input (start)
   /---------------------------------------- */
+  try{
 
   if (argc < 2 || 
       sscanf(argv[1],"%d",&steps) != 1){
