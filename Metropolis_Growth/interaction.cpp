@@ -1,6 +1,30 @@
 //interaction.cpp
 #include "interaction.h"
 
+/*--------------------------------------------------
+  Order Parameter functions
+  --------------------------------------------------*/
+
+void Interaction::update_order_parameters(OrderParameterType op, vector<int>& mod){
+  //      vector<int> mod;
+  //      mod.push_back(dOcc); mod.push_back(rot);
+  //       mod.push_back(plus_minus); mod.push_back(dN1bond);
+  //      order->updateOP(orderparam::N1, mod);
+  switch (op){
+  case kOrderTypeOcc:
+    m_rho += mod[0];
+    break;
+  case kOrderTypeN1:
+    //does not currently handle site-varaible order parameters!
+    m_order_n1 += mod[3];
+    break;
+  case kOrderTypeN2:
+    //does not currently handle site-varaible order parameters!
+    m_order_n2 += mod[3];
+    break;
+  }
+}
+
 void Interaction::InitOrderParameters(Lattice* l){
   if (l != 0){
     m_lattice_being_tracked = l;
@@ -20,8 +44,14 @@ void Interaction::InitOrderParameters(Lattice* l){
   }
 }
 
+/*--------------------------------------------------
+  Energetic functions
+  --------------------------------------------------*/
 
-double Interaction::get_interaction_energy(Site* s, Site* s_neighbor, int& retn_N1_bond, int& retn_N2_bond){
+//--------------------------------------------------
+//Interaction of single sites
+double Interaction::get_interaction_energy(Site* s, Site* s_neighbor, 
+                                           int& retn_N1_bond, int& retn_N2_bond){
   //TODO: (jhaberstroh@lbl.gov) optimize the m_N1_division calculation
   m_N1_division = s->R() / m_N1;
   m_N2_division = s->R() / m_N2;
@@ -30,16 +60,14 @@ double Interaction::get_interaction_energy(Site* s, Site* s_neighbor, int& retn_
   if (s->occ()==1 && s_neighbor->occ()==1){
     energy += m_J;
     if ((s->rot() % m_N1_division) == (s_neighbor->rot() %m_N1_division)){
-
-      add_amt = ((double(((s->rot() /m_N1_division) %2) == ((s_neighbor->rot() /m_N1_division) %2)) 
-                  * 2) - 1); 
+      add_amt = (( ( (   (s->rot()          /m_N1_division) %2) 
+                     == ((s_neighbor->rot() /m_N1_division) %2) ) *2) -1); 
       retn_N1_bond += add_amt;
       energy +=  m_QN1 * add_amt;
     }
-
     if ((s->rot() % m_N2_division) == (s_neighbor->rot() %m_N2_division)){
-      add_amt = ((double(((s->rot() /m_N2_division) %2) == ((s_neighbor->rot() /m_N2_division) %2)) 
-                  * 2) - 1); 
+      add_amt = (( ( (   (s->rot()          /m_N2_division) %2) 
+                     == ((s_neighbor->rot() /m_N2_division) %2) ) *2) -1); 
       retn_N2_bond += add_amt;
       energy +=   m_QN2 * add_amt;
     }
@@ -51,10 +79,15 @@ double Interaction::get_interaction_energy(Site* s, Site* s_neighbor, int& retn_
 }
 
 
-double Interaction::get_interaction_energy(Site* s, Lattice::NeighborVect neighbors, int& retn_N1_bond, int& retn_N2_bond){
+//--------------------------------------------------
+//Interaction of a single site with a vector of neighbors
+//  Used in get_occ_energy_difference && get_rot_energy_difference
+double Interaction::get_interaction_energy(Site* s, Lattice::NeighborVect neighbors, 
+                                           int& retn_N1_bond, int& retn_N2_bond){
   //TODO: (jhaberstroh@lbl.gov) optimize for redundant accesses on s.
   double energy = 0;
-
+  retn_N1_bond = 0;
+  retn_N2_bond = 0;
   for (unsigned int i = 0; i < neighbors.size(); i++){
     energy += get_interaction_energy(s, neighbors[i], retn_N1_bond, retn_N2_bond);
   }
@@ -63,36 +96,10 @@ double Interaction::get_interaction_energy(Site* s, Lattice::NeighborVect neighb
 }
 
 
-double Interaction::get_chemical_potential(Site* s, double T){
-  if (m_lattice_being_tracked != 0){
-    return (-m_J * m_lattice_being_tracked->z() / 2.0) - T * log( m_lattice_being_tracked->R() );
-  }
-  else
-    return 0;
-}
-
-
-void Interaction::update_order_parameters(OrderParameterType op, vector<int>& mod){
-  //      vector<int> opts;
-  //      opts.push_back(dOcc); opts.push_back(rot); opts.push_back(plus_minus); opts.push_back(dN1bond);
-  //      order->updateOP(orderparam::N1, opts);
-  switch (op){
-  case kOrderTypeOcc:
-    m_rho += mod[0];
-    break;
-  case kOrderTypeN1:
-    //does not currently handle site-varaible order parameters!
-    m_order_n1 += mod[3];
-    break;
-  case kOrderTypeN2:
-    //does not currently handle site-varaible order parameters!
-    m_order_n2 += mod[3];
-    break;
-  }
-}
-
-
-double Interaction::get_occ_energy_difference(Site* s, Lattice::NeighborVect neighbors, double T, vector<int>* delta_bonds){
+//--------------------------------------------------
+//Energy difference for flipping the occupation of a center site
+double Interaction::get_occ_energy_difference(Site* s, Lattice::NeighborVect neighbors, 
+                                              double T, vector<int>* delta_bonds){
   double dE = 0;
   int N1 = 0;
   int N2 = 0;
@@ -100,7 +107,7 @@ double Interaction::get_occ_energy_difference(Site* s, Lattice::NeighborVect nei
   if (s->occ()){
     // (dE_insert = (dU_insert = 0 - U) - mu)
     dE = -get_interaction_energy(s, neighbors, N1, N2) + get_chemical_potential(s, T);
-    (*delta_bonds)[0] = -N1 ; 
+    (*delta_bonds)[0] = -N1; 
     (*delta_bonds)[1] = -N2;
     return dE;
   }
@@ -116,22 +123,38 @@ double Interaction::get_occ_energy_difference(Site* s, Lattice::NeighborVect nei
 }
 
 
-double Interaction::get_rot_energy_difference(Site* s, Lattice::NeighborVect neighbors, int plus_minus, vector<int>* delta_bonds){
+//--------------------------------------------------
+//Energy difference for rotating a center site
+double Interaction::get_rot_energy_difference(Site* s, Lattice::NeighborVect neighbors, 
+                                              int plus_minus, vector<int>* delta_bonds){
   double dE = 0;
   int N1 = 0;
   int N2 = 0;
   if (s->occ()){
     //call Site constructor with no random number generator for speed
     Site temp_site(s->R(), 1, s->rot()+plus_minus, 1, 0);
-    dE += get_interaction_energy(&temp_site, neighbors,N1,N2);
+    dE += get_interaction_energy(&temp_site, neighbors, N1, N2);
     (*delta_bonds)[0] =  N1; 
     (*delta_bonds)[1] =  N2;
-    dE -= get_interaction_energy(  s,        neighbors,N1,N2);
+
+    dE -= get_interaction_energy(  s,        neighbors, N1, N2);
     (*delta_bonds)[0] -= N1; 
     (*delta_bonds)[1] -= N2;
     return dE;
   }
   return 0;
+}
+
+
+//--------------------------------------------------
+//Chemical potential function for a single site
+double Interaction::get_chemical_potential(Site* s, double T){
+  if (m_lattice_being_tracked != 0){
+    return (-m_J * m_lattice_being_tracked->z() / 2.0) 
+      - T * log( m_lattice_being_tracked->R() );
+  }
+  else
+    return 0;
 }
 
 
@@ -164,7 +187,8 @@ int TestInteractionCode(){
 
   //interaction behavior
   int N1_test, N2_test;
-  double my_interaction_energy = my_interaction.get_interaction_energy(s, *n, N1_test,N2_test);
+  double my_interaction_energy = 
+    my_interaction.get_interaction_energy(s, *n, N1_test,N2_test);
   
   cout <<"Interaction energy: " << my_interaction_energy <<endl;
 

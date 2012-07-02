@@ -37,6 +37,17 @@ class container_value_mismatch_error : public runtime_error{
 	m_container_value(container_value){}
 };
 
+class bad_symmetry_number : public invalid_argument{
+ public:
+  int m_R_owned;
+  int m_symmetry_number;
+  explicit bad_symmetry_number
+    (const string& what_arg, int R_owned, int symmetry_number)
+    : invalid_argument(what_arg),
+    m_R_owned(R_owned),
+    m_symmetry_number(symmetry_number){}
+};
+
 
 class Lattice{
  public:
@@ -126,7 +137,7 @@ class SquareLattice : public Lattice
 {
  public:
   //Constructor will throw vector_size_error if it does not receive exactly two sizes
-  SquareLattice(Phase default_phase = LIQUID, const vector<int>& sizes = vector<int>(), int R = 8, MTRand* rng = 0);
+  SquareLattice(Phase default_phase = LIQUID, const vector<int>& measurements = vector<int>(), int R = 8, MTRand* rng = 0);
   void get_neighbors_init(int site, NeighborVect* output);
   void Print();
 

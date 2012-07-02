@@ -287,20 +287,27 @@ int SquareLattice::ComputeNAligned(int symmetry_num, vector<int>* directions){
 
 
 int SquareLattice::ComputeNBond(int symmetry_num){
-  int n_bond;
+  int n_bond = 0;
   vector<int> coord(2);
-  int index;
   Site* current_site;
+  NeighborVect* neighbors;
+  int division_size = m_R / symmetry_num;
+  if (m_R % symmetry_num != 0){
+    throw bad_symmetry_number("SquareLattice::ComputeNBond", m_R, symmetry_num);
+  }
   for (int i = 0 ; i < m_measurements[0] ; i++){
     for (int j = 0 ; j < m_measurements[1] ; j++){
       coord[0] = i; coord[1] = j;
-      index = CoordToIndex(coord);
-      current_site = get_site(index);
+      current_site = get_site(coord);
       if (current_site->occ()){
-        for (unsigned int k = 0 ; k < get_neighbors(index)->size() ; k++){
-          if (get_neighbors(index)->at(k)->occ()){
-            n_bond += ((get_neighbors(index)->at(k)->rot() % symmetry_num) 
-                       ==             (current_site->rot() % symmetry_num)) * 2 - 1;
+        neighbors = get_neighbors(coord);
+        for (unsigned int k = 0 ; k < neighbors->size() ; k++){
+          if (neighbors->at(k)->occ()){
+            if ((neighbors->at(k)->rot() % division_size)
+                ==  (current_site->rot() % division_size)){
+              n_bond += (( ((neighbors->at(k)->rot()/division_size)%2) 
+                           == ((current_site->rot()/division_size)%2)) *2) -1;
+            }
           }
         }
       }

@@ -8,13 +8,13 @@ main: site.o lattice.o interaction.o monteCarlo.o main.cpp
 site.o: site.h site.cpp
 	${CC} ${CFLAGS} -c site.cpp 
 
-lattice.o: lattice.h lattice.cpp site.o
+lattice.o: lattice.h lattice.cpp site.h
 	${CC} ${CFLAGS} -c lattice.cpp
 
-interaction.o: interaction.h interaction.cpp lattice.o
+interaction.o: interaction.h interaction.cpp lattice.h site.h
 	${CC} ${CFLAGS} -c interaction.cpp
 
-monteCarlo.o: monteCarlo.h monteCarlo.cpp interaction.o lattice.o
+monteCarlo.o: monteCarlo.h monteCarlo.cpp interaction.h lattice.h
 	${CC} ${CFLAGS} -c monteCarlo.cpp
 
 tester.o: tester.cpp
