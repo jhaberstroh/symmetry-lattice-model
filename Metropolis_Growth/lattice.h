@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <algorithm>
 #include "MersenneTwister.h"
 #include "site.h"
 using namespace std;

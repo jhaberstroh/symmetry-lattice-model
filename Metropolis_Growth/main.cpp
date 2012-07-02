@@ -11,7 +11,7 @@ void DoNSweepsAtJ(MonteCarlo& m, int N, int J){
   m.Track();
 }
 
-int main(int argc, char* argv){
+int main(int argc, char** argv){
   MonteCarlo m;
 
   m.set_qN1(3);
