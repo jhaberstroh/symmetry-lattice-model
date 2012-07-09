@@ -65,6 +65,15 @@ class MonteCarlo{
   inline void set_qN1(double Q1) {m_interaction.set_qN1(Q1); ResetEnergy();}
   inline void set_qN2(double Q2) {m_interaction.set_qN2(Q2); ResetEnergy();}
   inline void set_T  (double T)  {m_T = T;}
+  inline int R(){return m_lattice.R();}
+  inline int N1_symmetry_num(){return m_interaction.N1_symmetry_number()};
+  inline int N2_symmetry_num(){return m_interaction.N2_symmetry_number()};
+  inline double J(){return m_interaction.J();}
+  inline double QN1(){return m_interaction.QN1();}
+  inline double QN2(){return m_interaction.QN2();}
+  inline double T(){return m_lattice.R();}
+  inline double pdel(){return m_delete_probability;}
+
 
   //Metropolis MC move with tracking
   inline void DoTrackedMetropolisMove(){DoMetropolisMove();Track();}

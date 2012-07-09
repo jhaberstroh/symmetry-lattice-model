@@ -70,11 +70,11 @@ class Interaction{
   int N2_symmetry_number(){return m_N2;}
   int N2_division() {return m_N2_division;}
   void set_j  (double J) {m_J  = J;}
-  void set_qN1(double Q1){m_QN1= Q1;}
-  void set_qN2(double Q2){m_QN2= Q2;}
+  void set_qN1(int Q1){m_QN1= Q1;}
+  void set_qN2(int Q2){m_QN2= Q2;}
   double J(){return m_J;}
-  double QN1(){return m_QN1;}
-  double QN2(){return m_QN2;}
+  int QN1(){return m_QN1;}
+  int QN2(){return m_QN2;}
   double get_interaction_energy(Site* s, Site* s_neighbor, 
                                 int& retn_N1_bond, int& retn_N2_bond);
   double get_interaction_energy(Site* s, Lattice::NeighborVect neighbors, 

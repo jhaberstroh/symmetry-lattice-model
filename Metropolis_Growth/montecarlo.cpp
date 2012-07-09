@@ -1,6 +1,6 @@
 //monteCarlo.cpp
 
-#include  "monteCarlo.h"
+#include  "montecarlo.h"
 
 MonteCarlo::MonteCarlo(double J_in, double Q_in, double Q2_in,
                        int R_in, double T_in, double pdel_in)

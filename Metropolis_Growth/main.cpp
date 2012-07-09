@@ -1,5 +1,5 @@
 //main.cpp
-#include "monteCarlo.h"
+#include "montecarlo.h"
 
 void DoNSweepsAtJ(MonteCarlo& m, int N, int J){
   m.set_j(J);
