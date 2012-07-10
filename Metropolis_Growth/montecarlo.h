@@ -1,4 +1,16 @@
 //monteCarlo.h
+/*--------------------------------------------------
+  MonteCarlo is a facade pattern, intended to simplify
+  the interaction between the aspects of the lattice
+  and the user. 
+
+  It also serves as an adapter between the Interaction,
+  the Lattice, and the FileHandler.
+
+  Finally, it implements a visitor pattern code to perform
+  the Monte Carlo moves.
+  --------------------------------------------------*/
+
 
 #ifndef __MONTECARLO_H_INCLUDED__
 #define __MONTECARLO_H_INCLUDED__
@@ -8,7 +20,7 @@
 #include <fstream>
 #include "interaction.h"
 #include "lattice.h"
-#include "site.h"
+#include "filehandler.h"
 
 static double Jdft = 1;
 static double Qdft = .233;
@@ -17,6 +29,8 @@ static double Rdft = 8;
 static double Tdft = 1;
 static double pdeldft = .5;
 
+class MonteCarloFile;
+
 
 class MonteCarlo{
  public:
@@ -24,7 +38,7 @@ class MonteCarlo{
 
 
  /*----------------------------------------------------
-    VARIABLES
+   Member Variables
     ----------------------------------------------------*/
  private:
   Interaction m_interaction;
@@ -37,14 +51,7 @@ class MonteCarlo{
   double m_delete_probability;
   double m_T;
   MTRand m_rng;
-  //For file handling, the file name and file pointer.
-  //For no real good reason, an ostringstream is used,
-  // perhaps because it is nicer to perform actions on,
-  // or perhaps because some other file used one.
-  ostringstream m_file_name;
-  ostringstream m_file_buffer;
-  ios_base::openmode m_openmode;
-  ofstream m_output_file;
+  MonteCarloFile m_file_handler;
   
 
  /*----------------------------------------------------
@@ -53,30 +60,11 @@ class MonteCarlo{
  public:
   MonteCarlo(double J_in = Jdft, double Q_in = Qdft, double Q2_in = Q2dft, 
              int R_in = Rdft, double T_in = Tdft, double pdel_in = pdeldft);
+  void PrepareFileHandler();
   //Standard metropolis MC move
   void DoMetropolisMove();
+  //One move for each site
   void DoMetropolisSweep();
-
-
-  /*--------------------------------------------------
-    Accessors and Mutators
-    --------------------------------------------------*/
-  inline void set_j  (double J)  {m_interaction.set_j(J);    ResetEnergy();}
-  inline void set_qN1(double Q1) {m_interaction.set_qN1(Q1); ResetEnergy();}
-  inline void set_qN2(double Q2) {m_interaction.set_qN2(Q2); ResetEnergy();}
-  inline void set_T  (double T)  {m_T = T;}
-  inline int R(){return m_lattice.R();}
-  inline int N1_symmetry_num(){return m_interaction.N1_symmetry_number()};
-  inline int N2_symmetry_num(){return m_interaction.N2_symmetry_number()};
-  inline double J(){return m_interaction.J();}
-  inline double QN1(){return m_interaction.QN1();}
-  inline double QN2(){return m_interaction.QN2();}
-  inline double T(){return m_lattice.R();}
-  inline double pdel(){return m_delete_probability;}
-
-
-  //Metropolis MC move with tracking
-  inline void DoTrackedMetropolisMove(){DoMetropolisMove();Track();}
   void ResetEnergy(){/*TODO: Implement!*/};
   void ResetOP(){ m_interaction.InitOrderParameters(&m_lattice);}
   inline void reset_default_phase(Lattice::Phase new_phase){
@@ -84,23 +72,32 @@ class MonteCarlo{
     ResetOP();
     ResetEnergy();
   };
-  void SetupTrack(vector<FNameOpt> fname_include, ios_base::openmode open = ios_base::app);
-  void SetupTrack();
-  void FileHeader();
-  void Track();
 
   inline void PrintLattice(){  m_lattice.Print();}
-  inline void PrintOrderParameters(){
-    cout << "Rho:   "<<m_interaction.rho()   <<"\t"<<endl;
-    cout << "Tau:   "<<m_interaction.get_N1()<<"\t"
-         <<m_interaction.N1_symmetry_number()<<"\t"
-         <<m_interaction.N1_division()<<endl;
-    cout << "Omega: "<<m_interaction.get_N2()<<"\t"
-         <<m_interaction.N2_symmetry_number()<<"\t"
-         <<m_interaction.N2_division()<<endl;
-  }
+  void PrintOrderParameters();
 
-  void TestNeighborPointers();
+  /*--------------------------------------------------
+    Accessors and Mutators
+    --------------------------------------------------*/
+  inline MonteCarloFile& file_handler(){return m_file_handler;}
+
+  inline void set_j  (double J)  {m_interaction.set_j(J);    ResetEnergy();}
+  inline void set_qN1(double Q1) {m_interaction.set_qN1(Q1); ResetEnergy();}
+  inline void set_qN2(double Q2) {m_interaction.set_qN2(Q2); ResetEnergy();}
+  inline void set_T  (double T)  {m_T = T;}
+  inline int R(){return m_lattice.R();}
+  inline int N1_symmetry_num(){return m_interaction.N1_symmetry_number();};
+  inline int N2_symmetry_num(){return m_interaction.N2_symmetry_number();};
+  inline double J(){return m_interaction.J();}
+  inline double QN1(){return m_interaction.QN1();}
+  inline double QN2(){return m_interaction.QN2();}
+  inline double T(){return m_lattice.R();}
+  inline double pdel(){return m_delete_probability;}
+
+  inline double rho(){return m_interaction.rho();}
+  inline double N1_OP(){return m_interaction.get_N1();}
+  inline double N2_OP(){return m_interaction.get_N2();}
+
 };
 
 

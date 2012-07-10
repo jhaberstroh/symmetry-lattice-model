@@ -1,57 +1,46 @@
 //filehandler.cpp
-#include "montecarlo.h"
-#include "filehandler.h"
 //TODO: (jhaberstroh@lbl.gov) include checks for existence of files
 //      to improve robustness a lot.
+//TODO: (jhaberstroh@lbl.gov) include a log file which tracks recently
+//      written files to improve usability and access.
 
 //File-opening code with ostringstream and ofstream:
 //  const char* c_write_name = m_write_name.str().c_str();
 //  m_write_file.open(c_write_name, m_write_openmode);
 
 
-//Assumes that files exist and all of that goodness
+
+
+
+
+
+
+
+
+
+
+
+#include "montecarlo.h"
+#include "filehandler.h"
+
+//Moves the contents of old_name to new_name.
+//Assumes that files exist and all of that goodness.
 void FileHandler::rename_file(string& old_name, string& new_name){
-  //setup for writing
   ofstream new_file;
-  //setup for reading
   ifstream old_file;
-  
   int buffer_size = 1024;
   char buffer[buffer_size];
-
-
   old_file.open(old_name.c_str(), ios::in);
   new_file.open(new_name.c_str(), ios::out);
+  //Checks for EOF and pulls data.
+  //Note that get() does not destroy delimiters
   while (!old_file.get(buffer,buffer_size)){
     new_file << buffer;
   }
   old_file.close();
   new_file.close();
   remove(old_name.c_str());
-  
   delete buffer;
-}
-
-
-FileHandler::FileHandler(string& init_write_name)
-  : m_write_name(init_write_name),m_write_openmode(ios_base::ate){
-  if (compare(init_write_name,"") == 0)
-    m_has_write_file = false;
-  else 
-    m_has_write_file = true;
-}
-
-//For write_openmode, some choices of interest follow:
-//  ios_base::app -> all writes will go to the end of the file
-//  ios_base::ate -> opens initially at end of the file
-//  ios_base::trunc -> deletes everything in the file and opens at the beginning
-void FileHandler::init_write_file(string& init_write_name, ios_base::openmode write_openmode = ios_base::ate){
-  if (m_has_write_file)
-    cout << "File already selected; moving to a new file instead of renaming the current file" << endl;
-
-  set_write_name(init_write_name);
-  set_write_openmode(write_openmode);
-  m_has_write_file = true;
 }
 
 
@@ -66,11 +55,29 @@ void FileHandler::rename_write_file(string& new_write_name){
 }
 
 
+void FileHandler::init_write_file(string& init_write_name, ios_base::openmode write_openmode){
+  if (m_has_write_file)
+    cout << "There is a file already prepared. Re-initializing to a new file instead of renaming the current file." << endl;
+  set_write_name(init_write_name);
+  set_write_openmode(write_openmode);
+  m_has_write_file = true;
+}
 
-MonteCarloFile::MonteCarloFile(vector<FNameOpt>& fname_include, MonteCarlo& mc_save, ios::openmode write_openmode){
+
+FileHandler::FileHandler(string& init_write_name, ios::openmode write_openmode)
+  : m_write_name(init_write_name),m_write_openmode(write_openmode), 
+    m_has_write_file(false), m_write_file_open(false){
+  if (compare(init_write_name,"") != 0)
+    m_has_write_file = true;
+}
+
+
+/*--------------------------------------------------
+  MonteCarloFile Members
+  --------------------------------------------------*/
+string MonteCarloFile::MakeFileName(MonteCarlo* mc_save, vector<FNameOpt>& fname_include){
   ostringstream strbuf("");
   strbuf << "ordPar";
-  
   for (unsigned int i = 0 ; i < fname_include.size() ; i++){
     switch (fname_include[i]){
     case kR:
@@ -89,59 +96,122 @@ MonteCarloFile::MonteCarloFile(vector<FNameOpt>& fname_include, MonteCarlo& mc_s
       strbuf << "_T-"<<m_T;
       break;      
     case kPDel:
-      strbuf << "_PD-"<<m_delete_probability;
+      strbuf << "_PDEL-"<<m_delete_probability;
       break;
     default:
       strbuf << "_na_";
       break;
     }
+  }
+  if (FileExists(strbuf.str() + ".csv")){
+    int i = 0; 
+    ostringstream tempstream = strbuf;
+    while (FileExists(tempstream.str()) && i < 1000){
+      i++;
+      tempstream = strbuf;
+      tempstream << "_" << i << ".csv";
+    }
+    if (i < 100)
+      strbuf << "_" << i << ".csv";
+    else
+      strbuf << ".csv"; 
+      cout << "No available files to write into! Writing into the non-indexed file."
+  }
+  else{
+    strbuf << ".csv"; 
+  }
+  return strbuf.str();
+}
+
+
+void MonteCarloFile::InsertHeader(){
+  if (m_montecarlo != 0){
+    m_write_buffer.str("");
+    m_write_buffer << "# R = "   <<m_montecarlo->R()<<"\n";
+    m_write_buffer << "# J = "   <<m_montecarlo->J()<<"\n";
+    m_write_buffer << "# Q"<<m_montecarlo->N1_symmetry_num()<<" = "<<m_montecarlo->QN1()<<"\n";
+    m_write_buffer << "# Q"<<m_montecarlo->N2_symmetry_num()<<" = "<<m_montecarlo->QN2()<<"\n";
+    m_write_buffer << "# T = "   <<m_montecarlo->T()<<"\n";
+    m_write_buffer << "# pdel = "<<m_montecarlo->pdel()<<"\n";
+    m_write_buffer << "# rho\trho_sq\tN1_tau\tN1_tau_sq\tN2_tau\tN2_tau_sq\n";
+    if (m_write_file.is_open())
+      m_write_file << m_write_buffer.str();
+    else
+      cout << "Minor error: File must be open to write to the header\n\n"
+           << "Action skipped." <<endl;
+    m_file_buffer.str("");
+  }
+  else{
+    cout << "Minor error: MonteCarlo simulation must be loaded to write header.\n\n"
+         << "Action skipped." << endl;
 
   }
 }
 
 
-void MonteCarlo::SetupTrack(vector<FNameOpt> fname_include, ios_base::openmode open){
-  m_file_name.str("");
-  m_file_name << "ordPar_R"<<m_lattice.R();
-  for (unsigned int i = 0 ; i < fname_include.size() ; i++){
-    switch (fname_include[i]){
-    case kJ:
-      m_file_name << "_J-"<<mc_save.J();
-      break;
-    case kQN1:
-      m_file_name << "_Q"<<m_interaction.N1_symmetry_number()<<"-"<<m_interaction.QN1();
-      break;
-    case kQN2:
-      m_file_name << "_Q"<<m_interaction.N2_symmetry_number()<<"-"<<m_interaction.QN2();
-      break;      
-    case kT:
-      m_file_name << "_T-"<<m_T;
-      break;      
-    case kPDel:
-      m_file_name << "_PD-"<<m_delete_probability;
-      break;
-    default:
-      m_file_name << "_na_";
-      break;
+void MonteCarloFile::init_montecarlo(MonteCarlo * mc_save, vector<FNameOpt>& fname_include, ios::openmode write_openmode){
+  if (mc_save != 0 && m_montecarlo == 0){
+    m_montecarlo = mc_save;
+    string filename;
+    if (fname_include.size() == 0){
+      vector<FNameOpt> default_include;
+      default_include.push_back(kR);
+      default_include.push_back(kJ);
+      default_include.push_back(kQ1);
+      default_include.push_back(kQ2);
+      filename = MakeFileName(m_montecarlo, default_include);
     }
+    else{
+      filename = MakeFileName(m_montecarlo, default_include);
+    }
+    init_write_file(filename, write_openmode);
+    m_write_file.open(c_file_name, open);
+    m_write_file_open = true;
+    InsertHeader();
+    m_write_file.close();
+    m_write_file_open = false;
   }
-  //Comma-separated value list
-  m_file_name << ".csv"; 
+  else{
+    cout << "Either a MonteCarlo object is already loaded or else none was input.\n\n"
+         << "Skipping MonteCarloFile::init_montecarlo()." <<endl;
+  }
+}
+ 
 
-  while (m_output_file.is_open()){
-    m_output_file.flush();
+MonteCarloFile::MonteCarloFile(MonteCarlo * mc_save, vector<FNameOpt>& fname_include, ios::openmode write_openmode)
+  :FileHandler(), m_montecarlo(0){
+  init_montecarlo(mc_save, fname_include, write_openmode);
+  cout << "Finished ctor"<<endl;
+}
+
+
+MonteCarloFile::Track(){
+  if (m_montecarlo != 0){
+    cout <<"Tracking!" <<endl;
+    m_write_buffer.str("");
+    
+    m_write_buffer << m_montecarlo->rho() << "\t"
+                   << m_montecarlo->rho() * m_montecarlo->rho()<< "\t"
+                   << m_montecarlo->N1_OP() / 2<< "\t"
+                   <<(m_montecarlo->N1_OP() / 2)*(m_montecarlo->N1_OP() / 2)<< "\t"
+                   << m_montecarlo->N2_OP() / 2<< "\t"
+                   <<(m_montecarlo->N2_OP() / 2)*(m_montecarlo->N2_OP() / 2)<<endl;
+    
+    m_output_file.open(m_write_name.str().c_str(), m_write_openmode);
+    m_output_file << m_write_buffer.str();
     m_output_file.close();
   }
-  if (!m_output_file.is_open()){
-    //open the file with the selected ios_base::openmode
-    //Some choices of interest follow:
-    //  ios_base::app -> all writes will go to the end of the file
-    //  ios_base::ate -> opens initially at end of the file
-    //  ios_base::trunc -> deletes everything in the file and opens at the beginning
-    const char* c_file_name = m_file_name.str().c_str();
-    m_output_file.open(c_file_name, open);
-    FileHeader();
-    m_output_file.close();
-    m_openmode = open;
+  else {
+    cout << "No file to track!\n\n" 
+         << "Skipping MonteCarloFile::Track()" << endl;
   }
+}
+
+
+void MonteCarloFile::MakeOPImage(){
+  //TODO: (jhaberstroh@lbl.gov) implement
+}
+
+void MonteCarloFile::MakeLatticeImage(){
+  //TODO: (jhaberstroh@lbl.gov) implement
 }

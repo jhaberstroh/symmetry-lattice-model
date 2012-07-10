@@ -44,7 +44,7 @@ class Site{
     if (plus_minus == 1 || plus_minus == -1) m_rot = (m_rot + plus_minus + m_R) %m_R;
     else cout<<"in Site::move_rot, bad input for move_rot!\n";}
   /*--------------------------------------------------
-    Stochastic Actions (public)
+    Member Functions
     --------------------------------------------------*/
  public:
   inline int RandRot(MTRand& rng){
