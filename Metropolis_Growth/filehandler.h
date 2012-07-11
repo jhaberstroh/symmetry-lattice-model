@@ -54,7 +54,7 @@ class FileHandler{
     return m_write_name.str().c_str();
   }
   inline bool has_write_file(){
-    return m_has_write_file();
+    return m_has_write_file;
   }
   inline ios::openmode write_openmode() { 
     return m_write_openmode;
@@ -81,7 +81,7 @@ class FileHandler{
     Member Functions
     --------------------------------------------------*/
  protected:
-  void WriteBufferToFile();
+  bool WriteBufferToFile();
   virtual void InsertHeader() = 0;
 };
 
@@ -106,7 +106,7 @@ class MonteCarloFile : public FileHandler{
     Constructor
     --------------------------------------------------*/
  private:
-  MonteCarloFile(const MonteCarlo& mc_save);
+  MonteCarloFile(MonteCarlo& mc_save);
   void PrepareMCFile(const vector<FNameOpt>& fname_include = vector<FNameOpt>(), 
 		     ios::openmode write_openmode = ios::out);
   /*--------------------------------------------------

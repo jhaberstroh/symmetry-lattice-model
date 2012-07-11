@@ -12,7 +12,7 @@ MonteCarlo::MonteCarlo(double J_in, double Q_in, double Q2_in,
   dimensions.push_back(5);dimensions.push_back(10);
   m_lattice = SquareLattice(Lattice::SOLID, dimensions, R_in, &m_rng);
   m_interaction = Interaction(J_in, Q_in, Q2_in, 2, 4, &m_lattice);
-  m_file_handler = new MonteCarloFile(this);
+  m_file_handler = new MonteCarloFile(*this);
 }
 
 

@@ -96,6 +96,8 @@ bool FileHandler::WriteBufferToFile(){
     else{
       cout << "Minor error: Write file is already open.\n"
            << "=> Skipping FileHandler::WriteStringToFile()"<<endl;
+      return false;
+    }
   }
   else{
     cout << "Minor error: There is no initialized file to write to.\n"
@@ -108,28 +110,28 @@ bool FileHandler::WriteBufferToFile(){
 /*--------------------------------------------------
   MonteCarloFile Members
   --------------------------------------------------*/
-string MonteCarloFile::MakeFileName(MonteCarlo* mc_save, const vector<FNameOpt>& fname_include){
+string MonteCarloFile::MakeFileName(const vector<FNameOpt>& fname_include){
   ostringstream strbuf("");
   strbuf << "ordPar";
   for (unsigned int i = 0 ; i < fname_include.size() ; i++){
     switch (fname_include[i]){
     case kR:
-      strbuf << "_R"<< mc_save->R();
+      strbuf << "_R"<< m_montecarlo.R();
       break;
     case kJ:
-      strbuf << "_J-"<<mc_save->J();
+      strbuf << "_J-"<<m_montecarlo.J();
       break;
     case kQN1:
-      strbuf << "_Q"<<mc_save->N1_symmetry_num()<<"-"<<mc_save->QN1();
+      strbuf << "_Q"<<m_montecarlo.N1_symmetry_num()<<"-"<<m_montecarlo.QN1();
       break;
     case kQN2:
-      strbuf << "_Q"<<mc_save->N2_symmetry_num()<<"-"<<mc_save->QN2();
+      strbuf << "_Q"<<m_montecarlo.N2_symmetry_num()<<"-"<<m_montecarlo.QN2();
       break;      
     case kT:
-      strbuf << "_T-"<<mc_save->T();
+      strbuf << "_T-"<<m_montecarlo.T();
       break;      
     case kPDel:
-      strbuf << "_PDEL-"<<mc_save->pdel();
+      strbuf << "_PDEL-"<<m_montecarlo.pdel();
       break;
     default:
       strbuf << "_na_";
@@ -182,10 +184,10 @@ void MonteCarloFile::PrepareMCFile(const vector<FNameOpt>& fname_include, ios::o
       default_include.push_back(kJ);
       default_include.push_back(kQN1);
       default_include.push_back(kQN2);
-      filename = MakeFileName(m_montecarlo, default_include);
+      filename = MakeFileName(default_include);
     }
     else{
-      filename = MakeFileName(m_montecarlo, fname_include);
+      filename = MakeFileName(fname_include);
     }
     init_write_file(filename, write_openmode);
     InsertHeader();
@@ -199,7 +201,7 @@ void MonteCarloFile::PrepareMCFile(const vector<FNameOpt>& fname_include, ios::o
 }
  
 
-MonteCarloFile::MonteCarloFile(const MonteCarlo& mc_save)
+MonteCarloFile::MonteCarloFile(MonteCarlo& mc_save)
   :FileHandler(), m_montecarlo(mc_save){
 }
 
@@ -213,7 +215,7 @@ void MonteCarloFile::Track(){
                  << m_montecarlo.N2_OP() / 2<< "\t"
                  <<(m_montecarlo.N2_OP() / 2)*(m_montecarlo.N2_OP() / 2)<<endl;
   //Write to the file and check for error output
-  if (WriteStringToFile(m_write_buffer.str()))
+  if (WriteBufferToFile())
     cout << "Tracked!" <<endl;
   else
     cout << "Failure to write occurred in MonteCarloFile::Track" <<endl;    
