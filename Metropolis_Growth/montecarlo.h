@@ -51,7 +51,7 @@ class MonteCarlo{
   double m_delete_probability;
   double m_T;
   MTRand m_rng;
-  MonteCarloFile m_file_handler;
+  MonteCarloFile* m_file_handler;
   
 
  /*----------------------------------------------------
@@ -60,6 +60,10 @@ class MonteCarlo{
  public:
   MonteCarlo(double J_in = Jdft, double Q_in = Qdft, double Q2_in = Q2dft, 
              int R_in = Rdft, double T_in = Tdft, double pdel_in = pdeldft);
+  ~MonteCarlo(){delete m_file_handler;}
+//TODO: make a copy constructor and an assignment operator. Fortunately, I'm not likely to be
+//      using either of those anytime soon on MonteCarlo objects!
+
   void PrepareFileHandler();
   //Standard metropolis MC move
   void DoMetropolisMove();
@@ -79,7 +83,11 @@ class MonteCarlo{
   /*--------------------------------------------------
     Accessors and Mutators
     --------------------------------------------------*/
-  inline MonteCarloFile& file_handler(){return m_file_handler;}
+  inline MonteCarloFile& file_handler(){
+    if (!m_file_handler->has_write_file())
+      m_file_handler->PrepareMCFile();  
+    return *m_file_handler;
+  }
 
   inline void set_j  (double J)  {m_interaction.set_j(J);    ResetEnergy();}
   inline void set_qN1(double Q1) {m_interaction.set_qN1(Q1); ResetEnergy();}
