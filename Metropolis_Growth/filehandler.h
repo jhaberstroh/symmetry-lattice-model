@@ -9,6 +9,9 @@
   users to build their own classes implementing IO
   for specific headers, data formats, and options like 
   gnuplot interfaces.
+  Furthermore, constructors should be protected/private,
+  and filehandler subclasses should be friends of the
+  relevant object which it is handling.
   --------------------------------------------------*/
 
 
@@ -23,7 +26,6 @@
 
 //TODO: Define errors and do error handling
 
-
 class MonteCarlo;
 
 class FileHandler{
@@ -34,41 +36,34 @@ class FileHandler{
     --------------------------------------------------*/  
  private:
   ostringstream m_write_name;
-  ios_base::openmode m_write_openmode;
- protected:
-  ofstream m_write_file;
   ostringstream m_write_buffer;
+  ios_base::openmode m_write_openmode;
+  ofstream m_write_file;
+ protected:
   bool m_has_write_file;
   bool m_write_file_open;
   /*--------------------------------------------------
     Accessors and Mutators
     --------------------------------------------------*/
-  inline string         write_name(){ 
-    return m_write_name.str();
-  }
-  inline const char*        c_write_name(){
-    return m_write_name.str().c_str();
-  }
-  inline ios::openmode write_openmode() { 
-    return m_write_openmode;
-  }
-  inline void  set_write_name(const string& write_name){ 
-    m_write_name.str(write_name); 
-  }
-  inline void  set_write_openmode(ios::openmode write_openmode){ 
-    m_write_openmode = write_openmode;
-  }
+  inline string         write_name()                            
+	{ return m_write_name;}
+  inline ios::openmode  write_openmode()                            
+	{ return m_write_openmode;}
+  inline void  set_write_name(string& write_name)          
+	{ m_write_name = ostringstream(write_name);}
+  inline void  set_write_openmode(ios::openmode write_openmode)
+	{ m_write_openmode = write_openmode;}
  private:
-  void rename_file(const string& old_name, const string& new_name);
+  void rename_file(string& old_name, string& new_name);
   /*--------------------------------------------------
     Constructor
     --------------------------------------------------*/
  public:
-  FileHandler(const string& init_write_name = "", ios::openmode write_openmode = ios::out);
+  FileHandler(string& init_write_name = const string(""), ios::openmode write_openmode = ios::out);
   //Starts a new write file without migration of current file
-  void init_write_file(const string& init_write_name, ios::openmode write_openmode = ios::out);
+  void init_write_file(string& init_write_name, ios::openmode write_openmode = ios::out);
   //Starts a new write file with migration of current file
-  void rename_write_file(const string& new_write_name);
+  void rename_write_file(string& new_write_name);
   /*--------------------------------------------------
     Member Functions
     --------------------------------------------------*/
@@ -83,25 +78,25 @@ class FileHandler{
 //      a MonteCarlo object!
 class MonteCarloFile : public FileHandler{
  public:
-  friend class MonteCarlo;
+  friend class MonteCarlo
   /*--------------------------------------------------
     Member Variables
     --------------------------------------------------*/
  private:
-  MonteCarlo* m_montecarlo;
+  MonteCarlo& m_montecarlo;
   /*--------------------------------------------------
     Constructor
     --------------------------------------------------*/
  private:
-  MonteCarloFile(MonteCarlo* const mc_save = 0, const vector<FNameOpt>& fname_include = vector<FNameOpt>(), ios::openmode write_openmode = ios::out);
-  void init_montecarlo(MonteCarlo* const mc_save = 0, const vector<FNameOpt>& fname_include = vector<FNameOpt>(), ios::openmode write_openmode = ios::out);
+  explicit MonteCarloFile(MonteCarlo& const mc_save); 
+  void PrepareMCFile(vector<FNameOpt>& fname_include = vector<FNameOpt>(0), 
+                     ios::openmode write_openmode = ios::out);
   /*--------------------------------------------------
     Member Functions
     --------------------------------------------------*/
  protected:
-  string MakeFileName(MonteCarlo* mc_save, const vector<FNameOpt>& fname_include);
-  //Requires the m_write_file to be currently open.
-  void InsertHeader();
+  string MakeFileName(MonteCarlo& mc_save, vector<FNameOpt>& fname_include);
+  void InsertHeader();//Requires the m_write_file to be currently open.
  public:
   void Track();
   //Outsources to gnuplot
@@ -110,5 +105,14 @@ class MonteCarloFile : public FileHandler{
 };
 
 
+bool FileExists(const std::string& filename)
+{
+    struct stat buf;
+    if (stat(filename.c_str(), &buf) != -1)
+    {
+        return true;
+    }
+    return false;
+};
 
 #endif //__IMAGEHANDLER_H_INCLUDED__
