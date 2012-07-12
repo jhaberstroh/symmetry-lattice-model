@@ -72,9 +72,9 @@ class FileHandler{
     Constructor
     --------------------------------------------------*/
  public:
-  FileHandler(const string& init_write_name = "", ios::openmode write_openmode = ios::out);
+  FileHandler(const string& init_write_name = "", ios::openmode write_openmode = ios::app);
   //Starts a new write file without migration of current file
-  void init_write_file(const string& init_write_name, ios::openmode write_openmode = ios::out);
+  void init_write_file(const string& init_write_name, ios::openmode write_openmode = ios::app);
   //Starts a new write file with migration of current file
   void rename_write_file(const string& new_write_name);
   /*--------------------------------------------------
@@ -108,7 +108,7 @@ class MonteCarloFile : public FileHandler{
  private:
   MonteCarloFile(MonteCarlo& mc_save);
   void PrepareMCFile(const vector<FNameOpt>& fname_include = vector<FNameOpt>(), 
-		     ios::openmode write_openmode = ios::out);
+		     ios::openmode write_openmode = ios::app);
   /*--------------------------------------------------
     Member Functions
     --------------------------------------------------*/

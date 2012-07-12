@@ -6,8 +6,8 @@ void DoNSweepsAtJ(MonteCarlo& m, int N, int J){
   for (int i = 0 ; i < N ; i++){
     m.DoMetropolisSweep();
   }
-  m.PrintLattice();
-  m.PrintOrderParameters();
+  //  m.PrintLattice();
+  //  m.PrintOrderParameters();
   m.file_handler().Track();
 }
 
@@ -18,7 +18,7 @@ int main(int argc, char** argv){
   m.set_qN2(0);
   m.reset_default_phase(Lattice::LIQUID);
 
-  m.PrintLattice();
+  //  m.PrintLattice();
 
   m.file_handler().Track();
   for (double J = 1.0 ; J < 3.0 ; J += .4){

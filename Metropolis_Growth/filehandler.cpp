@@ -140,11 +140,13 @@ string MonteCarloFile::MakeFileName(const vector<FNameOpt>& fname_include){
   }
   if (FileExists(strbuf.str() + ".csv")){
     int i = 0; 
-    ostringstream tempstream(strbuf.str());
+    ostringstream tempstream(strbuf.str() + ".csv", ios::app);
+    cout << tempstream.str() <<  " and " << FileExists(tempstream.str()) << endl;
     while (FileExists(tempstream.str()) && i < 1000){
       i++;
       tempstream.str(strbuf.str());
       tempstream << "_" << i << ".csv";
+      cout << tempstream.str() <<  " and " << FileExists(tempstream.str()) << endl;
     }
     if (i < 100){
       strbuf << "_" << i << ".csv";
