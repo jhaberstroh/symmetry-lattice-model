@@ -20,11 +20,11 @@ class not_implemented_error : runtime_error{
   not_implemented_error(const string& what_err): runtime_error(what_err){};
 };
 
+
+
 class Interaction{
  public:
   enum OrderParameterType{kOrderTypeOcc,kOrderTypeN1,kOrderTypeN2};
-
-
   /*----------------------------------------------------
     Variables
     ----------------------------------------------------*/
@@ -45,6 +45,8 @@ class Interaction{
   //Example:
   // rho_normal = double(rho)/lat_size;
   Lattice* m_lattice_being_tracked;
+  Lattice::BondVect m_N1_bond_lattice;
+  Lattice::BondVect m_N2_bond_lattice;
   int m_rho; int m_order_n1; int m_order_n2;
   //Tells whether to use the bond-variable order parameter or the
   // site-variable order parameter for n1 and n2;
@@ -60,7 +62,6 @@ class Interaction{
     : m_J(J), m_QN1(QN1), m_QN2(QN2), 
       m_N1(N1), m_N2(N2), m_lattice_being_tracked(l){
      InitOrderParameters();}
-  void InitOrderParameters(Lattice* l = 0);
 
   /*----------------------------------------------------
     Accessors and Mutators
@@ -75,28 +76,7 @@ class Interaction{
   double J(){return m_J;}
   int QN1(){return m_QN1;}
   int QN2(){return m_QN2;}
-  double get_interaction_energy(Site* s, Site* s_neighbor, 
-                                int& retn_N1_bond, int& retn_N2_bond);
-  double get_interaction_energy(Site* s, Lattice::NeighborVect neighbors, 
-                                int& retn_N1_bond, int& retn_N2_bond);
-  double get_chemical_potential(Site* s, double T);
-  double get_occ_energy_difference(Site* s, Lattice::NeighborVect neighbors, 
-                                   double T, vector<int>* delta_bonds);
-  double get_rot_energy_difference(Site* s, Lattice::NeighborVect neighbors, 
-                                   int plus_minus, vector<int>* delta_bonds); 
 
-   /*Example for UpdateOrderParameters:
-     dat = vector<int>(); dat.push_back(1); dat.push_back(2);
-     updateOP(N1, dat)
-
-     **This would mean that N1 has become occupied (from mod[0])
-       and that N1 has two neighbors with favorable N1 bonds (from mod[1])
-  
-     In general, this could be setup in any number of ways; however,
-     for a given order parameter, care should be taken to follow an
-     identical format amongst different OP choices.*/  
-  void update_order_parameters(OrderParameterType op, vector<int>& opts);
-  
   inline double rho() 	      {return double(m_rho)/m_lattice_being_tracked->number_of_sites();}
   inline double phi()	      {return ((double(m_rho)
                                         /m_lattice_being_tracked->number_of_sites()) *2) -1;}
@@ -107,8 +87,54 @@ class Interaction{
   inline double N1_macro_sq() {return (double(m_order_n1)*double(m_order_n1));}
   inline double get_N2()      {return (double(m_order_n2)
                                        /m_lattice_being_tracked->number_of_sites());}
-  
 
+  inline int get_N1_bonds_at_site(Lattice::Coord& coord) {
+    int n1_bonds = 0;
+    if (l != 0){
+      for (int i = 0 ; i < l->z() ; i++){
+        n1_bonds += m_N1_bond_lattice[l->LookupBondIndex(coord, i)];
+      }
+    }
+    return n1_bonds;
+  }
+  inline int get_N2_bonds_at_site(Lattice::Coord& coord) {
+    int n2_bonds = 0;
+    if (l != 0){
+      for (int i = 0 ; i < l->z() ; i++){
+        n2_bonds += m_N2_bond_lattice[l->LookupBondIndex(coord, i)];
+      }
+    }
+    return n2_bonds;
+  }
+
+  /*--------------------------------------------------
+    Member Functions
+    --------------------------------------------------*/
+  void ChangeLattice(Lattice* l){
+    m_lattice_being_tracked = l;
+    InitOrderParameters();
+  }
+  
+  //For one neighbor
+  double get_interaction_energy(Site* s, Site* s_neighbor, 
+                                int& retn_N1_bond, int& retn_N2_bond);
+  //For multiple neighbors
+  double get_interaction_energy(Site* s, Lattice::NeighborVect neighbors, 
+                                int& retn_N1_bond, int& retn_N2_bond);
+  double get_chemical_potential(Site* s, double T);
+  double get_occ_energy_difference(Site* s, Lattice::NeighborVect neighbors, 
+                                   double T, int& retn_N1_bond, int& retn_N2_bond);
+  double get_rot_energy_difference(Site* s, Lattice::NeighborVect neighbors, 
+                                   int plus_minus, int& retn_N1_bond, int& retn_N2_bond);
+
+  void UpdateOrderParameters(Coord& coord, int old_rot, vector<int>& new_N1_bonds, vector<int>& new_N2_bonds);
+
+ private:
+  int InitSpecificOP(OrderParameterType opt);
+  int InitRho();
+  int InitNBond(int symmetry_num, vector<int>* n_bond_lattice);
+  int InitNAligned(int symmetry_num, vector<int>* n_aligned_direction);
+  void InitOrderParameters();
 };
 
 

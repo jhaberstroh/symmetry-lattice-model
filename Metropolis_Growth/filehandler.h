@@ -23,6 +23,8 @@
 #include <fstream>
 #include <string>
 #include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 //TODO: Define errors and do error handling
 
@@ -32,6 +34,7 @@ class MonteCarlo;
 class FileHandler{
  public:
   enum FNameOpt{kR, kJ,kQN1,kQN2,kT,kPDel};
+  enum FColumn{kRho, kRhoSq,kN1OP,kN1OPSq,kN2OP,kN2OPSq,kNColumns};
   /*--------------------------------------------------
     Member Variables
     --------------------------------------------------*/  
@@ -122,7 +125,7 @@ class MonteCarloFile : public FileHandler{
   void Track();
 
   //Outsources to gnuplot
-  void MakeOPImage();
+  void MakeOPImage(FColumn y_axis = kN1OP);
 
   void MakeLatticeImage();
 };

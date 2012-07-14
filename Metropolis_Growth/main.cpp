@@ -28,5 +28,5 @@ int main(int argc, char** argv){
 
   m.ResetOP();
   m.PrintOrderParameters();
-
+  m.file_handler().MakeOPImage();
 }

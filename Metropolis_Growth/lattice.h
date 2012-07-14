@@ -49,11 +49,24 @@ class bad_symmetry_number : public invalid_argument{
     m_symmetry_number(symmetry_number){}
 };
 
+class bad_direction : public invalid_argument{
+ public:
+  int m_direction_chosen;
+  int m_n_directions;
+  explicit bad_direction
+    (const string& what_arg, int direction_chosen, int n_directions)
+    : invalid_argument(what_arg),
+    m_direction_chosen(direction_chosen)
+    m_n_directions(n_directions){}
+};
+
 
 class Lattice{
  public:
   typedef vector<Site*> NeighborVect; 
   typedef vector<Site*> SiteVect;  //Site vector
+  typedef vector<int> Coord;
+  typedef vector<int> BondVect;
   enum Phase{ GAS, LIQUID, SOLID, FERRO };
   /*----------------------------------------------------
     Variables
@@ -92,40 +105,54 @@ class Lattice{
     Accessors and Mutators
     --------------------------------------------------*/
   inline vector<int>& 	measurements()			 {return m_measurements;}
+  inline int            dimensionality()                 {return m_dimensionality;}
   inline int            R()                              {return m_R;}
   inline int            z()                              {return m_z;}
   inline int 		number_of_sites()		 {return m_lattice.size();}
-  inline Site* 		random_site(MTRand& rng, NeighborVect** random_neighbors)	{
-	int site_index = rng.randInt(number_of_sites()-1);
-	(*random_neighbors) = get_neighbors(site_index);
-	return m_lattice[site_index];
-	}
+  inline Site* 		random_site(MTRand& rng, NeighborVect** random_neighbors, Coord* return_coord = 0){
+    int site_index = rng.randInt(number_of_sites()-1);
+    (*random_neighbors) = get_neighbors(site_index);
+    if (return_coord != 0)
+      (*reutrn_coord) = IndexToCoord(site_index);
+    return m_lattice[site_index];
+  }
  protected:
   inline Site*         	get_site     (int site_index)	 {return m_lattice[site_index];}
   inline NeighborVect* 	get_neighbors(int site_index)	 {return &(m_site_neighbors[site_index]);}
 
- public:
-//calls virtual CoordToIndex function
-  inline Site*         	get_site     (vector<int>& coords){return get_site     (CoordToIndex(coords));} 
-  inline NeighborVect* 	get_neighbors(vector<int>& coords){return get_neighbors(CoordToIndex(coords));} 
+  //view_site returns a vector of rot() for a site and its neighbors.
+  //It also incorporates occupancy; If a site is unoccupied, 
+  // it is given a sentinel value of -1.
+  //This allows for traversal of the state data in the lattice without breaking encapsulation.
+  vector<int>    view_site(int site_index);
 
-  virtual void get_neighbors_init(int site, NeighborVect* output)=0;
+ public:
+  //All public functions are accessed with coordinates instead of array indexes to increase
+  //the amount of encapsulation.
+  //All of these are already defined because they call the VIRTUAL CoordToIndex function.
+  inline Site*         	get_site     (Coord& coords){return get_site     (CoordToIndex(coords));} 
+  inline NeighborVect* 	get_neighbors(Coord& coords){return get_neighbors(CoordToIndex(coords));} 
+  inline vector<int>    view_site    (Coord& coords){return view_site(CoordToIndex(coords));}
+
+  /*--------------------------------------------------
+    Virtual Functions
+    --------------------------------------------------*/
   virtual void Print() = 0;
  protected:
-  virtual vector<int> IndexToCoord(int index)=0;
-  virtual int CoordToIndex(vector<int>& coord)=0;
+  virtual void InitializeNeighborVector(int site, NeighborVect* output)=0;
  public:
-  //Functions to compute the order parameters (inefficient for multiple uses) 
-  //(should possibly belong to interaction.h):
-  //  Returns the number of occupied sites
-  virtual int ComputeNOcc() =0;
-  //  Returns the number of occupied sites aligned in symmetry-generalized "mode" direction
-  virtual int ComputeNAligned(int symmetry_num, vector<int>* directions) =0; 
-  //  Returns the number of bonds satisfying the given symmetry (#bonds = 2x#sites)
-  virtual int ComputeNBond(int symmetry_num) =0;
-  //Note: symmetry_num is the total number of directions which are relevant for that symmetry
-  //      i.e. symmetry_num = 2 is ferromagnetic, symmetry_num = 4 is nematic
+  virtual BondVect CreateBondVector();
+  virtual Coord IndexToCoord(int index)=0;
+  virtual int   CoordToIndex(Coord& coord)=0;
+
+  //GetNeighborCoord works intimately with get_neighbors and view_site;
+  //The ordering of the NeighborVect from get_neighbors is very specific,
+  // and knowledge of which site is sharing the bond can be extracted
+  // from the index.
+  virtual Coord GetNeighborCoord(Coord& coord, int direction)=0;  
+  virtual int LookupBondIndex(Coord& coord, int direction)
 };
+
 
 int FindIndexOf(vector<Site*> array, Site* s);
 
@@ -136,22 +163,35 @@ int FindIndexOf(vector<Site*> array, Site* s);
 
 class SquareLattice : public Lattice
 {
+ private:
+  //The number of quantites in this enum must be identical to z for a SquareLattice
+  //This is private because it is too messy to share with a user. The index within
+  // neighbor-vector will suffice to run GetNeighborCoord and LookupBondIndex.
+  enum NeighborPosition{kNeighUp, kNeighDown, kNeighLeft, kNeighRight};
+
  public:
   //Constructor will throw vector_size_error if it does not receive exactly two sizes
   SquareLattice(Phase default_phase = LIQUID, const vector<int>& measurements = vector<int>(), int R = 8, MTRand* rng = 0);
-  void get_neighbors_init(int site, NeighborVect* output);
+
   void Print();
-
  protected:
-  vector<int> IndexToCoord(int index);  
-  //CoordToIndex will throw vector_size_error if coord does not have exactly two inputs
-  int CoordToIndex(vector<int>& coord);
-
+  //Fills output[site] with the appropriate neighbors
+  // using the enum values for ordering.
+  //Usually acts on m_site_neighbors.
+  void InitializeNeighborVector(int site, NeighborVect* output);
+  
  public:
-  int ComputeNOcc();
-  //ComputeNAligned will throw container_value_mismatch_error if m_R on a site does not match m_R on the lattice.
-  int ComputeNAligned(int symmmetry_num, vector<int>* directions); 
-  int ComputeNBond(int symmetry_num);
+  //Constructs a bond vector for the current lattice.
+  BondVect CreateBondVector();
+
+  //CoordToIndex will throw vector_size_error if coord does not have exactly two inputs
+  Coord IndexToCoord(int index);  
+  int   CoordToIndex(Coord& coord);
+
+  //These virtual functions are not overloaded, but rather hidden, since the inherited
+  // class uses a different typing. This may be a problem but we'll see.
+  Coord GetNeighborCoord(Coord& coord, int direction);  
+  int LookupBondIndex(Coord& coord, int direction);
 };
 
 static bool abs_compare(int a, int b){

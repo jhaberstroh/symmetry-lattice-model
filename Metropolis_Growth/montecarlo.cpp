@@ -19,78 +19,60 @@ MonteCarlo::MonteCarlo(double J_in, double Q_in, double Q2_in,
 //Requires an include of "site.h"
 void MonteCarlo::DoMetropolisMove(){
   Site* current_site;
+  Coord current_coord;
   Lattice::NeighborVect* current_neighbors;
   double transition_probability;
-  //Interaction::OrderParameterType op;
-  //delta_bonds[0] is for N1, delta_bonds[1] is for N2
-  vector<int> delta_bonds(2,0);
-  //modifiers for the order parameter (for Interaction::update_order_parameters)
-  vector<int> mod(4,0);
+  vector<int> new_N1_bonds;
+  vector<int> new_N2_bonds;
+  bool moved;
+  int old_rot;
   
-  current_site = m_lattice.random_site(m_rng,&current_neighbors);
+  current_site = m_lattice.random_site(m_rng,&current_neighbors, current_coord);
+
   if (current_site->occ()){
+    //The site is occupied
+    old_rot = current_site->rot();
+
     if (m_rng.rand() < m_delete_probability){
-      //Energy is always zero for an unoccupied site
-      //Thus, delta-E = 0 - get_interaction_energy
+      //We have selected a deletion move
+      //
+      //Note: Energy is always zero for an unoccupied site
+      //      Thus, delta-E = 0 - get_interaction_energy
       transition_probability = 
         (1.0/(m_delete_probability * current_site->R()))*
         exp(-m_interaction.get_occ_energy_difference
-            (current_site, *current_neighbors, m_T, &delta_bonds)/m_T);
-      //      cout << "Transition from occ probability: " << transition_probability << endl;
-      if (current_site->AttemptOcc(transition_probability, m_rng)){
-        mod = vector<int>(1,0); 
-        mod[0] = -1;
-        m_interaction.update_order_parameters(Interaction::kOrderTypeOcc, mod);
-        mod = vector<int>(4,0); 
-        mod[0] = -1; mod[1] = current_site->R();
-        mod[2] =  0; mod[3] = delta_bonds[0];
-        cout << "delta_bonds from deletion: " <<mod[3]<<endl;
-        m_interaction.update_order_parameters(Interaction::kOrderTypeN1, mod);
-        mod[0] = -1; mod[1] = current_site->R();
-        mod[2] =  0; mod[3] = delta_bonds[1];
-        m_interaction.update_order_parameters(Interaction::kOrderTypeN2, mod);
-      }
+            (current_site, *current_neighbors, m_T, new_N1_bonds, new_N2_bonds)/m_T);
+      
+      moved = current_site->AttemptOcc(transition_probability, m_rng);
     }
+
     else{
+      //We have selected a rotation move
       int plus_minus;
-      if (rand() < .5) plus_minus = 1 ; 
-      else plus_minus = -1;
+      plus_minus = (rand() < .5)? 1:-1 ; 
       transition_probability = 
         exp(-m_interaction.get_rot_energy_difference
-            (current_site, *current_neighbors, plus_minus, &delta_bonds)/m_T);
-      //      cout << "Rotation probability: " << transition_probability << endl;
-      if (current_site->AttemptRot(plus_minus, transition_probability, m_rng)){
-        mod = vector<int>(4,0); 
-        mod[0] = 0; mod[1] = current_site->R();
-        mod[2] = plus_minus; mod[3] = delta_bonds[0];
-        m_interaction.update_order_parameters(Interaction::kOrderTypeN1, mod);
-        mod[0] = 0; mod[1] = current_site->R();
-        mod[2] = plus_minus; mod[3] = delta_bonds[1];
-        m_interaction.update_order_parameters(Interaction::kOrderTypeN2, mod);
+            (current_site, *current_neighbors, plus_minus, new_N1_bonds, new_N2_bonds)/m_T);
 
-      }
+      moved = current_site->AttemptRot(plus_minus, transition_probability, m_rng);
     }
   }
   else{
+    //The site is unoccupied and we have selected an insertion move in a random position
+    old_rot = -1;
+
     current_site->RandRot(m_rng);
     transition_probability = 
       (m_delete_probability * current_site->R())*
       exp(-m_interaction.get_occ_energy_difference
-          (current_site, *current_neighbors, m_T, &delta_bonds)/m_T);    
-    //    cout << "Transition from !occ Probability: " << transition_probability << endl;
-    if (current_site->AttemptOcc(transition_probability, m_rng)){
-      mod = vector<int>(1,0); 
-      mod[0] = 1;
-      m_interaction.update_order_parameters(Interaction::kOrderTypeOcc, mod);
-      mod = vector<int>(4,0);
-      mod[0] = 1; mod[1] = current_site->R();
-      mod[2] = 0; mod[3] = delta_bonds[0];
-      m_interaction.update_order_parameters(Interaction::kOrderTypeN1, mod);
-      mod[0] = 1; mod[1] = current_site->R();
-      mod[2] = 0; mod[3] = delta_bonds[1];
-      m_interaction.update_order_parameters(Interaction::kOrderTypeN2, mod);    
+          (current_site, *current_neighbors, m_T, new_N1_bonds, new_N2_bonds)/m_T);    
+
+    moved = current_site->AttemptOcc(transition_probability, m_rng);
     }
   }
+
+  if (moved)
+    m_interaction.UpdateOrderParameters(current_coord, old_rot, new_N1_bonds, new_N2_bonds);
 }
 
 

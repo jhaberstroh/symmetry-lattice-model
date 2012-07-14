@@ -209,13 +209,33 @@ MonteCarloFile::MonteCarloFile(MonteCarlo& mc_save)
 
 
 void MonteCarloFile::Track(){
-  m_write_buffer.str("");  
-  m_write_buffer << m_montecarlo.rho() << "\t"
-                 << m_montecarlo.rho() * m_montecarlo.rho()<< "\t"
-                 << m_montecarlo.N1_OP() / 2<< "\t"
-                 <<(m_montecarlo.N1_OP() / 2)*(m_montecarlo.N1_OP() / 2)<< "\t"
-                 << m_montecarlo.N2_OP() / 2<< "\t"
-                 <<(m_montecarlo.N2_OP() / 2)*(m_montecarlo.N2_OP() / 2)<<endl;
+  m_write_buffer.str("");
+  for (int i = 0 ; i < kNColumns ; i++){
+    switch (i){
+    case kRho:
+      m_write_buffer<< m_montecarlo.rho() <<"\t";
+      break;
+    case kRhoSq:
+      m_write_buffer<< m_montecarlo.rho() * m_montecarlo.rho()<<"\t";
+      break;
+    case kN1OP:
+      m_write_buffer<< m_montecarlo.N1_OP() / 2<< "\t";
+      break;
+    case kN1OPSq:
+      m_write_buffer<<(m_montecarlo.N1_OP() / 2)*(m_montecarlo.N1_OP() / 2)<<"\t";
+      break;
+    case kN2OP:
+      m_write_buffer<< m_montecarlo.N2_OP() / 2<< "\t";
+      break;
+    case kN2OPSq:
+      m_write_buffer<<(m_montecarlo.N2_OP() / 2)*(m_montecarlo.N2_OP() / 2)<<"\t";
+      break;
+    default:
+      break;
+    }
+  }
+  m_write_buffer << endl;
+
   //Write to the file and check for error output
   if (WriteBufferToFile())
     cout << "Tracked!" <<endl;
@@ -224,8 +244,10 @@ void MonteCarloFile::Track(){
 }
 
 
-void MonteCarloFile::MakeOPImage(){
-  //TODO: (jhaberstroh@lbl.gov) implement
+void MonteCarloFile::MakeOPImage(FColumn y_axis){
+  ostringstream system_request("");
+  system_request << "./gp_script " << write_name() <<" "<< (y_axis+1);
+  system(system_request.str().c_str());
 }
 
 void MonteCarloFile::MakeLatticeImage(){
