@@ -70,10 +70,9 @@ class MonteCarlo{
   //One move for each site
   void DoMetropolisSweep();
   void ResetEnergy(){/*TODO: Implement!*/};
-  void ResetOP(){ m_interaction.InitOrderParameters(&m_lattice);}
   inline void reset_default_phase(Lattice::Phase new_phase){
     m_lattice = SquareLattice(new_phase, m_lattice.measurements(), m_lattice.R(), &m_rng);
-    ResetOP();
+    m_interaction.ChangeLattice(&m_lattice);
     ResetEnergy();
   };
 

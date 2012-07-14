@@ -26,7 +26,6 @@ int main(int argc, char** argv){
     DoNSweepsAtJ(m, 10, J);
   }
 
-  m.ResetOP();
   m.PrintOrderParameters();
   m.file_handler().MakeOPImage();
 }

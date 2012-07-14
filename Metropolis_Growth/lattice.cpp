@@ -223,9 +223,9 @@ int SquareLattice::LookupBondIndex(const Coord& coord, int direction){
     case kNeighRight:
       return CoordToIndex(coord) * 2 + 0;
       break;
-      
     }
   }
+  return -1;//should never reach here, but the compiler is whiny, and who knows, maybe there will be terrible errors
 }
 
 Lattice::Coord SquareLattice::GetNeighborCoord(const Coord& coord, int direction){
@@ -249,6 +249,7 @@ Lattice::Coord SquareLattice::GetNeighborCoord(const Coord& coord, int direction
       neighbor_coord[1] += 1;
       break;
     }
+    return neighbor_coord;
   }
   else{
     throw vector_size_error("SquareLattice::GetNeighborCoord", 2, coord.size());

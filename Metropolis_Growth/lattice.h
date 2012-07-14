@@ -141,7 +141,7 @@ class Lattice{
  protected:
   virtual void InitializeNeighborVector(int site, NeighborVect* output)=0;
  public:
-  virtual BondVect CreateBondVector();
+  virtual BondVect CreateBondVector()=0;
   virtual Coord IndexToCoord(int index)=0;
   virtual int   CoordToIndex(const Coord& coord)=0;
 

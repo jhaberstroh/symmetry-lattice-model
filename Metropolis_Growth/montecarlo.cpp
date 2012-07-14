@@ -19,7 +19,7 @@ MonteCarlo::MonteCarlo(double J_in, double Q_in, double Q2_in,
 //Requires an include of "site.h"
 void MonteCarlo::DoMetropolisMove(){
   Site* current_site;
-  Coord current_coord;
+  Lattice::Coord current_coord;
   Lattice::NeighborVect* current_neighbors;
   double transition_probability;
   vector<int> new_N1_bonds;
@@ -27,7 +27,9 @@ void MonteCarlo::DoMetropolisMove(){
   bool moved;
   int old_rot;
   
-  current_site = m_lattice.random_site(m_rng,&current_neighbors, current_coord);
+  //points current_site to a random site, and write the coordinate to current_coord
+  // and the neighbor-pointers to current_neighbors.
+  current_site = m_lattice.random_site(m_rng, &current_neighbors, &current_coord);
 
   if (current_site->occ()){
     //The site is occupied
@@ -68,7 +70,6 @@ void MonteCarlo::DoMetropolisMove(){
           (current_site, *current_neighbors, m_T, new_N1_bonds, new_N2_bonds)/m_T);    
 
     moved = current_site->AttemptOcc(transition_probability, m_rng);
-    }
   }
 
   if (moved)
