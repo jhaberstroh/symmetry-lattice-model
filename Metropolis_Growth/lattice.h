@@ -52,12 +52,12 @@ class bad_symmetry_number : public invalid_argument{
 class bad_direction : public invalid_argument{
  public:
   int m_direction_chosen;
-  int m_n_directions;
+  int m_z;
   explicit bad_direction
-    (const string& what_arg, int direction_chosen, int n_directions)
+    (const string& what_arg, int direction_chosen, int z)
     : invalid_argument(what_arg),
-    m_direction_chosen(direction_chosen)
-    m_n_directions(n_directions){}
+    m_direction_chosen(direction_chosen),
+    m_z(z){}
 };
 
 
@@ -113,7 +113,7 @@ class Lattice{
     int site_index = rng.randInt(number_of_sites()-1);
     (*random_neighbors) = get_neighbors(site_index);
     if (return_coord != 0)
-      (*reutrn_coord) = IndexToCoord(site_index);
+      (*return_coord) = IndexToCoord(site_index);
     return m_lattice[site_index];
   }
  protected:
@@ -130,9 +130,9 @@ class Lattice{
   //All public functions are accessed with coordinates instead of array indexes to increase
   //the amount of encapsulation.
   //All of these are already defined because they call the VIRTUAL CoordToIndex function.
-  inline Site*         	get_site     (Coord& coords){return get_site     (CoordToIndex(coords));} 
-  inline NeighborVect* 	get_neighbors(Coord& coords){return get_neighbors(CoordToIndex(coords));} 
-  inline vector<int>    view_site    (Coord& coords){return view_site(CoordToIndex(coords));}
+  inline Site*         	get_site     (const Coord& coords){return get_site     (CoordToIndex(coords));} 
+  inline NeighborVect* 	get_neighbors(const Coord& coords){return get_neighbors(CoordToIndex(coords));} 
+  inline vector<int>    view_site    (const Coord& coords){return view_site(CoordToIndex(coords));}
 
   /*--------------------------------------------------
     Virtual Functions
@@ -143,14 +143,14 @@ class Lattice{
  public:
   virtual BondVect CreateBondVector();
   virtual Coord IndexToCoord(int index)=0;
-  virtual int   CoordToIndex(Coord& coord)=0;
+  virtual int   CoordToIndex(const Coord& coord)=0;
 
   //GetNeighborCoord works intimately with get_neighbors and view_site;
   //The ordering of the NeighborVect from get_neighbors is very specific,
   // and knowledge of which site is sharing the bond can be extracted
   // from the index.
-  virtual Coord GetNeighborCoord(Coord& coord, int direction)=0;  
-  virtual int LookupBondIndex(Coord& coord, int direction)
+  virtual Coord GetNeighborCoord(const Coord& coord, int direction)=0;  
+  virtual int LookupBondIndex(const Coord& coord, int direction)=0;
 };
 
 
@@ -186,12 +186,20 @@ class SquareLattice : public Lattice
 
   //CoordToIndex will throw vector_size_error if coord does not have exactly two inputs
   Coord IndexToCoord(int index);  
-  int   CoordToIndex(Coord& coord);
+  int   CoordToIndex(const Coord& coord);
 
   //These virtual functions are not overloaded, but rather hidden, since the inherited
   // class uses a different typing. This may be a problem but we'll see.
-  Coord GetNeighborCoord(Coord& coord, int direction);  
-  int LookupBondIndex(Coord& coord, int direction);
+  Coord GetNeighborCoord(const Coord& coord, int direction);  
+  int LookupBondIndex(const Coord& coord, int direction);
+
+  inline Coord GetNeighborCoord(const Coord& coord, NeighborPosition direction){
+    return GetNeighborCoord(coord, (int)direction);
+  }
+  inline int LookupBondIndex(const Coord& coord, NeighborPosition direction){
+    return LookupBondIndex(coord, (int)direction);
+  }
+
 };
 
 static bool abs_compare(int a, int b){

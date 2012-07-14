@@ -21,11 +21,11 @@ vector<int> Lattice::view_site(int site_index){
   vector<int> r_values(0, 1 + m_site_neighbors[site_index].size());
   //uses the conditional operator to assign the sentinel value
   // of -1 if a site is not occupied!
-  r_values[0] = {(m_lattice[site_index]->occ())?
-                 m_lattice[site_index]->R() : -1};
-  for (int i = 0 ; i < m_site_neighbors[site_index].size() ; i++){
-    f_values[i+1] = ((m_site_neighbors[site_index][i]->occ())? 
-                     m_lattice[site_index][i]->R() : -1);
+  r_values[0] = (m_lattice[site_index]->occ())?
+                 m_lattice[site_index]->R() : -1;
+  for (int i = 0 ; i < m_z ; i++){
+    r_values[i+1] = (m_site_neighbors[site_index][i]->occ())? 
+                     m_site_neighbors[site_index][i]->R() : -1;
   }
   return r_values;
 }
@@ -94,7 +94,7 @@ Lattice& Lattice::operator=(const Lattice& cSource){
     }
   }
 
-vv  return *this;
+  return *this;
 }
 
 
@@ -156,15 +156,15 @@ void SquareLattice::InitializeNeighborVector(int site_index, Lattice::NeighborVe
 }
 
 
-BondVect SquareLattice::CreateBondVector(){
-  return BondVector(m_lattice.size() * 2, 0);
+Lattice::BondVect SquareLattice::CreateBondVector(){
+  return BondVect(m_lattice.size() * 2, 0);
 }
 
 
 //CoordToIndex treats the input coordinates completely periodically;
 // thus, it will not be the highest performance if input value is bounded,
 // but it is extremely robust (great for readability).
-int SquareLattice::CoordToIndex(Coord & coord){
+int SquareLattice::CoordToIndex(const Coord& coord){
   if (coord.size() == 2){
     //cout << "Coord to index: " << coord[0] <<","<<coord[1]<<" = "
     // << (((coord[0] %m_measurements[0]) +m_measurements[0]) %m_measurements[0]) * m_measurements[1]
@@ -180,7 +180,7 @@ int SquareLattice::CoordToIndex(Coord & coord){
 }
 
 
-Coord SquareLattice::IndexToCoord(int index){
+Lattice::Coord SquareLattice::IndexToCoord(int index){
   index = ((index % m_lattice.size()) +m_lattice.size()) %m_lattice.size();
   Coord coord_out(2,0);
 
@@ -191,7 +191,7 @@ Coord SquareLattice::IndexToCoord(int index){
 }
 
 
-int SquareLattice::LookupBondIndex(Coord& coord, int direction){
+int SquareLattice::LookupBondIndex(const Coord& coord, int direction){
   /* Bonds are specified as follows:
 
      0_ 00 _1_ 02 _2_ 04 _3_ 06
@@ -228,14 +228,14 @@ int SquareLattice::LookupBondIndex(Coord& coord, int direction){
   }
 }
 
-Coord SquareLattice::GetNeighborCoord(Coord& coord, int direction){
+Lattice::Coord SquareLattice::GetNeighborCoord(const Coord& coord, int direction){
   if (! (direction < m_z))
     throw bad_direction("SquareLattice::LookupBondIndex:direction", direction, m_z);
 
   if (coord.size() == 2){
     //The input for neighborIndex is restricted by the Enum type.
     Coord neighbor_coord = coord;
-    switch (neighborIndex){
+    switch (direction){
     case kNeighUp:
       neighbor_coord[0] -= 1;
       break;
@@ -326,7 +326,7 @@ int TestLatticeCode(){
   SquareLattice l;
   l = SquareLattice(Lattice::LIQUID, dimensions, 96, &rng);
                                                
-  Coord coord(2,0);
+  Lattice::Coord coord(2,0);
   coord[0] = 2 ; coord[1] = 7;
   
   Site* s = l.get_site(coord);
