@@ -48,7 +48,7 @@ int Interaction::InitNAligned(int symmetry_num, vector<int>* n_aligned_direction
 }
 
 
-int Interaction::InitNBond(int symmetry_num, vector<int>* n_bond_lattice){
+int Interaction::InitNBond(int symmetry_num, Lattice::BondVect* n_bond_lattice){
   Lattice* l = m_lattice_being_tracked;
   (*n_bond_lattice) = l->CreateBondVector();
   Lattice::Coord coord(2);
@@ -59,18 +59,18 @@ int Interaction::InitNBond(int symmetry_num, vector<int>* n_bond_lattice){
   if (l->R() % symmetry_num != 0){
     throw bad_symmetry_number("Interaction::ComputeNBond", l->R(), symmetry_num);
   }
+
   for (int i = 0 ; i < l->measurements()[0] ; i++){
     for (int j = 0 ; j < l->measurements()[1] ; j++){
       coord[0] = i; coord[1] = j;
       current_site = l->view_site(coord);
-
       if (current_site[0] != -1){
         for (unsigned int k = 1 ; k < current_site.size() ; k++){
           if (current_site[k] != -1){
 
             //If their alignments are such that they will have bonding or repulsion...
             if ((current_site[k] % division_size) == (current_site[0] % division_size)){
-              
+              cout << "Index to access:" << l->LookupBondIndex(coord, k-1) <<endl;
               //Second argument of LookupBondIndex is the direction; this is synchronized
               // with the choices within subclasses of SquareLattice because those classes
               // build the neighbor arrays!

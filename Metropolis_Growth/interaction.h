@@ -62,6 +62,7 @@ class Interaction{
               int N1=2, int N2=4, Lattice* l = 0)
     : m_J(J), m_QN1(QN1), m_QN2(QN2), 
       m_N1(N1), m_N2(N2), m_lattice_being_tracked(l){
+    cout << "debug: Interaction::InitOrderParameters()"<<endl;
      InitOrderParameters();}
 
   /*----------------------------------------------------

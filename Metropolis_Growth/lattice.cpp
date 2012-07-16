@@ -18,7 +18,7 @@ int FindIndexOf(vector<Site*> array, Site* s){
 
 
 vector<int> Lattice::view_site(int site_index){
-  vector<int> r_values(0, 1 + m_site_neighbors[site_index].size());
+  vector<int> r_values(1 + m_site_neighbors[site_index].size(),0);
   //uses the conditional operator to assign the sentinel value
   // of -1 if a site is not occupied!
   r_values[0] = (m_lattice[site_index]->occ())?
@@ -123,23 +123,21 @@ SquareLattice::SquareLattice(Phase default_phase, const vector<int>& sizes, int 
         }
       }
     }
+
+    m_site_neighbors = vector<NeighborVect>(m_measurements[0]*m_measurements[1]);
+    for (int i = 0 ; i < m_measurements[0] ; i++){
+      for (int j = 0 ; j < m_measurements[1] ; j++){
+        coord[0] = i; coord[1] = j;
+        InitializeNeighborVector(CoordToIndex(coord), &(m_site_neighbors[CoordToIndex(coord)]));
+      }
+    }
   }
+
   else if (m_measurements.size() == 0){
     //Do nothing! "zombie" object.
   }
   else{
     throw vector_size_error("Squarelattice::SquareLattice:m_measurements", 2, m_measurements.size());
-  }
-
-  if (m_measurements.size() == 2){
-    Coord coord(2,0);
-    m_site_neighbors = vector<NeighborVect>(m_measurements[0]*m_measurements[1]);
-    for (int i = 0 ; i < m_measurements[0] ; i++){
-      for (int j = 0 ; j < m_measurements[1] ; j++){
-        coord[0] = i; coord[1] = j;
-        InitializeNeighborVector(CoordToIndex(coord), &m_site_neighbors[CoordToIndex(coord)]);
-      }
-    }
   }
 }
 

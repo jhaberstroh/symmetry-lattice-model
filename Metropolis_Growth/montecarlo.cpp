@@ -7,10 +7,12 @@ MonteCarlo::MonteCarlo(double J_in, double Q_in, double Q2_in,
                        int R_in, double T_in, double pdel_in)
   :m_delete_probability(pdel_in), m_T(T_in)
 {
+
   m_rng = MTRand();
   vector<int> dimensions;
   dimensions.push_back(5);dimensions.push_back(10);
   m_lattice = SquareLattice(Lattice::SOLID, dimensions, R_in, &m_rng);
+
   m_interaction = Interaction(J_in, Q_in, Q2_in, 2, 4, &m_lattice);
   m_file_handler = new MonteCarloFile(*this);
 }
