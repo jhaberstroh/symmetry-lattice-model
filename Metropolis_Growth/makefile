@@ -26,6 +26,8 @@ tester.o: tester.cpp
 tester: tester.o site.o lattice.o interaction.o montecarlo.o
 	${CC} ${CFLAGS} tester.o site.o lattice.o interaction.o montecarlo.o -o tester.exe
 
+version: version.h version.cpp
+	${CC} ${CFLAGS} version.cpp -o versionupdate.exe
 
 anneal: Site.o Lattice.o anneal.cpp
 	g++ -Wall -g -O3 anneal.cpp Site.o Lattice.o -o anneal.exe

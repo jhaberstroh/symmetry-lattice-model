@@ -25,11 +25,13 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "version.h"
 
 //TODO: Define errors and do error handling
 
 
 class MonteCarlo;
+class Lattice;
 
 class FileHandler{
  public:
@@ -130,6 +132,34 @@ class MonteCarloFile : public FileHandler{
   void MakeLatticeImage();
 };
 
+
+class LatticeFile : public FileHandler{
+ public:
+  enum Color{kColorRed, kColorBlue, kColorGreen);
+  friend class Lattice;
+
+ private:
+  Lattice& m_lattice;
+  void PrepareLatticeFile();
+
+ private:
+  LatticeFile(Lattice& lattice_to_save);
+
+ public:
+  //MakeSimpleFile() saves only the rot and occ data
+  void MakeSimpleFile(){};
+  
+  //MakeBondFile() saves the rot and occ data, as well
+  // as the number of active bonds at each site
+  void MakeBondNumberFile(Interaction& lattice_interaction){};
+
+  //MakeColorImage() uses the interactions N1 and N2 to create a gnuplot file
+  void MakeColorImage(Interaction& lattice_interaction, Color color_1 = kColorRed, Color color_2 = kColorBlue){
+
+  }
+
+
+}
 
 
 #endif //__IMAGEHANDLER_H_INCLUDED__

@@ -253,3 +253,16 @@ void MonteCarloFile::MakeOPImage(FColumn y_axis){
 void MonteCarloFile::MakeLatticeImage(){
   //TODO: (jhaberstroh@lbl.gov) implement
 }
+
+
+
+
+/*--------------------------------------------------
+  LatticeFile methods
+  --------------------------------------------------*/
+
+LatticeFile::LatticeFile(Lattice& lattice_to_save)
+  :FileHandler(), m_lattice(lattice_to_save){
+}
+
+

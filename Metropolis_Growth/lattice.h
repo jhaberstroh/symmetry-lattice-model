@@ -67,6 +67,7 @@ class Lattice{
   typedef vector<Site*> SiteVect;  //Site vector
   typedef vector<int> Coord;
   typedef vector<int> BondVect;
+  enum LatticeType{kSquareLattice};
   enum Phase{ GAS, LIQUID, SOLID, FERRO };
   /*----------------------------------------------------
     Variables
