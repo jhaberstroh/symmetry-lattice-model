@@ -94,6 +94,7 @@ class Interaction{
     int n1_bonds = 0;
     if (m_lattice_being_tracked != 0){
       for (int i = 0 ; i < m_lattice_being_tracked->z() ; i++){
+        //i acts as the directional variable; i looks in all directions around the coordinate
         n1_bonds += m_N1_bond_lattice[m_lattice_being_tracked->LookupBondIndex(coord, i)];
       }
     }

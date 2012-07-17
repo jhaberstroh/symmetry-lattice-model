@@ -32,12 +32,11 @@ struct tokens: std::ctype<char>
     static cctype::mask rc[cctype::table_size];
     std::memcpy(rc, const_rc, cctype::table_size * sizeof(cctype::mask));
     
-    rc[','] = std::ctype_base::space; 
+    rc['.'] = std::ctype_base::space; 
     rc[' '] = std::ctype_base::space; 
     return &rc[0];
   }
 };
-
 
 
 class Version{
@@ -60,7 +59,7 @@ class Version{
     istream_iterator<string> begin(ss);
     istream_iterator<string> end;
     vector<string> vstrings(begin,end);
-             
+
     large_version = atoi(vstrings[0].c_str());
     medium_version = atoi(vstrings[1].c_str());
     small_version = atoi(vstrings[2].c_str());

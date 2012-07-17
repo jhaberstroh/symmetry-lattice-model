@@ -25,7 +25,9 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <cmath>
 #include "version.h"
+#include "pngwriter.h"
 
 //TODO: Define errors and do error handling
 
@@ -135,7 +137,8 @@ class MonteCarloFile : public FileHandler{
 
 class LatticeFile : public FileHandler{
  public:
-  enum Color{kColorRed, kColorBlue, kColorGreen);
+  typedef vector<double> RGBVect;
+  enum Color{kColorRed, kColorBlue, kColorGreen, kColorOrange, kColorGrey, kColorBlack);
   friend class Lattice;
 
  private:
@@ -154,11 +157,18 @@ class LatticeFile : public FileHandler{
   void MakeBondNumberFile(Interaction& lattice_interaction){};
 
   //MakeColorImage() uses the interactions N1 and N2 to create a gnuplot file
-  void MakeColorImage(Interaction& lattice_interaction, Color color_1 = kColorRed, Color color_2 = kColorBlue){
+  void MakeSquareLatticeColorImage(Interaction& lattice_interaction, Color color_1 = kColorRed, Color color_2 = kColorBlue);
 
-  }
+ private:
+  //ColorLookup uses two different return types: return by value (RGBVect) or return by pointer (optional).
+  RGBVect ColorLookup(Color c, int* r = 0, int* g = 0, int* b = 0);
+  //Hard-coded assumptions about which micro-phases should be output as which colors
+  void SelectSiteColor(int n1_bonds, int n2_bonds);
+  //Draws a single site at the coordinate specified.
+  // Note: Pixel_size works better as an odd number.
+  void DrawSite(pngwriter& png, int pixel_size, Lattice::Coord coord, int rot, int R, int n1_bonds, int n2_bonds);
 
-
+  
 }
 
 
