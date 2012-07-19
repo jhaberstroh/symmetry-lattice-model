@@ -336,11 +336,11 @@ void LatticeFile::DrawSite(pngwriter& png, int pixel_size, Lattice::Coord coord,
       double r, g, b;
       ColorLookup(site_color, &r, &g, &b);
 
-      int x = coord[0] * pixel_size;
-      int y = coord[1] * pixel_size;
+      int y = coord[0] * pixel_size;
+      int x = coord[1] * pixel_size;
       //We are now in the upper-left corner.
       //Draw the square in the full pixel. 
-      png.square(x, y,
+      png.filledsquare(x, y,
                  x+pixel_size,y+pixel_size,
                  r, g, b);
       
@@ -362,9 +362,10 @@ void LatticeFile::DrawSite(pngwriter& png, int pixel_size, Lattice::Coord coord,
 void LatticeFile::MakeSquareLatticeColorImage(Interaction& lattice_interaction){
   vector<int> measurements = m_lattice.measurements();
 
+  cout << "MAKING SQUARE LATTICE IMAGE?!" <<endl;
   //pixel_size should be odd
-  int pixel_size = 9;
-  pngwriter png(measurements[0]*pixel_size,measurements[1]*pixel_size,0,"testing.png");
+  int pixel_size = 25;
+  pngwriter png(measurements[1]*pixel_size,measurements[0]*pixel_size,1.0,"testing.png");
   Lattice::Coord coord(2,0);
   Site* current_site;
 
@@ -382,8 +383,10 @@ void LatticeFile::MakeSquareLatticeColorImage(Interaction& lattice_interaction){
       int rot = (current_site->occ())? current_site->rot() : -1;
       DrawSite(png, pixel_size, coord, rot, m_lattice.R(), n1_bonds, n2_bonds);
     }
+    cout << "iterating sites";
   }
-
+  cout <<endl;
+  png.close();
 }
 
 

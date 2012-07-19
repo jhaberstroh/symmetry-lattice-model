@@ -10,7 +10,7 @@ MonteCarlo::MonteCarlo(double J_in, double Q_in, double Q2_in,
 
   m_rng = MTRand();
   vector<int> dimensions;
-  dimensions.push_back(5);dimensions.push_back(10);
+  dimensions.push_back(10);dimensions.push_back(10);
   m_lattice = SquareLattice(Lattice::SOLID, dimensions, R_in, &m_rng);
 
   m_interaction = Interaction(J_in, Q_in, Q2_in, 2, 4, &m_lattice);
