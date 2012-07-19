@@ -15,7 +15,10 @@
 #include <algorithm>
 #include "MersenneTwister.h"
 #include "site.h"
+#include "filehandler.h"
+
 using namespace std;
+
 
 class vector_size_error : public length_error{
  public:
@@ -90,14 +93,17 @@ class Lattice{
   //Format specified by the derived class, usually simple
   // like {length, width}
   vector<int> m_measurements;
+  LatticeFile* m_lattice_handler;
 
   /*--------------------------------------------------
     Constructor
     --------------------------------------------------*/
  public:
   Lattice();
+  //Passes a reference to itself to the m_lattice_handler object!
+  // The constructor for m_lattice_handler must do nothing but store this variable.
   Lattice(int R, int z, int dimensionality, const vector<int>& sizes)
-	: m_R(R), m_z(z), m_dimensionality(dimensionality), m_measurements(sizes) {};
+    : m_R(R), m_z(z), m_dimensionality(dimensionality), m_measurements(sizes), m_lattice_handler(new LatticeFile(*this)){};
   ~Lattice();
  Lattice(const Lattice &cSource);
  Lattice& operator=(const Lattice& cSource);
@@ -134,6 +140,8 @@ class Lattice{
   inline Site*         	get_site     (const Coord& coords){return get_site     (CoordToIndex(coords));} 
   inline NeighborVect* 	get_neighbors(const Coord& coords){return get_neighbors(CoordToIndex(coords));} 
   inline vector<int>    view_site    (const Coord& coords){return view_site(CoordToIndex(coords));}
+
+  inline LatticeFile& lattice_handler(){return *m_lattice_handler;}
 
   /*--------------------------------------------------
     Virtual Functions

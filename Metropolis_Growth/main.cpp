@@ -8,7 +8,7 @@ void DoNSweepsAtJ(MonteCarlo& m, int N, int J){
   }
   //  m.PrintLattice();
   //  m.PrintOrderParameters();
-  m.file_handler().Track();
+  m.order_parameter_handler().Track();
 }
 
 int main(int argc, char** argv){
@@ -19,13 +19,15 @@ int main(int argc, char** argv){
   m.set_qN2(0);
   m.reset_default_phase(Lattice::LIQUID);
 
-  m.file_handler().Track();
+  m.order_parameter_handler().Track();
 
   for (double J = 1.0 ; J < 3.0 ; J += .4){
     cout << "Changing parameters! \n\n\n\n";
     DoNSweepsAtJ(m, 10, J);
   }
 
+  m.lattice_handler().MakeSquareLatticeColorImage(m.interaction());
+
   m.PrintOrderParameters();
-  m.file_handler().MakeOPImage();
+  m.order_parameter_handler().MakeOPImage();
 }

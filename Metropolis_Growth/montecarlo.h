@@ -82,11 +82,15 @@ class MonteCarlo{
   /*--------------------------------------------------
     Accessors and Mutators
     --------------------------------------------------*/
-  inline MonteCarloFile& file_handler(){
+  inline MonteCarloFile& order_parameter_handler(){
     if (!m_file_handler->has_write_file())
       m_file_handler->PrepareMCFile();  
     return *m_file_handler;
   }
+  inline LatticeFile& lattice_handler(){
+    return m_lattice.lattice_handler();
+  }
+  inline Interaction& interaction(){return m_interaction;}
 
   inline void set_j  (double J)  {m_interaction.set_j(J);    ResetEnergy();}
   inline void set_qN1(double Q1) {m_interaction.set_qN1(Q1); ResetEnergy();}

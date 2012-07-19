@@ -12,7 +12,7 @@
 
 
 /*--------------------------------------------------
-  Utitlity Function
+  Utility Function
   --------------------------------------------------*/
 bool FileExists(const std::string& filename)
 {
@@ -332,7 +332,7 @@ LatticeFile::Color LatticeFile::SelectSiteColor(int n1_bonds, int n2_bonds){
 void LatticeFile::DrawSite(pngwriter& png, int pixel_size, Lattice::Coord coord, int rot, int R, int n1_bonds, int n2_bonds){
   if (coord.size() == 2){
     if (rot != -1){
-      Color site_color = SelectSiteColor(int n1_bonds, int n2_bonds);
+      Color site_color = SelectSiteColor(n1_bonds, n2_bonds);
       double r, g, b;
       ColorLookup(site_color, &r, &g, &b);
 

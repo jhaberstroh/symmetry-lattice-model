@@ -90,7 +90,7 @@ class Interaction{
   inline double get_N2()      {return (double(m_order_n2)
                                        /m_lattice_being_tracked->number_of_sites());}
 
-  inline int get_N1_bonds_at_site(Lattice::Coord& coord) {
+  inline int get_n1_bonds_at_site(Lattice::Coord& coord) {
     int n1_bonds = 0;
     if (m_lattice_being_tracked != 0){
       for (int i = 0 ; i < m_lattice_being_tracked->z() ; i++){
@@ -100,7 +100,7 @@ class Interaction{
     }
     return n1_bonds;
   }
-  inline int get_N2_bonds_at_site(Lattice::Coord& coord) {
+  inline int get_n2_bonds_at_site(Lattice::Coord& coord) {
     int n2_bonds = 0;
     if (m_lattice_being_tracked != 0){
       for (int i = 0 ; i < m_lattice_being_tracked->z() ; i++){

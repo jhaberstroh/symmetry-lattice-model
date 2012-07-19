@@ -40,6 +40,7 @@ Lattice::~Lattice(){
   for (unsigned int i = 0 ; i < m_lattice.size() ; i++){
     delete m_lattice[i];
   }
+  delete m_lattice_handler;
 }
 
 //Copy Constructor makes duplicates of all sites and repoints the neighbor vectors.
@@ -63,6 +64,7 @@ Lattice::Lattice(const Lattice &cSource){
                                                      cSource.m_lattice, cSource.m_site_neighbors[i][k] )];
     }
   }
+  m_lattice_handler = new LatticeFile(*this);
 }
 
 //This is a copy-paste of the destructor and the copy constructor
@@ -94,6 +96,8 @@ Lattice& Lattice::operator=(const Lattice& cSource){
     }
   }
 
+  //m_lattice_handler still points to the appropriate Lattice object ("this"), so
+  // it does not need to be deleted and re-instantiated!
   return *this;
 }
 
