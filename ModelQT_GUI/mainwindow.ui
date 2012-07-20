@@ -121,42 +121,6 @@
      <string>Stop</string>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="R">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>20</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="N1">
-    <property name="geometry">
-     <rect>
-      <x>350</x>
-      <y>40</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="plainText">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="N2">
-    <property name="geometry">
-     <rect>
-      <x>350</x>
-      <y>70</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="plainText">
-     <string/>
-    </property>
-   </widget>
    <widget class="QPushButton" name="reset">
     <property name="geometry">
      <rect>
@@ -194,16 +158,6 @@
     </property>
     <property name="text">
      <string>Order Params</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="pdel">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>50</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -256,16 +210,6 @@
     </property>
     <property name="text">
      <string>R:</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="T">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>80</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
