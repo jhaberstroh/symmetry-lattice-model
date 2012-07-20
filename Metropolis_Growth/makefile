@@ -1,16 +1,16 @@
 CC = g++
-CFLAGS = -Wall -g -Wno-unused-function 
-PNGWRITE = -I/usr/local/lin -L/usr/local/include -lpng -lpngwriter -lz -lfreetype -DNO_FREETYPE
+CFLAGS = -Wall -g -Wno-unused-function
+PNGWRITE = -I/usr/local/lib -L/usr/local/include -lpng -lpngwriter -lz -DNO_FREETYPE
 
 main: site.o lattice.o interaction.o montecarlo.o filehandler.o main.cpp
-	${CC} ${CFLAGS} main.cpp site.o lattice.o interaction.o montecarlo.o filehandler.o -o main.exe	${PNGWRITE}
+	${CC} ${CFLAGS} main.cpp site.o lattice.o interaction.o montecarlo.o filehandler.o -o main.exe
 
 
 site.o: site.h site.cpp
 	${CC} ${CFLAGS} -c site.cpp 
 
 lattice.o: filehandler.h site.h lattice.h lattice.cpp
-	${CC} ${CFLAGS} -c lattice.cpp ${PNGWRITE}
+	${CC} ${CFLAGS} -c lattice.cpp${PNGWRITE}
 
 interaction.o: lattice.h site.h interaction.h interaction.cpp 
 	${CC} ${CFLAGS} -c interaction.cpp ${PNGWRITE}
@@ -19,7 +19,7 @@ montecarlo.o: interaction.h lattice.h filehandler.h montecarlo.h montecarlo.cpp
 	${CC} ${CFLAGS} -c montecarlo.cpp ${PNGWRITE}
 
 filehandler.o: montecarlo.h lattice.h filehandler.h filehandler.cpp
-	${CC} ${CFLAGS} -c filehandler.cpp ${PNGWRITE} 
+	${CC} ${CFLAGS} -c filehandler.cpp ${PNGWRITE}
 
 tester.o: tester.cpp
 	${CC} ${CFLAGS} -c tester.cpp

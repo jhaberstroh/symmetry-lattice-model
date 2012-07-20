@@ -8,10 +8,9 @@
 #include <QString>
 #include <QTextStream>
 #include <QThread>
-#include <QFuture>
-#include <QtConcurrentRun>
 #include <QDebug>
 #include "functionthread.h"
+#include "../Metropolis_Growth/montecarlo.h"
 
 
 namespace Ui {
@@ -39,6 +38,7 @@ signals:
 private:
     double SliderToDouble(int);
 
+    MonteCarlo* m;
     Ui::MainWindow *ui;
     FunctionThread* ft;
     bool open_thread;

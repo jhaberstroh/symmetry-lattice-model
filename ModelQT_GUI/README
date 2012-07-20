@@ -1,4 +1,9 @@
-qmake: qmake-qt4 ModelQT_GUI.pro -r -spec linux-g++
-Make: make -w
+#! /bin/bash
 
-Then run.
+qmake-qt4 ModelQT_GUI.pro -r -spec linux-g++
+make -w
+./ModelQT_GUI&
+make clean
+
+#need to change the makefile to include PNGwriter:
+# PNGWRITE = -I/usr/local/lib -L/usr/local/include -lpng -lpngwriter -lz -lfreetype -DNO_FREETYPE
