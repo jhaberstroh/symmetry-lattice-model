@@ -1,0 +1,4 @@
+qmake: qmake-qt4 ModelQT_GUI.pro -r -spec linux-g++
+Make: make -w
+
+Then run.
