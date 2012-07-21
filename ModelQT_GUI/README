@@ -7,3 +7,4 @@ make clean
 
 #need to change the makefile to include PNGwriter:
 # PNGWRITE = -I/usr/local/lib -L/usr/local/include -lpng -lpngwriter -lz -lfreetype -DNO_FREETYPE
+#then add ${PNGWRITE) to the end of all of the files in the "######### compile" section.
