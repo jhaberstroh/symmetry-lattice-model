@@ -1,8 +1,0 @@
-#! /bin/sh
-rm plotfile.gp
-echo set title \"$1\" > plotfile.gp
-echo plot \"$1\" u 0:$2 w lp >> plotfile.gp
-echo call \"export.gp\" \"$1.png\" >> plotfile.gp
-echo pause -1 >> plotfile.gp
-gnuplot plotfile.gp
-
