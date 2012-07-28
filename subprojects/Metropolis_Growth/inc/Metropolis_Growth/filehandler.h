@@ -167,7 +167,7 @@ class LatticeFile : public FileHandler{
 
   //MakeColorImage() uses the interactions N1 and N2 to create a gnuplot file
   void MakeSquareLatticeColorImage(Interaction& lattice_interaction)
-  {cout << "Dummy function for FileHandler::MakeSquareLatticeColorImage."};
+  {cout << "Dummy function for FileHandler::MakeSquareLatticeColorImage.";}
 
  private:
   /*
