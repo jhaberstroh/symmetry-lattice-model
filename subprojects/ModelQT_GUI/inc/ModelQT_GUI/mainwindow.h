@@ -10,6 +10,7 @@
 #include <QThread>
 #include <QDebug>
 #include "functionthread.h"
+#include "montecarlo.h"
 //#include "../Metropolis_Growth/montecarlo.h"
 
 
@@ -42,6 +43,7 @@ private:
     Ui::MainWindow *ui;
     FunctionThread* ft;
     bool open_thread;
+    MonteCarlo test;
 };
 
 #endif // MAINWINDOW_H

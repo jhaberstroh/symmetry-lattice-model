@@ -48,6 +48,7 @@ SET(ModelQT_GUI_HEADERS
   ${PROJ_NAME}/inc/${PROJ_NAME}/mainwindow.h 
   ${PROJ_NAME}/inc/${PROJ_NAME}/simpleclass.h)
 SET(ModelQT_GUI_FORMS ${PROJ_NAME}/ui/mainwindow.ui)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJ_NAME}/bin)
 
 #Build the moc headers which are needed to process Q_OBJECT header macros
 QT4_WRAP_CPP(ModelQT_GUI_HEADERS_MOC ${ModelQT_GUI_HEADERS})
@@ -60,8 +61,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIRECTORY})
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
-add_executable(ModelQT_GUI.exe ${ModelQT_GUI_SOURCES} 
+
+add_executable(${PROJ_NAME}.exe #output name
+  ${ModelQT_GUI_SOURCES} 
   ${ModelQT_GUI_HEADERS_MOC} 
-  ${ModelQT_GUI_FORMS_HEADERS}
-  ${PROJ_NAME}/bin)
-target_link_libraries(ModelQT_GUI.exe ${QT_LIBRARIES} ${LIBR_NAME})
+  ${ModelQT_GUI_FORMS_HEADERS})
+target_link_libraries(${PROJ_NAME}.exe ${QT_LIBRARIES} ${LIBR_NAME})
