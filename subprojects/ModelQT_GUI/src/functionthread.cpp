@@ -56,8 +56,9 @@ void FunctionThread::run(){
         for (int i = 0 ; i < 10 ; i++){
             m_montecarlo.DoMetropolisSweep();
             m_montecarlo.PrintTextLattice();
-            m_montecarlo.order_parameter_handler().Track();
         }
+        m_montecarlo.order_parameter_handler().Track();
+        m_montecarlo.order_parameter_handler().MakeOPImage();
         emit sendOutput(rand());
     }
 }

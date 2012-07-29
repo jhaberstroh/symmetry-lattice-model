@@ -76,7 +76,7 @@ void FileHandler::init_write_file(const string& init_write_name, ios_base::openm
 
 
 FileHandler::FileHandler(const string& init_write_name, ios::openmode write_openmode)
-  : m_write_name(init_write_name),m_write_openmode(write_openmode), 
+  : m_write_name(init_write_name),m_write_openmode(write_openmode),
     m_has_write_file(false), m_write_file_open(false){
   if (init_write_name.compare("") != 0)
     m_has_write_file = true;
@@ -126,10 +126,10 @@ string MonteCarloFile::MakeFileName(const vector<FNameOpt>& fname_include){
       break;
     case kQN2:
       strbuf << "_Q"<<m_montecarlo.N2_symmetry_num()<<"-"<<m_montecarlo.QN2();
-      break;      
+      break;
     case kT:
       strbuf << "_T-"<<m_montecarlo.T();
-      break;      
+      break;
     case kPDel:
       strbuf << "_PDEL-"<<m_montecarlo.pdel();
       break;
@@ -139,7 +139,7 @@ string MonteCarloFile::MakeFileName(const vector<FNameOpt>& fname_include){
     }
   }
   if (FileExists(strbuf.str() + ".csv")){
-    int i = 0; 
+    int i = 0;
     ostringstream tempstream(strbuf.str() + ".csv", ios::app);
     cout << tempstream.str() <<  " and " << FileExists(tempstream.str()) << endl;
     while (FileExists(tempstream.str()) && i < 1000){
@@ -152,12 +152,12 @@ string MonteCarloFile::MakeFileName(const vector<FNameOpt>& fname_include){
       strbuf << "_" << i << ".csv";
     }
     else{
-      strbuf << ".csv"; 
+      strbuf << ".csv";
       cout << "No available files to write into! Appending to the non-indexed file.";
     }
   }
   else{
-    strbuf << ".csv"; 
+    strbuf << ".csv";
   }
   return strbuf.str();
 }
@@ -196,12 +196,12 @@ void MonteCarloFile::PrepareMCFile(const vector<FNameOpt>& fname_include, ios::o
   }
   else{
     cout << "Write file already prepared (m_has_write_file == true). Will not re-prepare.\n"
-	 << "Use the UpdateMCFile method or something that isn't written.\n" 
+	 << "Use the UpdateMCFile method or something that isn't written.\n"
          << "Or just fail less. That's always an option."
 	 << "=> Skipping MonteCarloFile::PrepareMCFile()" << endl;
   }
 }
- 
+
 
 MonteCarloFile::MonteCarloFile(MonteCarlo& mc_save)
   :FileHandler(), m_montecarlo(mc_save){
@@ -240,22 +240,24 @@ void MonteCarloFile::Track(){
   if (WriteBufferToFile())
     cout << "Tracked!" <<endl;
   else
-    cout << "Failure to write occurred in MonteCarloFile::Track" <<endl;    
+    cout << "Failure to write occurred in MonteCarloFile::Track" <<endl;
 }
 
 
-void MonteCarloFile::MakeOPImage(FColumn y_axis){
+int MonteCarloFile::MakeOPImage(FileHandler::FColumn y_axis){
   ostringstream system_request("");
-  system_request << "./gp_script " << write_name() <<" "<< (y_axis+1);
-  system(system_request.str().c_str());
+  //system_request << "#! /bin/sh\n"
+  //system_request << "rm plotfile.gp\n";
+  //system_request << "echo set title \""<<write_name()<<"\" > plotfile.gp\n";
+  //system_request << "echo plot \""<<write_name()<<"\" u 0:"<<(yaxis+1)<<" w lp >> plotfile.gp\n";
+  //system_request << "echo call \"export.gp\""
+  system_request << "./scripts/gp_script " << write_name() <<" "<< (y_axis+1);
+  return system(system_request.str().c_str());
 }
 
 void MonteCarloFile::MakeLatticeImage(){
   //TODO: (jhaberstroh@lbl.gov) implement
 }
-
-
-
 
 /*--------------------------------------------------
   LatticeFile methods
@@ -301,7 +303,7 @@ LatticeFile::RGBVect LatticeFile::ColorLookup(Color c, double* r, double* g, dou
   if (r != 0) (*r) = rgb[0];
   if (g != 0) (*g) = rgb[1];
   if (b != 0) (*b) = rgb[2];
-
+https://auth.berkeley.edu/cas/logout?url=https://calmail.berkeley.edu/
   return rgb;
 }
 
@@ -339,11 +341,11 @@ void LatticeFile::DrawSite(pngwriter& png, int pixel_size, Lattice::Coord coord,
       int y = coord[0] * pixel_size;
       int x = coord[1] * pixel_size;
       //We are now in the upper-left corner.
-      //Draw the square in the full pixel. 
+      //Draw the square in the full pixel.
       png.filledsquare(x, y,
                  x+pixel_size,y+pixel_size,
                  r, g, b);
-      
+
       int center_displacement = (pixel_size + 1) / 2;
       x += center_displacement;
       y += center_displacement;
@@ -379,7 +381,7 @@ void LatticeFile::MakeSquareLatticeColorImage(Interaction& lattice_interaction){
       int n1_bonds = lattice_interaction.get_n1_bonds_at_site(coord);
       int n2_bonds = lattice_interaction.get_n2_bonds_at_site(coord);
       current_site = m_lattice.get_site(coord);
-      
+
       int rot = (current_site->occ())? current_site->rot() : -1;
       DrawSite(png, pixel_size, coord, rot, m_lattice.R(), n1_bonds, n2_bonds);
     }

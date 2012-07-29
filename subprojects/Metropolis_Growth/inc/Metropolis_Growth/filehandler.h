@@ -7,7 +7,7 @@
 
   This class is setup for polymorphism, to encourage
   users to build their own classes implementing IO
-  for specific headers, data formats, and options like 
+  for specific headers, data formats, and options like
   gnuplot interfaces.
   Furthermore, constructors should be protected/private,
   and filehandler subclasses should be friends of the
@@ -48,7 +48,7 @@ class FileHandler{
   enum FColumn{kRho, kRhoSq,kN1OP,kN1OPSq,kN2OP,kN2OPSq,kNColumns};
   /*--------------------------------------------------
     Member Variables
-    --------------------------------------------------*/  
+    --------------------------------------------------*/
  private:
   ostringstream m_write_name;
   ios_base::openmode m_write_openmode;
@@ -61,7 +61,7 @@ class FileHandler{
     Accessors and Mutators
     --------------------------------------------------*/
  public:
-  inline string         write_name(){ 
+  inline string         write_name(){
     return m_write_name.str();
   }
   inline const char*        c_write_name(){
@@ -70,14 +70,14 @@ class FileHandler{
   inline bool has_write_file(){
     return m_has_write_file;
   }
-  inline ios::openmode write_openmode() { 
+  inline ios::openmode write_openmode() {
     return m_write_openmode;
   }
  protected:
-  inline void  set_write_name(const string& write_name){ 
-    m_write_name.str(write_name); 
+  inline void  set_write_name(const string& write_name){
+    m_write_name.str(write_name);
   }
-  inline void  set_write_openmode(ios::openmode write_openmode){ 
+  inline void  set_write_openmode(ios::openmode write_openmode){
     m_write_openmode = write_openmode;
   }
  private:
@@ -102,7 +102,7 @@ class FileHandler{
 
 
 //TODO: (jhaberstroh@lbl.gov) Include a Memento pattern for saving m_montecarlo to file.
-//Note: This class has a private constructor and should only be created by 
+//Note: This class has a private constructor and should only be created by
 //      a MonteCarlo object!
 //Furthermore, this file has no default constructor. Because it must be created
 // by a MonteCarlo object, that MonteCarlo object must pass itself by reference.
@@ -121,7 +121,7 @@ class MonteCarloFile : public FileHandler{
     --------------------------------------------------*/
  private:
   MonteCarloFile(MonteCarlo& mc_save);
-  void PrepareMCFile(const vector<FNameOpt>& fname_include = vector<FNameOpt>(), 
+  void PrepareMCFile(const vector<FNameOpt>& fname_include = vector<FNameOpt>(),
 		     ios::openmode write_openmode = ios::app);
   /*--------------------------------------------------
     Member Functions
@@ -136,7 +136,7 @@ class MonteCarloFile : public FileHandler{
   void Track();
 
   //Outsources to gnuplot
-  void MakeOPImage(FColumn y_axis = kN1OP);
+  int MakeOPImage(FColumn y_axis = kN1OP);
 
   void MakeLatticeImage();
 };
@@ -160,7 +160,7 @@ class LatticeFile : public FileHandler{
  public:
   //MakeSimpleFile() saves only the rot and occ data
   void MakeSimpleFile(){};
-  
+
   //MakeBondFile() saves the rot and occ data, as well
   // as the number of active bonds at each site
   void MakeBondNumberFile(Interaction& lattice_interaction){};
@@ -180,7 +180,7 @@ class LatticeFile : public FileHandler{
   void DrawSite(pngwriter& png, int pixel_size, vector<int> coord, int rot, int R, int n1_bonds, int n2_bonds);
   */
   void InsertHeader(){}
-      
+
 };
 
 
