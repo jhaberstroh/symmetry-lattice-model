@@ -27,9 +27,11 @@ endif(NOT QT_INC_DIR)
 
 #We want to be able to reference LIBR_NAME.a
 include_directories(${QT_INC_DIR} 
+  ${PROJ_NAME}
   ${PROJ_NAME}/inc/${PROJ_NAME} 
   ${LIBR_NAME}/bin 
   ${LIBR_NAME}/inc/${LIBR_NAME})
+
 add_definitions(-g -O2 -Wall)
 
 #loads package which contains macros beginning with QT_
