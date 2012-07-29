@@ -43,34 +43,33 @@ double MainWindow::SliderToDouble(int slider_value){
 
 void MainWindow::on_parameter_value_changed(int value)
 {
-    ui->go->setChecked(false);
-    QString txt;
-    QTextStream txt_buf(&txt);
-    txt_buf << "Paused: " << !ui->go->isChecked();
-    ui->dialogueText->setText(*txt_buf.string());
-
+ // When sliders change, disable the running.
+    //ui->go->setChecked(false);
+    //QString txt;
+    //QTextStream txt_buf(&txt);
+    //txt_buf << "Paused: " << !ui->go->isChecked();
+    //ui->dialogueText->setText(*txt_buf.string());
 
     if (SliderToDouble(ui->J->value()) != ft->J()){
         qDebug() << "J_value_changed";
-        ui->labelJ->setNum(SliderToDouble(ui->J->value()));
-        ft->on_parameter_changed(SliderToDouble(ui->J->value()),
-                               FunctionThread::kParamJ);
+        ui->labelJ->setNum(get_j());
+        ft->on_parameter_changed(get_j(), FunctionThread::kParamJ);
     }
     if (SliderToDouble(ui->QN1->value()) != ft->QN1()){
         qDebug() << "QN1_value_changed";
-        ui->labelQN1->setNum(SliderToDouble(ui->QN1->value()));
-        ft->on_parameter_changed(SliderToDouble(ui->QN1->value()),
-                               FunctionThread::kParamQN1);
+        ui->labelQN1->setNum(get_qn1());
+        ft->on_parameter_changed(get_qn1(),FunctionThread::kParamQN1);
     }
     if (SliderToDouble(ui->QN2->value()) != ft->QN2()){
         qDebug() << "QN2_value_changed";
-        ui->labelQN2->setNum(SliderToDouble(ui->QN2->value()));
-        ft->on_parameter_changed(SliderToDouble(ui->QN2->value()),
-                               FunctionThread::kParamQN2);
+        ui->labelQN2->setNum(get_qn2());
+        ft->on_parameter_changed(get_qn2(),FunctionThread::kParamQN2);
     }
-
-
 }
+
+double MainWindow::get_j(){ return SliderToDouble(ui->J->value());}
+double MainWindow::get_qn1(){return SliderToDouble(ui->QN1->value());}
+double MainWindow::get_qn2(){return SliderToDouble(ui->QN2->value());}
 
 void MainWindow::on_thread_returned_value(double val)
 {

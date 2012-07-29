@@ -10,7 +10,6 @@
 #include <QThread>
 #include <QDebug>
 #include "functionthread.h"
-#include "montecarlo.h"
 //#include "../Metropolis_Growth/montecarlo.h"
 
 
@@ -26,7 +25,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    
+
 private slots:
     void on_go_toggled(bool checked);
     void on_parameter_value_changed(int value);
@@ -39,11 +38,13 @@ signals:
 private:
     double SliderToDouble(int);
 
-    //    MonteCarlo* m;
+    double get_j();
+    double get_qn1();
+    double get_qn2();
+
     Ui::MainWindow *ui;
     FunctionThread* ft;
     bool open_thread;
-    MonteCarlo test;
 };
 
 #endif // MAINWINDOW_H

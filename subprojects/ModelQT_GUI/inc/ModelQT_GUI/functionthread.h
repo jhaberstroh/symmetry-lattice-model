@@ -5,6 +5,8 @@
 #include <QThread>
 #include <QDebug>
 #include "simpleclass.h"
+#include "montecarlo.h"
+
 
 class FunctionThread : public QThread
 {
@@ -13,10 +15,10 @@ public:
     enum Parameter{kParamJ, kParamQN1, kParamQN2, kNone};
     explicit FunctionThread(QObject *parent = 0, QPushButton* go = 0);
     void beginMCRunning();
-    
+
 signals:
     void sendOutput(double output);
-    
+
 public slots:
     void on_go_toggled(bool checked);
     void on_parameter_changed(double new_parameter_value, Parameter p);
@@ -25,7 +27,7 @@ protected:
     void run();
 
     QPushButton* m_go;
-    SimpleClass m_s;
+    MonteCarlo m_montecarlo;
     int m_count;
     double m_J;
     double m_QN1;

@@ -7,7 +7,6 @@ MonteCarlo::MonteCarlo(double J_in, double Q_in, double Q2_in,
                        int R_in, double T_in, double pdel_in)
   :m_delete_probability(pdel_in), m_T(T_in)
 {
-
   m_rng = MTRand();
   vector<int> dimensions;
   dimensions.push_back(10);dimensions.push_back(10);
@@ -28,7 +27,7 @@ void MonteCarlo::DoMetropolisMove(){
   vector<int> new_N2_bonds;
   bool moved;
   int old_rot;
-  
+
   //points current_site to a random site, and write the coordinate to current_coord
   // and the neighbor-pointers to current_neighbors.
   current_site = m_lattice.random_site(m_rng, &current_neighbors, &current_coord);
@@ -42,19 +41,19 @@ void MonteCarlo::DoMetropolisMove(){
       //
       //Note: Energy is always zero for an unoccupied site
       //      Thus, delta-E = 0 - get_interaction_energy
-      transition_probability = 
+      transition_probability =
         (1.0/(m_delete_probability * current_site->R()))*
         exp(-m_interaction.get_occ_energy_difference
             (current_site, *current_neighbors, m_T, new_N1_bonds, new_N2_bonds)/m_T);
-      
+
       moved = current_site->AttemptOcc(transition_probability, m_rng);
     }
 
     else{
       //We have selected a rotation move
       int plus_minus;
-      plus_minus = (rand() < .5)? 1:-1 ; 
-      transition_probability = 
+      plus_minus = (rand() < .5)? 1:-1 ;
+      transition_probability =
         exp(-m_interaction.get_rot_energy_difference
             (current_site, *current_neighbors, plus_minus, new_N1_bonds, new_N2_bonds)/m_T);
 
@@ -66,10 +65,10 @@ void MonteCarlo::DoMetropolisMove(){
     old_rot = -1;
 
     current_site->RandRot(m_rng);
-    transition_probability = 
+    transition_probability =
       (m_delete_probability * current_site->R())*
       exp(-m_interaction.get_occ_energy_difference
-          (current_site, *current_neighbors, m_T, new_N1_bonds, new_N2_bonds)/m_T);    
+          (current_site, *current_neighbors, m_T, new_N1_bonds, new_N2_bonds)/m_T);
 
     moved = current_site->AttemptOcc(transition_probability, m_rng);
   }
@@ -103,7 +102,8 @@ int TestMonteCarloCode(){
 
   for (int i = 0 ; i < 10 ; i++){
     m.DoMetropolisSweep();
-    m.PrintLattice();
+    m.PrintTextLattice();
+    m.order_parameter_handler().Track();
   }
 
   return 0;

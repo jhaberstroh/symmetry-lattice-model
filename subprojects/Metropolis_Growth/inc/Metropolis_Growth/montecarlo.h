@@ -2,7 +2,7 @@
 /*--------------------------------------------------
   MonteCarlo is a facade pattern, intended to simplify
   the interaction between the aspects of the lattice
-  and the user. 
+  and the user.
 
   It also serves as an adapter between the Interaction,
   the Lattice, and the FileHandler.
@@ -43,7 +43,7 @@ class MonteCarlo{
  private:
   Interaction m_interaction;
   SquareLattice m_lattice;
-  //The probability of performing a delete move vs. a 
+  //The probability of performing a delete move vs. a
   // rotation move on an occupied site;
   // this has an influence on the probability function
   // called by DoMetropolisMove() in order to maintain
@@ -52,13 +52,13 @@ class MonteCarlo{
   double m_T;
   MTRand m_rng;
   MonteCarloFile* m_file_handler;
-  
+
 
  /*----------------------------------------------------
     Member Functions & constructors
     ----------------------------------------------------*/
  public:
-  MonteCarlo(double J_in = Jdft, double Q_in = Qdft, double Q2_in = Q2dft, 
+  MonteCarlo(double J_in = Jdft, double Q_in = Qdft, double Q2_in = Q2dft,
              int R_in = Rdft, double T_in = Tdft, double pdel_in = pdeldft);
   ~MonteCarlo(){delete m_file_handler;}
 //TODO: make a copy constructor and an assignment operator. Fortunately, I'm not likely to be
@@ -76,7 +76,7 @@ class MonteCarlo{
     ResetEnergy();
   };
 
-  inline void PrintLattice(){  m_lattice.Print();}
+  inline void PrintTextLattice(){  m_lattice.Print();}
   void PrintOrderParameters();
 
   /*--------------------------------------------------
@@ -84,7 +84,7 @@ class MonteCarlo{
     --------------------------------------------------*/
   inline MonteCarloFile& order_parameter_handler(){
     if (!m_file_handler->has_write_file())
-      m_file_handler->PrepareMCFile();  
+      m_file_handler->PrepareMCFile();
     return *m_file_handler;
   }
   inline LatticeFile& lattice_handler(){
