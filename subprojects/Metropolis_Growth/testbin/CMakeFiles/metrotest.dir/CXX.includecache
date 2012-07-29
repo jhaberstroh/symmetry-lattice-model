@@ -6,11 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/filehandler.cpp
+/home/john/Coding/project/subprojects/Metropolis_Growth/testing/metrotest.cpp
 montecarlo.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/montecarlo.h
-filehandler.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/filehandler.h
+/home/john/Coding/project/subprojects/Metropolis_Growth/testing/montecarlo.h
 
 Metropolis_Growth/inc/Metropolis_Growth/MersenneTwister.h
 iostream

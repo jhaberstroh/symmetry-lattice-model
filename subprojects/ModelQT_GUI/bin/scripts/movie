@@ -1,0 +1,42 @@
+#! /bin/bash
+
+echo -n "Specify png identity string (i.e. Image*png = Image) : "
+read -e NAME
+
+echo -n "Choose width of image in pixels, height will be scaled accordingly : "
+read -e WIDTH
+
+echo -n "Choose image conversion  formate (\"jpg\" or \"sgi\") : "
+read -e FORMAT
+
+echo -n "Choose frame rate : "
+read -e FPS
+
+first_frame=` ls $NAME*.png | sort | head -n 1`
+
+W=`identify $first_frame | awk '{print $3}' | awk -F "x" '{print $1}'`
+H=`identify $first_frame | awk '{print $3}' | awk -F "x" '{print $2}'`
+HEIGHT=`echo $H*$WIDTH/$W | bc -l`
+HEIGHT=${HEIGHT/\.*}
+
+optimal_bitrate=`echo 50*25*$WIDTH*$HEIGHT/256 | bc -l`
+optimal_bitrate=${optimal_bitrate/\.*}
+opt="vbitrate=$optimal_bitrate:mbd=2:keyint=132:v4mv:vqmin=3:vlelim=-4:vcelim=7:lumi_mask=0.07:dark_mask=0.10:naq:vqcomp=0.7:vqblur=0.2:mpeg_quant"
+#opt="vbitrate=$optimal_bitrate:mbd=2:keyint=132:v4mv:vqmin=3:lumi_mask=0.07:dark_mask=0.2:mpeg_quant:scplx_mask=0.1:tcplx_mask=0.1:naq"
+
+echo "Converting images..."
+
+for i in $(ls $NAME*.png)
+do
+	echo $i
+	convert $i -resize $WIDTH\x$HEIGHT! ${i%.png}.$FORMAT
+done
+
+echo "Done!"
+
+mencoder -ovc lavc -lavcopts vcodec=mpeg4:vpass=1:$opt -mf type=$FORMAT:fps=$FPS -nosound -o /dev/null mf://\*.$FORMAT
+mencoder -ovc lavc -lavcopts vcodec=mpeg4:vpass=2:$opt -mf type=$FORMAT:fps=$FPS -nosound -o $NAME.avi mf://\*.$FORMAT
+ffmpeg -i $NAME.avi -acodec aac -ab 128k -vcodec mpeg4 -b 1200k -mbd 2 -flags +4m -cmp 2 -subcmp 2 -s $WIDTH\x$HEIGHT $NAME.mp4
+
+rm *$FORMAT
+rm divx2pass.log

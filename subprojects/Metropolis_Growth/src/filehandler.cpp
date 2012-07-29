@@ -106,10 +106,40 @@ bool FileHandler::WriteBufferToFile(){
   }
 }
 
+bool FileHandler::FindIndexedName(string* file_name, const string& extension_sans_dot){
+    int kMaxIndex = 10000;
+
+    if (FileExists(*file_name + "." + extension_sans_dot)){
+        int i = 0;
+        ostringstream temp_fname("");
+        temp_fname << *file_name << "_" << i << "." << extension_sans_dot;
+        //DEBUG:
+        //cout << temp_fname.str() << " and " << FileExists(temp_fname.str()) << endl;
+        while (FileExists(temp_fname.str()) && i < kMaxIndex){
+            i++;
+            temp_fname.str("");
+            temp_fname << *file_name << "_" << i << "." << extension_sans_dot;
+            //DEBUG:
+            //cout << temp_fname.str() << " and " << FileExists(temp_fname.str()) << endl;
+        }
+        if (i < kMaxIndex){
+            temp_fname.str("");
+            temp_fname << *file_name << "_" << i;
+            *file_name = temp_fname.str();
+        }
+        else{
+            cout << "in FileHandler::FindNexNameIndex - No available files to write into! Returning to the non-indexed file name.";
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
 
 /*--------------------------------------------------
   MonteCarloFile Members
   --------------------------------------------------*/
+
 string MonteCarloFile::MakeFileName(const vector<FNameOpt>& fname_include){
   ostringstream strbuf("");
   strbuf << "ordPar";
@@ -138,28 +168,9 @@ string MonteCarloFile::MakeFileName(const vector<FNameOpt>& fname_include){
       break;
     }
   }
-  if (FileExists(strbuf.str() + ".csv")){
-    int i = 0;
-    ostringstream tempstream(strbuf.str() + ".csv", ios::app);
-    cout << tempstream.str() <<  " and " << FileExists(tempstream.str()) << endl;
-    while (FileExists(tempstream.str()) && i < 1000){
-      i++;
-      tempstream.str(strbuf.str());
-      tempstream << "_" << i << ".csv";
-      cout << tempstream.str() <<  " and " << FileExists(tempstream.str()) << endl;
-    }
-    if (i < 100){
-      strbuf << "_" << i << ".csv";
-    }
-    else{
-      strbuf << ".csv";
-      cout << "No available files to write into! Appending to the non-indexed file.";
-    }
-  }
-  else{
-    strbuf << ".csv";
-  }
-  return strbuf.str();
+  string file_name = strbuf.str();
+  FindIndexedName(&file_name, "csv");
+  return file_name + ".csv";
 }
 
 
@@ -246,12 +257,12 @@ void MonteCarloFile::Track(){
 
 int MonteCarloFile::MakeOPImage(FileHandler::FColumn y_axis){
   ostringstream system_request("");
-  //system_request << "#! /bin/sh\n"
-  //system_request << "rm plotfile.gp\n";
-  //system_request << "echo set title \""<<write_name()<<"\" > plotfile.gp\n";
-  //system_request << "echo plot \""<<write_name()<<"\" u 0:"<<(yaxis+1)<<" w lp >> plotfile.gp\n";
-  //system_request << "echo call \"export.gp\""
-  system_request << "./scripts/gp_script " << write_name() <<" "<< (y_axis+1);
+  string image_write_name = write_name();
+
+  FindIndexedName(&image_write_name, "png");
+  system_request << "./scripts/gp_script "
+    << write_name() << " "
+    << image_write_name << " "<< (y_axis+1);
   return system(system_request.str().c_str());
 }
 

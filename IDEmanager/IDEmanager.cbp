@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="IDEmanager" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/IDEmanager" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/IDEmanager" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../subprojects/Metropolis_Growth/CMakeLists.txt" />
+		<Unit filename="../subprojects/Metropolis_Growth/inc/Metropolis_Growth/MersenneTwister.h" />
+		<Unit filename="../subprojects/Metropolis_Growth/inc/Metropolis_Growth/filehandler.h" />
+		<Unit filename="../subprojects/Metropolis_Growth/inc/Metropolis_Growth/interaction.h" />
+		<Unit filename="../subprojects/Metropolis_Growth/inc/Metropolis_Growth/lattice.h" />
+		<Unit filename="../subprojects/Metropolis_Growth/inc/Metropolis_Growth/montecarlo.h" />
+		<Unit filename="../subprojects/Metropolis_Growth/inc/Metropolis_Growth/site.h" />
+		<Unit filename="../subprojects/Metropolis_Growth/inc/Metropolis_Growth/version.h" />
+		<Unit filename="../subprojects/Metropolis_Growth/src/CMakeLists.txt" />
+		<Unit filename="../subprojects/Metropolis_Growth/src/filehandler.cpp" />
+		<Unit filename="../subprojects/Metropolis_Growth/src/interaction.cpp" />
+		<Unit filename="../subprojects/Metropolis_Growth/src/lattice.cpp" />
+		<Unit filename="../subprojects/Metropolis_Growth/src/montecarlo.cpp" />
+		<Unit filename="../subprojects/Metropolis_Growth/src/site.cpp" />
+		<Unit filename="../subprojects/Metropolis_Growth/src/version.cpp" />
+		<Unit filename="../subprojects/Metropolis_Growth/testing/CMakeLists.txt" />
+		<Unit filename="../subprojects/Metropolis_Growth/testing/metrotest.cpp" />
+		<Unit filename="../subprojects/Metropolis_Growth/testing/pngtest.cpp" />
+		<Unit filename="../subprojects/ModelQT_GUI/inc/ModelQT_GUI/CMakeLists.txt" />
+		<Unit filename="../subprojects/ModelQT_GUI/inc/ModelQT_GUI/functionthread.h" />
+		<Unit filename="../subprojects/ModelQT_GUI/inc/ModelQT_GUI/mainwindow.h" />
+		<Unit filename="../subprojects/ModelQT_GUI/inc/ModelQT_GUI/simpleclass.h" />
+		<Unit filename="../subprojects/ModelQT_GUI/src/functionthread.cpp" />
+		<Unit filename="../subprojects/ModelQT_GUI/src/latTest.cpp" />
+		<Unit filename="../subprojects/ModelQT_GUI/src/main.cpp" />
+		<Unit filename="../subprojects/ModelQT_GUI/src/mainwindow.cpp" />
+		<Unit filename="../subprojects/ModelQT_GUI/src/simpleclass.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

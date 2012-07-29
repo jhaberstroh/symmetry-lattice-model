@@ -1,0 +1,8 @@
+To compile:
+
+cmake .
+make
+
+make will crash, and require that the user manually move ui_mainwindow.h into ModelQT_GUI/inc/ModelQT_GUI before the compile completes.
+
+After building and linking, /Metropolis_Growth/scripts must be put in the directory of the executable (ModelQT_GUI/bin) in order for the gnuplot plugins to work.

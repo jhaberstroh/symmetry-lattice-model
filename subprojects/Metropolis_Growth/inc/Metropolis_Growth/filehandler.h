@@ -73,6 +73,7 @@ class FileHandler{
   inline ios::openmode write_openmode() {
     return m_write_openmode;
   }
+
  protected:
   inline void  set_write_name(const string& write_name){
     m_write_name.str(write_name);
@@ -80,8 +81,11 @@ class FileHandler{
   inline void  set_write_openmode(ios::openmode write_openmode){
     m_write_openmode = write_openmode;
   }
+
  private:
   void rename_file(const string& old_name, const string& new_name);
+  //Modifies file_name to be the next available file
+  //Returns true if file_name is changed, and false otherwise.
   /*--------------------------------------------------
     Constructor
     --------------------------------------------------*/
@@ -95,8 +99,9 @@ class FileHandler{
     Member Functions
     --------------------------------------------------*/
  protected:
-  bool WriteBufferToFile();
-  virtual void InsertHeader() = 0;
+    bool FindIndexedName(string* file_name, const string& extension_sans_dot);
+    bool WriteBufferToFile();
+    virtual void InsertHeader() = 0;
 };
 
 
