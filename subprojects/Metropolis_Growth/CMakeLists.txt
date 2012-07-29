@@ -8,4 +8,4 @@ include_directories(inc/${PROJ_NAME} src)
 add_definitions(-g -O2 -Wall)
 
 add_subdirectory(src bin)
-# add_subdirectory(testing bin)
+add_subdirectory(testing testbin)

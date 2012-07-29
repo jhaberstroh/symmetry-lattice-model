@@ -22,7 +22,7 @@ int main(int argc, char** argv){
   m.order_parameter_handler().Track();
 
   for (double J = 1.0 ; J < 3.0 ; J += .4){
-    cout << "Changing parameters! \n\n\n\n";
+    //cout << "Changing parameters! \n\n\n\n";
     DoNSweepsAtJ(m, 10, J);
   }
 

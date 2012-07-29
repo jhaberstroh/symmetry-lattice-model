@@ -70,7 +70,6 @@ int Interaction::InitNBond(int symmetry_num, Lattice::BondVect* n_bond_lattice){
 
             //If their alignments are such that they will have bonding or repulsion...
             if ((current_site[k] % division_size) == (current_site[0] % division_size)){
-              cout << "Index to access:" << l->LookupBondIndex(coord, k-1) <<endl;
               //Second argument of LookupBondIndex is the direction; this is synchronized
               // with the choices within subclasses of SquareLattice because those classes
               // build the neighbor arrays!
