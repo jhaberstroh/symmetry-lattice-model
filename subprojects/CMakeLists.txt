@@ -60,8 +60,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIRECTORY})
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
-add_executable(ModelQT_GUI ${ModelQT_GUI_SOURCES} 
+add_executable(ModelQT_GUI.exe ${ModelQT_GUI_SOURCES} 
   ${ModelQT_GUI_HEADERS_MOC} 
   ${ModelQT_GUI_FORMS_HEADERS}
   ${PROJ_NAME}/bin)
-target_link_libraries(ModelQT_GUI ${QT_LIBRARIES} ${LIBR_NAME})
+target_link_libraries(ModelQT_GUI.exe ${QT_LIBRARIES} ${LIBR_NAME})

@@ -30,7 +30,7 @@ site.h
 site.h
 /home/john/Coding/project/subprojects/Metropolis_Growth/src/site.h
 
-inc/Metropolis_Growth/MersenneTwister.h
+Metropolis_Growth/inc/Metropolis_Growth/MersenneTwister.h
 iostream
 -
 climits
@@ -42,7 +42,7 @@ ctime
 cmath
 -
 
-inc/Metropolis_Growth/filehandler.h
+Metropolis_Growth/inc/Metropolis_Growth/filehandler.h
 iostream
 -
 sstream
@@ -60,19 +60,19 @@ stdlib.h
 cmath
 -
 version.h
-inc/Metropolis_Growth/version.h
+Metropolis_Growth/inc/Metropolis_Growth/version.h
 
-inc/Metropolis_Growth/interaction.h
+Metropolis_Growth/inc/Metropolis_Growth/interaction.h
 stdexcept
 -
 cmath
 -
 lattice.h
-inc/Metropolis_Growth/lattice.h
+Metropolis_Growth/inc/Metropolis_Growth/lattice.h
 site.h
-inc/Metropolis_Growth/site.h
+Metropolis_Growth/inc/Metropolis_Growth/site.h
 
-inc/Metropolis_Growth/lattice.h
+Metropolis_Growth/inc/Metropolis_Growth/lattice.h
 iostream
 -
 vector
@@ -82,13 +82,13 @@ stdexcept
 algorithm
 -
 MersenneTwister.h
-inc/Metropolis_Growth/MersenneTwister.h
+Metropolis_Growth/inc/Metropolis_Growth/MersenneTwister.h
 site.h
-inc/Metropolis_Growth/site.h
+Metropolis_Growth/inc/Metropolis_Growth/site.h
 filehandler.h
-inc/Metropolis_Growth/filehandler.h
+Metropolis_Growth/inc/Metropolis_Growth/filehandler.h
 
-inc/Metropolis_Growth/montecarlo.h
+Metropolis_Growth/inc/Metropolis_Growth/montecarlo.h
 iostream
 -
 sstream
@@ -96,21 +96,21 @@ sstream
 fstream
 -
 interaction.h
-inc/Metropolis_Growth/interaction.h
+Metropolis_Growth/inc/Metropolis_Growth/interaction.h
 lattice.h
-inc/Metropolis_Growth/lattice.h
+Metropolis_Growth/inc/Metropolis_Growth/lattice.h
 filehandler.h
-inc/Metropolis_Growth/filehandler.h
+Metropolis_Growth/inc/Metropolis_Growth/filehandler.h
 
-inc/Metropolis_Growth/site.h
+Metropolis_Growth/inc/Metropolis_Growth/site.h
 iostream
 -
 vector
 -
 MersenneTwister.h
-inc/Metropolis_Growth/MersenneTwister.h
+Metropolis_Growth/inc/Metropolis_Growth/MersenneTwister.h
 
-inc/Metropolis_Growth/version.h
+Metropolis_Growth/inc/Metropolis_Growth/version.h
 iostream
 -
 fstream
