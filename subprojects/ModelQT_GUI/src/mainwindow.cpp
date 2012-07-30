@@ -77,5 +77,8 @@ void MainWindow::on_thread_returned_value(double val)
     QString txt;
     QTextStream txt_buf(&txt);
     txt_buf << "Return Value: " << val;
-    ui->MainDisplay->setText(*txt_buf.string());
+    //TODO: make MainDisplay show the last created image file
+    QImage img;
+    img.load("ordPar_R8_J-0_Q2-0_Q4-0.csv_1.png");
+    ui->MainDisplay->setPixmap(QPixmap::fromImage(img));
 }

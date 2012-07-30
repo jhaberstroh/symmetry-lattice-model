@@ -9,6 +9,7 @@
 #include <QTextStream>
 #include <QThread>
 #include <QDebug>
+#include <QLabel>
 #include "functionthread.h"
 //#include "../Metropolis_Growth/montecarlo.h"
 
