@@ -8,6 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->go->setCheckable(true);
     ui->stop->setCheckable(true);
+    ui->MainDisplay->setBackgroundRole(QPalette::Base);
+    ui->MainDisplay->setScaledContents(true);
+    ui->MainDisplay->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     ft = new FunctionThread(0, ui->go);
     open_thread = 0;
@@ -78,7 +81,9 @@ void MainWindow::on_thread_returned_value(double val)
     QTextStream txt_buf(&txt);
     txt_buf << "Return Value: " << val;
     //TODO: make MainDisplay show the last created image file
-    QImage img;
-    img.load("ordPar_R8_J-0_Q2-0_Q4-0.csv_1.png");
-    ui->MainDisplay->setPixmap(QPixmap::fromImage(img));
+    QImage image("ordPar_R8_J-0_Q2-0_Q4-0.csv_1.png");
+    if (!image.isNull()){
+        ui->MainDisplay->setPixmap(QPixmap::fromImage(image));
+        Q_ASSERT(ui->MainDisplay->pixmap());
+    }
 }
