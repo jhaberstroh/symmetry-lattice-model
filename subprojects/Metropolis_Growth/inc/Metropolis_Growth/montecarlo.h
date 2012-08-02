@@ -84,6 +84,9 @@ class MonteCarlo{
   inline LatticeFile& lattice_handler(){ return m_lattice.lattice_handler();}
   inline Interaction& interaction(){return m_interaction;}
 
+  inline std::string op_image_location(){return m_log_file.ReadLog();}
+  inline std::string lattice_image_location(){return "";}
+
   void reset_default_phase(Lattice::Phase new_phase);
   inline void set_j  (double J)  {m_interaction.set_j(J);    ResetEnergy();}
   inline void set_qN1(double Q1) {m_interaction.set_qN1(Q1); ResetEnergy();}

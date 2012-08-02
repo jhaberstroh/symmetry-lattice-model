@@ -31,7 +31,7 @@ private slots:
     void on_go_toggled(bool checked);
     void on_parameter_value_changed(int value);
 
-    void on_thread_returned_value(double vals);
+    void on_thread_returned_value(QString image_location);
 
 signals:
     void parameter_changed(double parameter_value, FunctionThread::Parameter p);

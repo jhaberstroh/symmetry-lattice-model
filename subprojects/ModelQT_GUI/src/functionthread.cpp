@@ -59,7 +59,9 @@ void FunctionThread::run(){
         }
         m_montecarlo.order_parameter_handler().Track();
         m_montecarlo.order_parameter_handler().MakeImage();
-        emit sendOutput(rand());
+        QString emitter(m_montecarlo.op_image_location().c_str());
+        qDebug() << emitter;
+        emit sendOutput(emitter);
     }
 }
 

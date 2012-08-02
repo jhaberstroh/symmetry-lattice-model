@@ -3,6 +3,7 @@
 
 #include <QPushButton>
 #include <QThread>
+#include <QString>
 #include <QDebug>
 #include "simpleclass.h"
 #include "montecarlo.h"
@@ -17,7 +18,7 @@ public:
     void beginMCRunning();
 
 signals:
-    void sendOutput(double output);
+    void sendOutput(QString image_location);
 
 public slots:
     void on_go_toggled(bool checked);

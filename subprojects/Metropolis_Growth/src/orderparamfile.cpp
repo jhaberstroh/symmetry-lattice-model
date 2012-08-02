@@ -127,13 +127,18 @@ int OrderParamFile::MakeImage(FileHandler::FColumn y_axis){
   string image_write_name = write_name();
 
   FindIndexedName(&image_write_name, "png");
-  system_request << "./scripts/gp_script "
+  system_request << "gp_script "
     << write_name() << " "
     << image_write_name << " "<< (y_axis+1);
 
 
   if (m_log_file != 0){
+    cout << "There is a non-null LogFile pointer in the OrderParamFile!" << endl;
+    cout << "Updating file name to " << image_write_name << endl;
     m_log_file->UpdateLog(image_write_name);
+  }
+  else{
+    cout << "There ISN'T!!! IS NOT!!! a non-null LogFile pointer in the OrderParamFile!" << endl;
   }
   return system(system_request.str().c_str());
 }

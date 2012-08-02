@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     open_thread = 0;
 
     connect(ui->go, SIGNAL(toggled(bool)), ft, SLOT(on_go_toggled(bool)));
-    connect(ft, SIGNAL(sendOutput(double)), this, SLOT(on_thread_returned_value(double)));
+    connect(ft, SIGNAL(sendOutput(QString)), this, SLOT(on_thread_returned_value(QString)));
     connect(ui->J, SIGNAL(valueChanged(int)), this, SLOT(on_parameter_value_changed(int)));
     connect(ui->QN1, SIGNAL(valueChanged(int)), this,  SLOT(on_parameter_value_changed(int)));
     connect(ui->QN2, SIGNAL(valueChanged(int)), this,  SLOT(on_parameter_value_changed(int)));
@@ -74,14 +74,15 @@ double MainWindow::get_j(){ return SliderToDouble(ui->J->value());}
 double MainWindow::get_qn1(){return SliderToDouble(ui->QN1->value());}
 double MainWindow::get_qn2(){return SliderToDouble(ui->QN2->value());}
 
-void MainWindow::on_thread_returned_value(double val)
+void MainWindow::on_thread_returned_value(QString image_name)
 {
-    qDebug() << "Thread returned "<< val;
+    qDebug() << "Thread returned "<< image_name;
     QString txt;
     QTextStream txt_buf(&txt);
-    txt_buf << "Return Value: " << val;
+    txt_buf << "Return Value: " << image_name;
     //TODO: make MainDisplay show the last created image file
-    QImage image("ordPar_R8_J-0_Q2-0_Q4-0.csv_1.png");
+    image_name += ".png";
+    QImage image(image_name);
     if (!image.isNull()){
         ui->MainDisplay->setPixmap(QPixmap::fromImage(image));
         Q_ASSERT(ui->MainDisplay->pixmap());
