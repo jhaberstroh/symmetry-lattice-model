@@ -1,0 +1,22 @@
+RIGHT NOW:
+added LogFile to orderparamfile.h, and implemented tracking of files. ctor in montecarlo.h should be working. Next up is to access logs in the GUI.
+
+
+-setup a storage folder for filehandler
+       -output .saved_locations to archive saves
+       FILES TO LOCATE:
+       	       -last order parameter data
+	       -last order parameter image
+	       -lattice image prefix & location
+
+** How could this handle multiple instances of the exe at a given time?
+   >> this number should never be more than 100... how can I track this?
+      There are probably good string tokenizing methods that I don't know well, I'll figure this out at another time.
+
+
+-better handle "too many files" problem (when it comes to saving the jpgs.)
+	       
+
+
+
+-see if it's possible to recursively grep for TODO: flags to add to this list :p

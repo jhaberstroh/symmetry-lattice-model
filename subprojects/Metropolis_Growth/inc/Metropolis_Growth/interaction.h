@@ -13,6 +13,7 @@
 #include <cmath>
 #include "lattice.h"
 #include "site.h"
+
 using namespace std;
 
 class not_implemented_error : runtime_error{
@@ -36,7 +37,7 @@ class Interaction{
 
   /*The symmetry_num for the rotational interactions, converted to the "division number"
     EXAMPLE:
-      R = 12, and N1 is input as 4. 
+      R = 12, and N1 is input as 4.
       m_N1_division will be set to 3, the distance between interacting orientations.*/
   int m_N1,m_N2;
   int m_N1_division, m_N2_division;
@@ -54,13 +55,15 @@ class Interaction{
   static const bool kOrderN1Bond=true;
   static const bool kOrderN2Bond=true;
 
+
+
   /*----------------------------------------------------
     Constructors
     ----------------------------------------------------*/
  public:
-  Interaction(double J = 1, double QN1 = 0, double QN2 = 0, 
+  Interaction(double J = 1, double QN1 = 0, double QN2 = 0,
               int N1=2, int N2=4, Lattice* l = 0)
-    : m_J(J), m_QN1(QN1), m_QN2(QN2), 
+    : m_J(J), m_QN1(QN1), m_QN2(QN2),
       m_N1(N1), m_N2(N2), m_lattice_being_tracked(l){
     cout << "debug: Interaction::InitOrderParameters()"<<endl;
      InitOrderParameters();}
@@ -117,17 +120,17 @@ class Interaction{
     m_lattice_being_tracked = l;
     InitOrderParameters();
   }
-  
+
   //For one neighbor
-  double get_interaction_energy(Site* s, Site* s_neighbor, 
+  double get_interaction_energy(Site* s, Site* s_neighbor,
                                 int& retn_N1_bond, int& retn_N2_bond);
   //For multiple neighbors
-  double get_interaction_energy(Site* s, Lattice::NeighborVect& neighbors, 
+  double get_interaction_energy(Site* s, Lattice::NeighborVect& neighbors,
                                 LocalBondVect& new_N1_bond, LocalBondVect& new_N2_bond);
   double get_chemical_potential(Site* s, double T);
-  double get_occ_energy_difference(Site* s, Lattice::NeighborVect& neighbors, 
+  double get_occ_energy_difference(Site* s, Lattice::NeighborVect& neighbors,
                                    double T, LocalBondVect& new_N1_bond, LocalBondVect& new_N2_bond);
-  double get_rot_energy_difference(Site* s, Lattice::NeighborVect& neighbors, 
+  double get_rot_energy_difference(Site* s, Lattice::NeighborVect& neighbors,
                                    int plus_minus, LocalBondVect& new_N1_bond, LocalBondVect& new_N2_bond);
 
   void UpdateOrderParameters(Lattice::Coord& coord, int old_rot, LocalBondVect& new_N1_bonds, LocalBondVect& new_N2_bonds);

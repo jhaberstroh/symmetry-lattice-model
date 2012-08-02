@@ -29,5 +29,5 @@ int main(int argc, char** argv){
   m.lattice_handler().MakeSquareLatticeColorImage(m.interaction());
 
   m.PrintOrderParameters();
-  m.order_parameter_handler().MakeOPImage();
+  m.order_parameter_handler().MakeImage();
 }

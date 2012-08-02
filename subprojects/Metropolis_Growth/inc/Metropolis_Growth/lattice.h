@@ -15,7 +15,7 @@
 #include <algorithm>
 #include "MersenneTwister.h"
 #include "site.h"
-#include "filehandler.h"
+#include "latticefile.h"
 
 using namespace std;
 
@@ -33,12 +33,12 @@ class container_value_mismatch_error : public runtime_error{
   int m_contained_value;
   int m_contained_index;
   int m_container_value;
-  explicit container_value_mismatch_error
-	(const string& what_arg, int contained_value, int container_value, int contained_index)
-	: runtime_error(what_arg), 
-	m_contained_value(contained_value), 
-	m_contained_index(contained_index),
-	m_container_value(container_value){}
+  explicit container_value_mismatch_error(const string& what_arg, int contained_value, int container_value, int contained_index)
+	: runtime_error(what_arg),
+	  m_contained_value(contained_value),
+	  m_contained_index(contained_index),
+	  m_container_value(container_value)
+    {}
 };
 
 class bad_symmetry_number : public invalid_argument{
@@ -48,8 +48,9 @@ class bad_symmetry_number : public invalid_argument{
   explicit bad_symmetry_number
     (const string& what_arg, int R_owned, int symmetry_number)
     : invalid_argument(what_arg),
-    m_R_owned(R_owned),
-    m_symmetry_number(symmetry_number){}
+      m_R_owned(R_owned),
+      m_symmetry_number(symmetry_number)
+    {}
 };
 
 class bad_direction : public invalid_argument{
@@ -59,14 +60,15 @@ class bad_direction : public invalid_argument{
   explicit bad_direction
     (const string& what_arg, int direction_chosen, int z)
     : invalid_argument(what_arg),
-    m_direction_chosen(direction_chosen),
-    m_z(z){}
+      m_direction_chosen(direction_chosen),
+      m_z(z)
+    {}
 };
 
 
 class Lattice{
  public:
-  typedef vector<Site*> NeighborVect; 
+  typedef vector<Site*> NeighborVect;
   typedef vector<Site*> SiteVect;  //Site vector
   typedef vector<int> Coord;
   typedef vector<int> BondVect;
@@ -83,11 +85,11 @@ class Lattice{
   //Objects are re-initialized in constructor Lattice()
   // in the phase specified by [Phase initializing_phase].
   //(RAII safe)
-  SiteVect m_lattice;                          
+  SiteVect m_lattice;
   //Vector of pointers to the neighbors.
   //Ownership of pointed-to Sites belongs to m_lattice.
   // (RAII safe)
-  vector<NeighborVect> m_site_neighbors; 
+  vector<NeighborVect> m_site_neighbors;
   //Quantity specified by the derived class.
   int m_dimensionality;
   //Format specified by the derived class, usually simple
@@ -128,7 +130,7 @@ class Lattice{
   inline NeighborVect* 	get_neighbors(int site_index)	 {return &(m_site_neighbors[site_index]);}
 
   //view_site returns a vector of rot() for a site and its neighbors.
-  //It also incorporates occupancy; If a site is unoccupied, 
+  //It also incorporates occupancy; If a site is unoccupied,
   // it is given a sentinel value of -1.
   //This allows for traversal of the state data in the lattice without breaking encapsulation.
   vector<int>    view_site(int site_index);
@@ -137,8 +139,8 @@ class Lattice{
   //All public functions are accessed with coordinates instead of array indexes to increase
   //the amount of encapsulation.
   //All of these are already defined because they call the VIRTUAL CoordToIndex function.
-  inline Site*         	get_site     (const Coord& coords){return get_site     (CoordToIndex(coords));} 
-  inline NeighborVect* 	get_neighbors(const Coord& coords){return get_neighbors(CoordToIndex(coords));} 
+  inline Site*         	get_site     (const Coord& coords){return get_site     (CoordToIndex(coords));}
+  inline NeighborVect* 	get_neighbors(const Coord& coords){return get_neighbors(CoordToIndex(coords));}
   inline vector<int>    view_site    (const Coord& coords){return view_site(CoordToIndex(coords));}
 
   inline LatticeFile& lattice_handler(){return *m_lattice_handler;}
@@ -158,7 +160,7 @@ class Lattice{
   //The ordering of the NeighborVect from get_neighbors is very specific,
   // and knowledge of which site is sharing the bond can be extracted
   // from the index.
-  virtual Coord GetNeighborCoord(const Coord& coord, int direction)=0;  
+  virtual Coord GetNeighborCoord(const Coord& coord, int direction)=0;
   virtual int LookupBondIndex(const Coord& coord, int direction)=0;
 };
 
@@ -188,18 +190,18 @@ class SquareLattice : public Lattice
   // using the enum values for ordering.
   //Usually acts on m_site_neighbors.
   void InitializeNeighborVector(int site, NeighborVect* output);
-  
+
  public:
   //Constructs a bond vector for the current lattice.
   BondVect CreateBondVector();
 
   //CoordToIndex will throw vector_size_error if coord does not have exactly two inputs
-  Coord IndexToCoord(int index);  
+  Coord IndexToCoord(int index);
   int   CoordToIndex(const Coord& coord);
 
   //These virtual functions are not overloaded, but rather hidden, since the inherited
   // class uses a different typing. This may be a problem but we'll see.
-  Coord GetNeighborCoord(const Coord& coord, int direction);  
+  Coord GetNeighborCoord(const Coord& coord, int direction);
   int LookupBondIndex(const Coord& coord, int direction);
 
   inline Coord GetNeighborCoord(const Coord& coord, NeighborPosition direction){

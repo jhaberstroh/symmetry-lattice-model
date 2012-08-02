@@ -58,7 +58,7 @@ void FunctionThread::run(){
             m_montecarlo.PrintTextLattice();
         }
         m_montecarlo.order_parameter_handler().Track();
-        m_montecarlo.order_parameter_handler().MakeOPImage();
+        m_montecarlo.order_parameter_handler().MakeImage();
         emit sendOutput(rand());
     }
 }

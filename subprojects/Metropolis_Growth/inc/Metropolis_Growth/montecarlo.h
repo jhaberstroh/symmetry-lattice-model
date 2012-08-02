@@ -20,7 +20,8 @@
 #include <fstream>
 #include "interaction.h"
 #include "lattice.h"
-#include "filehandler.h"
+#include "orderparamfile.h"
+#include "logfile.h"
 
 static double Jdft = 1;
 static double Qdft = .233;
@@ -52,6 +53,7 @@ class MonteCarlo{
   double m_T;
   MTRand m_rng;
   MonteCarloFile* m_file_handler;
+  LogFile m_log_file;
 
 
  /*----------------------------------------------------
@@ -64,34 +66,27 @@ class MonteCarlo{
 //TODO: make a copy constructor and an assignment operator. Fortunately, I'm not likely to be
 //      using either of those anytime soon on MonteCarlo objects!
 
+  //TODO vv: Figure out when this function is called
+  //Must be run before using OrderParamFile class; called from the constructor. (???)
   void PrepareFileHandler();
   //Standard metropolis MC move
   void DoMetropolisMove();
   //One move for each site
   void DoMetropolisSweep();
   void ResetEnergy(){/*TODO: Implement!*/};
-  inline void reset_default_phase(Lattice::Phase new_phase){
-    m_lattice = SquareLattice(new_phase, m_lattice.measurements(), m_lattice.R(), &m_rng);
-    m_interaction.ChangeLattice(&m_lattice);
-    ResetEnergy();
-  };
 
+  //Print the data from the simulation to cout.
   inline void PrintTextLattice(){  m_lattice.Print();}
   void PrintOrderParameters();
 
   /*--------------------------------------------------
     Accessors and Mutators
     --------------------------------------------------*/
-  inline MonteCarloFile& order_parameter_handler(){
-    if (!m_file_handler->has_write_file())
-      m_file_handler->PrepareMCFile();
-    return *m_file_handler;
-  }
-  inline LatticeFile& lattice_handler(){
-    return m_lattice.lattice_handler();
-  }
+  MonteCarloFile& order_parameter_handler();
+  inline LatticeFile& lattice_handler(){ return m_lattice.lattice_handler();}
   inline Interaction& interaction(){return m_interaction;}
 
+  void reset_default_phase(Lattice::Phase new_phase);
   inline void set_j  (double J)  {m_interaction.set_j(J);    ResetEnergy();}
   inline void set_qN1(double Q1) {m_interaction.set_qN1(Q1); ResetEnergy();}
   inline void set_qN2(double Q2) {m_interaction.set_qN2(Q2); ResetEnergy();}

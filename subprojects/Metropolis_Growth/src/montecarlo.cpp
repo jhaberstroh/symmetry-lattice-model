@@ -13,9 +13,20 @@ MonteCarlo::MonteCarlo(double J_in, double Q_in, double Q2_in,
   m_lattice = SquareLattice(Lattice::SOLID, dimensions, R_in, &m_rng);
 
   m_interaction = Interaction(J_in, Q_in, Q2_in, 2, 4, &m_lattice);
-  m_file_handler = new MonteCarloFile(*this);
+  m_file_handler = new OrderParamFile(*this);
 }
 
+void MonteCarlo::reset_default_phase(Lattice::Phase new_phase){
+    m_lattice = SquareLattice(new_phase, m_lattice.measurements(), m_lattice.R(), &m_rng);
+    m_interaction.ChangeLattice(&m_lattice);
+    ResetEnergy();
+}
+
+MonteCarloFile& MonteCarlo::order_parameter_handler(){
+    if (!m_file_handler->has_write_file())
+      m_file_handler->PrepareMCFile();
+    return *m_file_handler;
+}
 
 //Requires an include of "site.h"
 void MonteCarlo::DoMetropolisMove(){
