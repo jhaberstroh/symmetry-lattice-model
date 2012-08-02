@@ -15,25 +15,25 @@
 #include <iterator>
 #include <vector>
 
-using namespace std;
 
 static const char*   version_file_name = "./.version";
 
+using namespace std
 
-struct tokens: std::ctype<char> 
+struct tokens: std::ctype<char>
 {
  tokens(): std::ctype<char>(get_table()) {}
-  
+
   static std::ctype_base::mask const* get_table()
   {
     typedef std::ctype<char> cctype;
     static const cctype::mask *const_rc= cctype::classic_table();
-    
+
     static cctype::mask rc[cctype::table_size];
     std::memcpy(rc, const_rc, cctype::table_size * sizeof(cctype::mask));
-    
-    rc['.'] = std::ctype_base::space; 
-    rc[' '] = std::ctype_base::space; 
+
+    rc['.'] = std::ctype_base::space;
+    rc[' '] = std::ctype_base::space;
     return &rc[0];
   }
 };
@@ -43,16 +43,16 @@ class Version{
 
 
 
- public: 
+ public:
   enum UpdateSize{kSmallUpdate,kMediumUpdate,kLargeUpdate};
-  ifstream version_file_in;
-  ofstream version_file_out;
+  std::ifstream version_file_in;
+  std::ofstream version_file_out;
   int large_version;
   int medium_version;
   int small_version;
 
  Version(): version_file_in(version_file_name), version_file_out()  {
-    string s;
+    std::string s;
     version_file_in >> s;
     stringstream ss(s);
     ss.imbue(std::locale(std::locale(), new tokens()));
@@ -65,7 +65,7 @@ class Version{
     small_version = atoi(vstrings[2].c_str());
     version_file_in.close();
   }
-  
+
   inline void UpdateVersion(UpdateSize s = kSmallUpdate){
     switch (s){
     case kSmallUpdate:
@@ -81,7 +81,7 @@ class Version{
   }
 
   inline string GetCurrentVersion(){
-    ostringstream function_output("");
+    std::ostringstream function_output("");
     function_output << large_version <<"."<<medium_version << "." << small_version;
     return function_output.str();
   }

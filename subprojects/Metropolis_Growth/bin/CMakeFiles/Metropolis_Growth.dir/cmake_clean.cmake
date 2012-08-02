@@ -4,6 +4,9 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/Metropolis_Growth.dir/interaction.cpp.o"
   "CMakeFiles/Metropolis_Growth.dir/montecarlo.cpp.o"
   "CMakeFiles/Metropolis_Growth.dir/filehandler.cpp.o"
+  "CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o"
+  "CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o"
+  "CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o"
   "libMetropolis_Growth.pdb"
   "libMetropolis_Growth.a"
 )

@@ -161,13 +161,85 @@ Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/filehandler.cpp.o.provide
 
 Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/filehandler.cpp.o.provides.build: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/filehandler.cpp.o
 
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/flags.make
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o: Metropolis_Growth/src/logfile.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/john/Coding/project/subprojects/CMakeFiles $(CMAKE_PROGRESS_6)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o"
+	cd /home/john/Coding/project/subprojects/Metropolis_Growth/bin && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o -c /home/john/Coding/project/subprojects/Metropolis_Growth/src/logfile.cpp
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Metropolis_Growth.dir/logfile.cpp.i"
+	cd /home/john/Coding/project/subprojects/Metropolis_Growth/bin && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/john/Coding/project/subprojects/Metropolis_Growth/src/logfile.cpp > CMakeFiles/Metropolis_Growth.dir/logfile.cpp.i
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Metropolis_Growth.dir/logfile.cpp.s"
+	cd /home/john/Coding/project/subprojects/Metropolis_Growth/bin && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/john/Coding/project/subprojects/Metropolis_Growth/src/logfile.cpp -o CMakeFiles/Metropolis_Growth.dir/logfile.cpp.s
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o.requires:
+.PHONY : Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o.requires
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o.provides: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o.requires
+	$(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o.provides.build
+.PHONY : Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o.provides
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o.provides.build: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/flags.make
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o: Metropolis_Growth/src/latticefile.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/john/Coding/project/subprojects/CMakeFiles $(CMAKE_PROGRESS_7)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o"
+	cd /home/john/Coding/project/subprojects/Metropolis_Growth/bin && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o -c /home/john/Coding/project/subprojects/Metropolis_Growth/src/latticefile.cpp
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.i"
+	cd /home/john/Coding/project/subprojects/Metropolis_Growth/bin && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/john/Coding/project/subprojects/Metropolis_Growth/src/latticefile.cpp > CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.i
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.s"
+	cd /home/john/Coding/project/subprojects/Metropolis_Growth/bin && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/john/Coding/project/subprojects/Metropolis_Growth/src/latticefile.cpp -o CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.s
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o.requires:
+.PHONY : Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o.requires
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o.provides: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o.requires
+	$(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o.provides.build
+.PHONY : Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o.provides
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o.provides.build: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/flags.make
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o: Metropolis_Growth/src/orderparamfile.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/john/Coding/project/subprojects/CMakeFiles $(CMAKE_PROGRESS_8)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o"
+	cd /home/john/Coding/project/subprojects/Metropolis_Growth/bin && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o -c /home/john/Coding/project/subprojects/Metropolis_Growth/src/orderparamfile.cpp
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.i"
+	cd /home/john/Coding/project/subprojects/Metropolis_Growth/bin && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/john/Coding/project/subprojects/Metropolis_Growth/src/orderparamfile.cpp > CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.i
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.s"
+	cd /home/john/Coding/project/subprojects/Metropolis_Growth/bin && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/john/Coding/project/subprojects/Metropolis_Growth/src/orderparamfile.cpp -o CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.s
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o.requires:
+.PHONY : Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o.requires
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o.provides: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o.requires
+	$(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o.provides.build
+.PHONY : Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o.provides
+
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o.provides.build: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o
+
 # Object files for target Metropolis_Growth
 Metropolis_Growth_OBJECTS = \
 "CMakeFiles/Metropolis_Growth.dir/site.cpp.o" \
 "CMakeFiles/Metropolis_Growth.dir/lattice.cpp.o" \
 "CMakeFiles/Metropolis_Growth.dir/interaction.cpp.o" \
 "CMakeFiles/Metropolis_Growth.dir/montecarlo.cpp.o" \
-"CMakeFiles/Metropolis_Growth.dir/filehandler.cpp.o"
+"CMakeFiles/Metropolis_Growth.dir/filehandler.cpp.o" \
+"CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o" \
+"CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o" \
+"CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o"
 
 # External object files for target Metropolis_Growth
 Metropolis_Growth_EXTERNAL_OBJECTS =
@@ -177,6 +249,9 @@ Metropolis_Growth/bin/libMetropolis_Growth.a: Metropolis_Growth/bin/CMakeFiles/M
 Metropolis_Growth/bin/libMetropolis_Growth.a: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/interaction.cpp.o
 Metropolis_Growth/bin/libMetropolis_Growth.a: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/montecarlo.cpp.o
 Metropolis_Growth/bin/libMetropolis_Growth.a: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/filehandler.cpp.o
+Metropolis_Growth/bin/libMetropolis_Growth.a: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o
+Metropolis_Growth/bin/libMetropolis_Growth.a: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o
+Metropolis_Growth/bin/libMetropolis_Growth.a: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o
 Metropolis_Growth/bin/libMetropolis_Growth.a: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make
 Metropolis_Growth/bin/libMetropolis_Growth.a: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX static library libMetropolis_Growth.a"
@@ -192,6 +267,9 @@ Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/requires: Metropolis_Grow
 Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/requires: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/interaction.cpp.o.requires
 Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/requires: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/montecarlo.cpp.o.requires
 Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/requires: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/filehandler.cpp.o.requires
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/requires: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o.requires
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/requires: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o.requires
+Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/requires: Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o.requires
 .PHONY : Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/requires
 
 Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/clean:

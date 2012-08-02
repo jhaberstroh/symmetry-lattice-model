@@ -181,6 +181,54 @@ lattice.cpp.s:
 	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/lattice.cpp.s
 .PHONY : lattice.cpp.s
 
+latticefile.o: latticefile.cpp.o
+.PHONY : latticefile.o
+
+# target to build an object file
+latticefile.cpp.o:
+	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.o
+.PHONY : latticefile.cpp.o
+
+latticefile.i: latticefile.cpp.i
+.PHONY : latticefile.i
+
+# target to preprocess a source file
+latticefile.cpp.i:
+	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.i
+.PHONY : latticefile.cpp.i
+
+latticefile.s: latticefile.cpp.s
+.PHONY : latticefile.s
+
+# target to generate assembly for a file
+latticefile.cpp.s:
+	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/latticefile.cpp.s
+.PHONY : latticefile.cpp.s
+
+logfile.o: logfile.cpp.o
+.PHONY : logfile.o
+
+# target to build an object file
+logfile.cpp.o:
+	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.o
+.PHONY : logfile.cpp.o
+
+logfile.i: logfile.cpp.i
+.PHONY : logfile.i
+
+# target to preprocess a source file
+logfile.cpp.i:
+	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.i
+.PHONY : logfile.cpp.i
+
+logfile.s: logfile.cpp.s
+.PHONY : logfile.s
+
+# target to generate assembly for a file
+logfile.cpp.s:
+	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/logfile.cpp.s
+.PHONY : logfile.cpp.s
+
 montecarlo.o: montecarlo.cpp.o
 .PHONY : montecarlo.o
 
@@ -204,6 +252,30 @@ montecarlo.s: montecarlo.cpp.s
 montecarlo.cpp.s:
 	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/montecarlo.cpp.s
 .PHONY : montecarlo.cpp.s
+
+orderparamfile.o: orderparamfile.cpp.o
+.PHONY : orderparamfile.o
+
+# target to build an object file
+orderparamfile.cpp.o:
+	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.o
+.PHONY : orderparamfile.cpp.o
+
+orderparamfile.i: orderparamfile.cpp.i
+.PHONY : orderparamfile.i
+
+# target to preprocess a source file
+orderparamfile.cpp.i:
+	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.i
+.PHONY : orderparamfile.cpp.i
+
+orderparamfile.s: orderparamfile.cpp.s
+.PHONY : orderparamfile.s
+
+# target to generate assembly for a file
+orderparamfile.cpp.s:
+	cd /home/john/Coding/project/subprojects && $(MAKE) -f Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/build.make Metropolis_Growth/bin/CMakeFiles/Metropolis_Growth.dir/orderparamfile.cpp.s
+.PHONY : orderparamfile.cpp.s
 
 site.o: site.cpp.o
 .PHONY : site.o
@@ -247,9 +319,18 @@ help:
 	@echo "... lattice.o"
 	@echo "... lattice.i"
 	@echo "... lattice.s"
+	@echo "... latticefile.o"
+	@echo "... latticefile.i"
+	@echo "... latticefile.s"
+	@echo "... logfile.o"
+	@echo "... logfile.i"
+	@echo "... logfile.s"
 	@echo "... montecarlo.o"
 	@echo "... montecarlo.i"
 	@echo "... montecarlo.s"
+	@echo "... orderparamfile.o"
+	@echo "... orderparamfile.i"
+	@echo "... orderparamfile.s"
 	@echo "... site.o"
 	@echo "... site.i"
 	@echo "... site.s"

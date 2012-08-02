@@ -6,7 +6,10 @@ Metropolis_Growth/testbin/CMakeFiles/metrotest.dir/metrotest.cpp.o: Metropolis_G
 Metropolis_Growth/testbin/CMakeFiles/metrotest.dir/metrotest.cpp.o: Metropolis_Growth/inc/Metropolis_Growth/filehandler.h
 Metropolis_Growth/testbin/CMakeFiles/metrotest.dir/metrotest.cpp.o: Metropolis_Growth/inc/Metropolis_Growth/interaction.h
 Metropolis_Growth/testbin/CMakeFiles/metrotest.dir/metrotest.cpp.o: Metropolis_Growth/inc/Metropolis_Growth/lattice.h
+Metropolis_Growth/testbin/CMakeFiles/metrotest.dir/metrotest.cpp.o: Metropolis_Growth/inc/Metropolis_Growth/latticefile.h
+Metropolis_Growth/testbin/CMakeFiles/metrotest.dir/metrotest.cpp.o: Metropolis_Growth/inc/Metropolis_Growth/logfile.h
 Metropolis_Growth/testbin/CMakeFiles/metrotest.dir/metrotest.cpp.o: Metropolis_Growth/inc/Metropolis_Growth/montecarlo.h
+Metropolis_Growth/testbin/CMakeFiles/metrotest.dir/metrotest.cpp.o: Metropolis_Growth/inc/Metropolis_Growth/orderparamfile.h
 Metropolis_Growth/testbin/CMakeFiles/metrotest.dir/metrotest.cpp.o: Metropolis_Growth/inc/Metropolis_Growth/site.h
 Metropolis_Growth/testbin/CMakeFiles/metrotest.dir/metrotest.cpp.o: Metropolis_Growth/inc/Metropolis_Growth/version.h
 

@@ -30,8 +30,6 @@ static double Rdft = 8;
 static double Tdft = 1;
 static double pdeldft = .5;
 
-class MonteCarloFile;
-
 
 class MonteCarlo{
  public:
@@ -52,7 +50,7 @@ class MonteCarlo{
   double m_delete_probability;
   double m_T;
   MTRand m_rng;
-  MonteCarloFile* m_file_handler;
+  OrderParamFile* m_file_handler;
   LogFile m_log_file;
 
 
@@ -82,7 +80,7 @@ class MonteCarlo{
   /*--------------------------------------------------
     Accessors and Mutators
     --------------------------------------------------*/
-  MonteCarloFile& order_parameter_handler();
+  inline OrderParamFile& order_parameter_handler(){ if (!m_file_handler->has_write_file()) m_file_handler->PrepareFile();  return *m_file_handler;}
   inline LatticeFile& lattice_handler(){ return m_lattice.lattice_handler();}
   inline Interaction& interaction(){return m_interaction;}
 

@@ -22,12 +22,6 @@ void MonteCarlo::reset_default_phase(Lattice::Phase new_phase){
     ResetEnergy();
 }
 
-MonteCarloFile& MonteCarlo::order_parameter_handler(){
-    if (!m_file_handler->has_write_file())
-      m_file_handler->PrepareMCFile();
-    return *m_file_handler;
-}
-
 //Requires an include of "site.h"
 void MonteCarlo::DoMetropolisMove(){
   Site* current_site;

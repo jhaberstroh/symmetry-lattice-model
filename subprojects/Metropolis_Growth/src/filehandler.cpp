@@ -83,7 +83,7 @@ FileHandler::FileHandler(const string& init_write_name, ios::openmode write_open
 }
 
 
-bool FileHandler::WriteBufferToFile()){
+bool FileHandler::WriteBufferToFile(){
   if (m_has_write_file){
     if (!m_write_file_open){
       m_write_file.open(m_write_name.str().c_str(), m_write_openmode);

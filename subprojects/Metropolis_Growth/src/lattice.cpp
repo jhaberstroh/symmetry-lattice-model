@@ -10,7 +10,7 @@ int FindIndexOf(vector<Site*> array, Site* s){
     if (s == array[i])
       return i;
   }
-  
+
   return -1 + abs_compare(1,0); //sentinel return value
 }
 
@@ -24,7 +24,7 @@ vector<int> Lattice::view_site(int site_index){
   r_values[0] = (m_lattice[site_index]->occ())?
                  m_lattice[site_index]->R() : -1;
   for (int i = 0 ; i < m_z ; i++){
-    r_values[i+1] = (m_site_neighbors[site_index][i]->occ())? 
+    r_values[i+1] = (m_site_neighbors[site_index][i]->occ())?
                      m_site_neighbors[site_index][i]->R() : -1;
   }
   return r_values;
@@ -45,9 +45,12 @@ Lattice::~Lattice(){
 
 //Copy Constructor makes duplicates of all sites and repoints the neighbor vectors.
 Lattice::Lattice(const Lattice &cSource){
-  m_R = cSource.m_R;
-  m_z = cSource.m_z;
-  m_measurements = cSource.m_measurements;
+    //just to make the compiler stop complaining about abs_compare
+  if (abs_compare(1,2)){
+    m_R = cSource.m_R;
+    m_z = cSource.m_z;
+    m_measurements = cSource.m_measurements;
+  }
 
   m_lattice = SiteVect(cSource.m_lattice.size());
   for (unsigned int i = 0 ; i < m_lattice.size() ; i++){
@@ -147,7 +150,7 @@ SquareLattice::SquareLattice(Phase default_phase, const vector<int>& sizes, int 
 
 
 void SquareLattice::InitializeNeighborVector(int site_index, Lattice::NeighborVect* output){
-  //Order is down, 
+  //Order is down,
   Coord neighbor_coord(2,0);
   (*output) = NeighborVect(4);
 
@@ -172,7 +175,7 @@ int SquareLattice::CoordToIndex(const Coord& coord){
     // << (((coord[0] %m_measurements[0]) +m_measurements[0]) %m_measurements[0]) * m_measurements[1]
     //  + (((coord[1] %m_measurements[1]) +m_measurements[1]) %m_measurements[1]) << endl;
 
-      
+
     return (((coord[0] %m_measurements[0]) +m_measurements[0]) %m_measurements[0]) * m_measurements[1]
       + (((coord[1] %m_measurements[1]) +m_measurements[1]) %m_measurements[1]);
   }
@@ -218,10 +221,10 @@ int SquareLattice::LookupBondIndex(const Coord& coord, int direction){
       break;
     case kNeighDown:
       return CoordToIndex(coord) * 2 + 1;
-      break;    
+      break;
     case kNeighLeft:
       return CoordToIndex(GetNeighborCoord(coord, kNeighLeft)) * 2 + 0;
-      break;    
+      break;
     case kNeighRight:
       return CoordToIndex(coord) * 2 + 0;
       break;
@@ -279,7 +282,7 @@ void SquareLattice::Print(){
     //prints the first line for the sake of nice formatting
     if (i == 0){
       cout << "/";
-      for (int j = 0 ; j < m_measurements[1] ; j++){     
+      for (int j = 0 ; j < m_measurements[1] ; j++){
         cout << "---";
       }
       cout << "-\\" << endl;
@@ -287,7 +290,7 @@ void SquareLattice::Print(){
     //prints the blank lines above each line when not the first line.
     else{
       cout << "|";
-      for (int j = 0 ; j < m_measurements[1] ; j++){     
+      for (int j = 0 ; j < m_measurements[1] ; j++){
         cout << "   ";
       }
       cout << " |" <<endl;
@@ -313,7 +316,7 @@ void SquareLattice::Print(){
     //prints the last line for the sake of nice formatting
     if (i == m_measurements[0] - 1){
       cout << "\\";
-      for (int j = 0 ; j < m_measurements[1] ; j++){     
+      for (int j = 0 ; j < m_measurements[1] ; j++){
         cout << "___";
       }
       cout << "_/" << endl;
@@ -321,27 +324,27 @@ void SquareLattice::Print(){
   }
 }
 
- 
+
 int TestLatticeCode(){
   MTRand rng;
   vector<int> dimensions;
   dimensions.push_back(5);dimensions.push_back(10);
   SquareLattice l;
   l = SquareLattice(Lattice::LIQUID, dimensions, 96, &rng);
-                                               
+
   Lattice::Coord coord(2,0);
   coord[0] = 2 ; coord[1] = 7;
-  
+
   Site* s = l.get_site(coord);
   Lattice::NeighborVect* n = l.get_neighbors(coord);
-  
+
   l.Print();
   cout << "Site "<< coord[0] <<","<<coord[1]
        <<" has occ: " << s->occ() << " rot: "<<s->rot()<<endl;
 
   for (unsigned int i = 0; i < n->size() ; i++){
     cout << "Neighbor has occ: " << n->at(i)->occ() << " rot: "<<n->at(i)->rot()<<endl;
-    
+
   }
 
 
@@ -351,7 +354,7 @@ int TestLatticeCode(){
 
   for (unsigned int i = 0; i < n->size() ; i++){
     cout << "Neighbor has occ: " << n->at(i)->occ() << " rot: "<<n->at(i)->rot()<<endl;
-    
+
   }
 
   return 0;

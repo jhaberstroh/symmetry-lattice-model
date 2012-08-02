@@ -50,20 +50,20 @@ class FileHandler{
     Member Variables
     --------------------------------------------------*/
  private:
-  ostringstream m_write_name;
-  ios_base::openmode m_write_openmode;
-  ofstream m_write_file;
+  std::ostringstream m_write_name;
+  std::ios_base::openmode m_write_openmode;
+  std::ofstream m_write_file;
  protected:
-  ostringstream m_write_buffer;
+  std::ostringstream m_write_buffer;
   bool m_has_write_file;
   bool m_write_file_open;
-  string m_filelog_location;
+  std::string m_filelog_location;
 
   /*--------------------------------------------------
     Accessors and Mutators
     --------------------------------------------------*/
  public:
-  inline string         write_name(){
+  inline std::string         write_name(){
     return m_write_name.str();
   }
   inline const char*        c_write_name(){
@@ -72,36 +72,36 @@ class FileHandler{
   inline bool has_write_file(){
     return m_has_write_file;
   }
-  inline ios::openmode write_openmode() {
+  inline std::ios::openmode write_openmode() {
     return m_write_openmode;
   }
 
  protected:
-  inline void  set_write_name(const string& write_name){
+  inline void  set_write_name(const std::string& write_name){
     m_write_name.str(write_name);
   }
-  inline void  set_write_openmode(ios::openmode write_openmode){
+  inline void  set_write_openmode(std::ios::openmode write_openmode){
     m_write_openmode = write_openmode;
   }
 
  private:
-  void rename_file(const string& old_name, const string& new_name);
+  void rename_file(const std::string& old_name, const std::string& new_name);
   //Modifies file_name to be the next available file
   //Returns true if file_name is changed, and false otherwise.
   /*--------------------------------------------------
     Constructor
     --------------------------------------------------*/
  public:
-  FileHandler(const string& init_write_name = "", ios::openmode write_openmode = ios::app);
+  FileHandler(const std::string& init_write_name = "", std::ios::openmode write_openmode = std::ios::app);
   //Starts a new write file without migration of current file
-  void init_write_file(const string& init_write_name, ios::openmode write_openmode = ios::app);
+  void init_write_file(const std::string& init_write_name, std::ios::openmode write_openmode = std::ios::app);
   //Starts a new write file with migration of current file
-  void rename_write_file(const string& new_write_name);
+  void rename_write_file(const std::string& new_write_name);
   /*--------------------------------------------------
     Member Functions
     --------------------------------------------------*/
  protected:
-    bool FindIndexedName(string* file_name, const string& extension_sans_dot);
+    bool FindIndexedName(std::string* file_name, const std::string& extension_sans_dot);
     bool WriteBufferToFile();
     virtual void InsertHeader() = 0;
 };
