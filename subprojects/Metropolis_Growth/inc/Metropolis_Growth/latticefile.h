@@ -4,6 +4,7 @@
 #define LATTICEFILE_H
 
 #include <vector>
+#include "pngwriter.h"
 #include "filehandler.h"
 
 class Lattice;
@@ -33,19 +34,18 @@ class LatticeFile : public FileHandler{
   void MakeBondNumberFile(Interaction& lattice_interaction){};
 
   //MakeColorImage() uses the interactions N1 and N2 to create a gnuplot file
-  void MakeSquareLatticeColorImage(Interaction& lattice_interaction)
-  {std::cout << "Dummy function for FileHandler::MakeSquareLatticeColorImage.";}
+  void MakeSquareLatticeColorImage(Interaction& lattice_interaction);
 
  private:
-  /*
+
   //ColorLookup uses two different return types: return by value (RGBVect) or return by pointer (optional).
   RGBVect ColorLookup(Color c, double* r = 0, double* g = 0, double* b = 0);
   //Hard-coded assumptions about which micro-phases should be output as which colors
   Color SelectSiteColor(int n1_bonds, int n2_bonds);
   //Draws a single site at the coordinate specified.
   // Note: Pixel_size works better as an odd number.
-  void DrawSite(pngwriter& png, int pixel_size, vector<int> coord, int rot, int R, int n1_bonds, int n2_bonds);
-  */
+  void DrawSite(pngwriter& png, int pixel_size, std::vector<int> coord, int rot, int R, int n1_bonds, int n2_bonds);
+
   void InsertHeader(){}
 
 };

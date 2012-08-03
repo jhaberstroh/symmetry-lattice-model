@@ -1,4 +1,6 @@
 #include "latticefile.h"
+#include "interaction.h"
+#include "lattice.h"
 
 using namespace std;
 
@@ -9,7 +11,7 @@ using namespace std;
 LatticeFile::LatticeFile(Lattice& lattice_to_save)
   :FileHandler(), m_lattice(lattice_to_save){
 }
-/*
+
 LatticeFile::RGBVect LatticeFile::ColorLookup(Color c, double* r, double* g, double* b){
   RGBVect rgb(3,0);
   switch (c){
@@ -46,7 +48,6 @@ LatticeFile::RGBVect LatticeFile::ColorLookup(Color c, double* r, double* g, dou
   if (r != 0) (*r) = rgb[0];
   if (g != 0) (*g) = rgb[1];
   if (b != 0) (*b) = rgb[2];
-https://auth.berkeley.edu/cas/logout?url=https://calmail.berkeley.edu/
   return rgb;
 }
 
@@ -134,4 +135,4 @@ void LatticeFile::MakeSquareLatticeColorImage(Interaction& lattice_interaction){
   png.close();
 }
 
-*/
+

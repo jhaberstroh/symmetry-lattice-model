@@ -2,42 +2,48 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="../inc/Metropolis_Growth/filehandler.h" open="0" top="0" tabpos="0">
-		<Cursor position="1150" topLine="38" />
+		<Cursor position="1059" topLine="26" />
 	</File>
-	<File name="../inc/Metropolis_Growth/interaction.h" open="1" top="0" tabpos="4">
-		<Cursor position="614" topLine="0" />
+	<File name="../inc/Metropolis_Growth/interaction.h" open="0" top="0" tabpos="4">
+		<Cursor position="614" topLine="75" />
 	</File>
 	<File name="../inc/Metropolis_Growth/lattice.h" open="0" top="0" tabpos="0">
-		<Cursor position="1903" topLine="114" />
+		<Cursor position="8204" topLine="156" />
 	</File>
-	<File name="../inc/Metropolis_Growth/latticefile.h" open="0" top="0" tabpos="0">
-		<Cursor position="313" topLine="0" />
+	<File name="../inc/Metropolis_Growth/latticefile.h" open="1" top="0" tabpos="2">
+		<Cursor position="925" topLine="0" />
 	</File>
-	<File name="../inc/Metropolis_Growth/logfile.h" open="1" top="0" tabpos="7">
-		<Cursor position="797" topLine="0" />
+	<File name="../inc/Metropolis_Growth/logfile.h" open="0" top="0" tabpos="7">
+		<Cursor position="11" topLine="0" />
 	</File>
-	<File name="../inc/Metropolis_Growth/montecarlo.h" open="1" top="0" tabpos="1">
-		<Cursor position="648" topLine="39" />
+	<File name="../inc/Metropolis_Growth/montecarlo.h" open="0" top="0" tabpos="1">
+		<Cursor position="2164" topLine="32" />
 	</File>
-	<File name="../inc/Metropolis_Growth/orderparamfile.h" open="1" top="0" tabpos="5">
-		<Cursor position="1094" topLine="0" />
+	<File name="../inc/Metropolis_Growth/orderparamfile.h" open="0" top="0" tabpos="5">
+		<Cursor position="1983" topLine="0" />
+	</File>
+	<File name="../inc/Metropolis_Growth/version.h" open="0" top="0" tabpos="0">
+		<Cursor position="529" topLine="9" />
 	</File>
 	<File name="../src/filehandler.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="2537" topLine="99" />
+		<Cursor position="2538" topLine="64" />
 	</File>
-	<File name="../src/interaction.cpp" open="1" top="0" tabpos="3">
+	<File name="../src/interaction.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="../src/latticefile.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="259" topLine="0" />
+	<File name="../src/lattice.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1381" topLine="3" />
+	</File>
+	<File name="../src/latticefile.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="49" topLine="0" />
 	</File>
 	<File name="../src/logfile.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="265" topLine="0" />
+		<Cursor position="213" topLine="0" />
 	</File>
-	<File name="../src/montecarlo.cpp" open="1" top="0" tabpos="2">
-		<Cursor position="2956" topLine="36" />
+	<File name="../src/montecarlo.cpp" open="0" top="0" tabpos="2">
+		<Cursor position="527" topLine="36" />
 	</File>
-	<File name="../src/orderparamfile.cpp" open="1" top="1" tabpos="6">
-		<Cursor position="3891" topLine="66" />
+	<File name="../src/orderparamfile.cpp" open="0" top="0" tabpos="6">
+		<Cursor position="2665" topLine="70" />
 	</File>
 </CodeBlocks_layout_file>

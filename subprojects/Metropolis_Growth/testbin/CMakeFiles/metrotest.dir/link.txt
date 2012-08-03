@@ -1,1 +1,1 @@
-/usr/bin/c++       CMakeFiles/metrotest.dir/metrotest.cpp.o  -o metrotest -rdynamic ../bin/libMetropolis_Growth.a 
+/usr/bin/c++       CMakeFiles/metrotest.dir/metrotest.cpp.o  -o metrotest -rdynamic ../bin/libMetropolis_Growth.a /usr/local/lib/libpng14.so -lz /usr/local/lib/libfreetype.so /usr/local/lib/libpngwriter.a -Wl,-rpath,/usr/local/lib 

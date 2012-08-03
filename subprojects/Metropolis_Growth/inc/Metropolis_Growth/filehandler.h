@@ -32,7 +32,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cmath>
-//#include <pngwriter.h>
 #include "version.h"
 
 //TODO: Define errors and do error handling
