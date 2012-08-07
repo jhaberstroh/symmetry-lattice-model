@@ -4,9 +4,9 @@ set(Metropolis_Growth_src site.cpp lattice.cpp interaction.cpp montecarlo.cpp fi
 
 set(OPTIMIZATION_FLAGS "-DNO_FREETYPE")
 add_library(Metropolis_Growth STATIC ${Metropolis_Growth_src})
-find_package(PNG14) 
+find_package(PNG) 
 find_package(ZLIB) 
 find_package(Freetype) 
 find_package(PNGwriter)
-include_directories(${PNG14_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIR} ${PNGWRITER_INCLUDE_DIR})
-target_link_libraries(Metropolis_Growth ${PNG14_LIBRARY} ${ZLIB_LIBRARY} ${FREETYPE_LIBRARY} ${PNGWRITER_LIBRARY})
+include_directories(${PNG_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIR} ${PNGWRITER_INCLUDE_DIR} /usr/include/freetype2)
+target_link_libraries(Metropolis_Growth ${PNG_LIBRARY} ${ZLIB_LIBRARY} ${FREETYPE_LIBRARY} ${PNGWRITER_LIBRARY})
