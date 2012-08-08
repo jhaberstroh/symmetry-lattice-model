@@ -86,20 +86,21 @@ void LatticeFile::DrawSite(pngwriter& png, int pixel_size, Lattice::Coord coord,
       int x = coord[1] * pixel_size;
       //We are now in the upper-left corner.
       //Draw the square in the full pixel.
-      png.filledsquare(x, y,
-                 x+pixel_size,y+pixel_size,
+      png.filledsquare(x+1, y+1,
+                 x+pixel_size-1,y+pixel_size-1,
                  r, g, b);
 
       int center_displacement = (pixel_size + 1) / 2;
       x += center_displacement;
       y += center_displacement;
+      cout << center_displacement << endl;
       const double PI = 3.141592;
       double theta = ((double)rot / R) * 2 * PI;
       int x_head = - (center_displacement - 1) * sin(theta);
       int y_head =   (center_displacement - 1) * cos(theta);
-      png.filledarrow(x - x_head, y - y_head,
+      png.arrow(x - x_head, y - y_head,
                       x + x_head, y + y_head,
-                      1, 20,
+                      center_displacement/2.2,.4,
                       0,0,0);
     }
   }
@@ -108,14 +109,14 @@ void LatticeFile::DrawSite(pngwriter& png, int pixel_size, Lattice::Coord coord,
 void LatticeFile::MakeSquareLatticeColorImage(Interaction& lattice_interaction){
   vector<int> measurements = m_lattice.measurements();
 
-  cout << "MAKING SQUARE LATTICE IMAGE?!" <<endl;
+  //cout << "MAKING SQUARE LATTICE IMAGE?!" <<endl;
   //pixel_size should be odd
-  int pixel_size = 25;
+  int pixel_size = 15;
   pngwriter png(measurements[1]*pixel_size,measurements[0]*pixel_size,1.0,"testing.png");
   Lattice::Coord coord(2,0);
   Site* current_site;
 
-  //draws a little mark in the corner for goodness, as suggested by Lester.
+  //draws a little mark in the corner for general good luck, as suggested by Lester.
   png.square(1,1,2,2, 1,2,3);
 
   //draws all of the sites!

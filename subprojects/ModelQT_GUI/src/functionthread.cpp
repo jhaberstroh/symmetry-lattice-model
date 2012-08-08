@@ -59,7 +59,12 @@ void FunctionThread::run(){
         }
         m_montecarlo.order_parameter_handler().Track();
         m_montecarlo.order_parameter_handler().MakeImage();
-        QString emitter(m_montecarlo.op_image_location().c_str());
+        m_montecarlo.MakeLatticePNG();
+        //TODO: Insert "if radiobutton.Lattice" vs. "if radiobutton.OrderParameter"
+        //If radiobutton.Lattice :
+        QString emitter("./testing");
+        //If radiobutton.OrderParameter :
+        //QString emitter(m_montecarlo.op_image_location().c_str())
         qDebug() << emitter;
         emit sendOutput(emitter);
     }

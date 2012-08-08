@@ -105,6 +105,8 @@ class MonteCarlo{
   inline double N1_OP(){return m_interaction.get_N1();}
   inline double N2_OP(){return m_interaction.get_N2();}
 
+
+  inline void MakeLatticePNG(){ lattice_handler().MakeSquareLatticeColorImage(m_interaction);}
 };
 
 

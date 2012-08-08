@@ -60,6 +60,7 @@ QT4_WRAP_UI(ModelQT_GUI_FORMS_HEADERS ${ModelQT_GUI_FORMS})
 # QT4_ADD_RESOURCES()
 
 include_directories("${CMAKE_CURRENT_BINARY_DIRECTORY}")
+include_directories(${PNG_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIR} ${PNGWRITER_INCLUDE_DIR} /usr/include/freetype2)
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 

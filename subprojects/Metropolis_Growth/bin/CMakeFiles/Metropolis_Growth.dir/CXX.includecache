@@ -6,20 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/filehandler.cpp
-montecarlo.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/montecarlo.h
-filehandler.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/filehandler.h
-
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/interaction.cpp
-interaction.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/interaction.h
-
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/lattice.cpp
-lattice.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/lattice.h
-
 /home/john/Coding/project/subprojects/Metropolis_Growth/src/latticefile.cpp
 latticefile.h
 /home/john/Coding/project/subprojects/Metropolis_Growth/src/latticefile.h
@@ -27,26 +13,6 @@ interaction.h
 /home/john/Coding/project/subprojects/Metropolis_Growth/src/interaction.h
 lattice.h
 /home/john/Coding/project/subprojects/Metropolis_Growth/src/lattice.h
-
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/logfile.cpp
-logfile.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/logfile.h
-
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/montecarlo.cpp
-montecarlo.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/montecarlo.h
-site.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/site.h
-
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/orderparamfile.cpp
-orderparamfile.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/orderparamfile.h
-montecarlo.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/montecarlo.h
-
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/site.cpp
-site.h
-/home/john/Coding/project/subprojects/Metropolis_Growth/src/site.h
 
 /usr/local/include/pngwriter.h
 png.h
@@ -76,7 +42,7 @@ stdio.h
 setjmp.h
 -
 
-inc/Metropolis_Growth/MersenneTwister.h
+Metropolis_Growth/inc/Metropolis_Growth/MersenneTwister.h
 iostream
 -
 climits
@@ -88,7 +54,7 @@ ctime
 cmath
 -
 
-inc/Metropolis_Growth/filehandler.h
+Metropolis_Growth/inc/Metropolis_Growth/filehandler.h
 iostream
 -
 sstream
@@ -106,19 +72,19 @@ stdlib.h
 cmath
 -
 version.h
-inc/Metropolis_Growth/version.h
+Metropolis_Growth/inc/Metropolis_Growth/version.h
 
-inc/Metropolis_Growth/interaction.h
+Metropolis_Growth/inc/Metropolis_Growth/interaction.h
 stdexcept
 -
 cmath
 -
 lattice.h
-inc/Metropolis_Growth/lattice.h
+Metropolis_Growth/inc/Metropolis_Growth/lattice.h
 site.h
-inc/Metropolis_Growth/site.h
+Metropolis_Growth/inc/Metropolis_Growth/site.h
 
-inc/Metropolis_Growth/lattice.h
+Metropolis_Growth/inc/Metropolis_Growth/lattice.h
 iostream
 -
 vector
@@ -128,63 +94,29 @@ stdexcept
 algorithm
 -
 MersenneTwister.h
-inc/Metropolis_Growth/MersenneTwister.h
+Metropolis_Growth/inc/Metropolis_Growth/MersenneTwister.h
 site.h
-inc/Metropolis_Growth/site.h
+Metropolis_Growth/inc/Metropolis_Growth/site.h
 latticefile.h
-inc/Metropolis_Growth/latticefile.h
+Metropolis_Growth/inc/Metropolis_Growth/latticefile.h
 
-inc/Metropolis_Growth/latticefile.h
+Metropolis_Growth/inc/Metropolis_Growth/latticefile.h
 vector
 -
 pngwriter.h
-inc/Metropolis_Growth/pngwriter.h
+Metropolis_Growth/inc/Metropolis_Growth/pngwriter.h
 filehandler.h
-inc/Metropolis_Growth/filehandler.h
+Metropolis_Growth/inc/Metropolis_Growth/filehandler.h
 
-inc/Metropolis_Growth/logfile.h
-iostream
--
-sstream
--
-string
--
-filehandler.h
-inc/Metropolis_Growth/filehandler.h
-
-inc/Metropolis_Growth/montecarlo.h
-iostream
--
-sstream
--
-fstream
--
-interaction.h
-inc/Metropolis_Growth/interaction.h
-lattice.h
-inc/Metropolis_Growth/lattice.h
-orderparamfile.h
-inc/Metropolis_Growth/orderparamfile.h
-logfile.h
-inc/Metropolis_Growth/logfile.h
-
-inc/Metropolis_Growth/orderparamfile.h
-vector
--
-filehandler.h
-inc/Metropolis_Growth/filehandler.h
-logfile.h
-inc/Metropolis_Growth/logfile.h
-
-inc/Metropolis_Growth/site.h
+Metropolis_Growth/inc/Metropolis_Growth/site.h
 iostream
 -
 vector
 -
 MersenneTwister.h
-inc/Metropolis_Growth/MersenneTwister.h
+Metropolis_Growth/inc/Metropolis_Growth/MersenneTwister.h
 
-inc/Metropolis_Growth/version.h
+Metropolis_Growth/inc/Metropolis_Growth/version.h
 iostream
 -
 fstream
