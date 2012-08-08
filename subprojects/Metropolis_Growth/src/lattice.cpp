@@ -1,6 +1,8 @@
 //Lattice.cpp
 #include "lattice.h"
 
+using namespace std;
+
 /*--------------------------------------------------
   Indexing functions & utilities
   --------------------------------------------------*/
@@ -31,6 +33,27 @@ vector<int> Lattice::view_site(int site_index){
 }
 
 
+void Lattice::reset_R(int R){
+    m_R = R;
+    for (unsigned int i = 0 ; i < m_lattice.size() ; i++){
+        get_site(i)->set_R(R);
+    }
+}
+
+string Lattice::PhaseStringLookup(Lattice::Phase p){
+    switch (p){
+        case GAS:
+            return "Gas"; break;
+        case LIQUID:
+            return "Liquid"; break;
+        case SOLID:
+            return "Solid"; break;
+        case FERRO:
+            return "Ferro"; break;
+        default:
+            return "Bad Selection"; break;
+    }
+}
 
 /*--------------------------------------------------
   Constructors, Destructors, Assignment (Non-trivial!)
@@ -105,6 +128,7 @@ Lattice& Lattice::operator=(const Lattice& cSource){
 }
 
 
+
 /*--------------------------------------------------
   Square Lattice Functions
   --------------------------------------------------*/
@@ -127,6 +151,11 @@ SquareLattice::SquareLattice(Phase default_phase, const vector<int>& sizes, int 
           m_lattice[CoordToIndex(coord)] = new Site(m_R, 0.99, 0, .00, rng); break;
         case FERRO:
           m_lattice[CoordToIndex(coord)] = new Site(m_R, 0.99, 1, .99, rng); break;
+        default:
+          //Use Liquid as the default
+          cout << "Problem in SquareLattice constructor: inappropriate default phase selected.\n"
+               << "Using LIQUID as the default phase." << endl;
+          m_lattice[CoordToIndex(coord)] = new Site(m_R, 0.50, 0, .00, rng); break;
         }
       }
     }

@@ -13,6 +13,8 @@
 #include "MersenneTwister.h"
 using namespace std;
 
+class Lattice;
+
 class Site{
  protected:
   /*--------------------------------------------------
@@ -28,6 +30,7 @@ class Site{
     Constructor
     --------------------------------------------------*/
  public:
+  friend class Lattice;
   Site(int R_in = 0, double occ_probability = 0, int rot_preference = 0, double rot_probability = 0, MTRand* rng = 0);
   /*--------------------------------------------------
     Accessors (public) & Mutators (private)
@@ -35,7 +38,9 @@ class Site{
   inline int    R()   {return m_R;}
   inline int    rot() {return m_rot;}
   inline bool   occ() {return m_occ;}
+
  protected:
+  inline void set_R(int R) { m_R = R;}
   inline int set_rot(int rot_in){
     return m_rot = ((rot_in % m_R) +m_R) %m_R;}
   inline void flip_occ(){
@@ -61,7 +66,7 @@ int TestSiteCode();
 
  //Site vector
 
-//if (plus_minus == 1) rot = (rot + 1)%m_R ; 
+//if (plus_minus == 1) rot = (rot + 1)%m_R ;
 //   else if (plus_minus ==-1) rot = ((rot - 1)+m_R)%m_R;
 //   else cout<<"Bad input into Site::moveRot; only accepts +/-1, was given "<<plus_minus<<"."<<endl;
 // }

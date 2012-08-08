@@ -9,14 +9,16 @@ MonteCarlo::MonteCarlo(double J_in, double Q_in, double Q2_in,
 {
   m_rng = MTRand();
   vector<int> dimensions;
-  dimensions.push_back(10);dimensions.push_back(10);
-  m_lattice = SquareLattice(Lattice::SOLID, dimensions, R_in, &m_rng);
+  dimensions.push_back(25);dimensions.push_back(25);
+  m_initialize_phase = Lattice::LIQUID;
+  m_lattice = SquareLattice(m_initialize_phase, dimensions, R_in, &m_rng);
 
   m_interaction = Interaction(J_in, Q_in, Q2_in, 2, 4, &m_lattice);
   m_file_handler = new OrderParamFile(*this, &m_log_file);
 }
 
 void MonteCarlo::reset_default_phase(Lattice::Phase new_phase){
+    m_initialize_phase = new_phase;
     m_lattice = SquareLattice(new_phase, m_lattice.measurements(), m_lattice.R(), &m_rng);
     m_interaction.ChangeLattice(&m_lattice);
     ResetEnergy();

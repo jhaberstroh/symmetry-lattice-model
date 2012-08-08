@@ -17,14 +17,12 @@
 #include "site.h"
 #include "latticefile.h"
 
-using namespace std;
-
 
 class vector_size_error : public length_error{
  public:
   int m_requested_size;
   int m_received_size;
-  explicit vector_size_error(const string& what_arg, int requested_size, int received_size)
+  explicit vector_size_error(const std::string& what_arg, int requested_size, int received_size)
 	: length_error(what_arg), m_requested_size(requested_size), m_received_size(received_size){}
 };
 
@@ -33,7 +31,7 @@ class container_value_mismatch_error : public runtime_error{
   int m_contained_value;
   int m_contained_index;
   int m_container_value;
-  explicit container_value_mismatch_error(const string& what_arg, int contained_value, int container_value, int contained_index)
+  explicit container_value_mismatch_error(const std::string& what_arg, int contained_value, int container_value, int contained_index)
 	: runtime_error(what_arg),
 	  m_contained_value(contained_value),
 	  m_contained_index(contained_index),
@@ -46,7 +44,7 @@ class bad_symmetry_number : public invalid_argument{
   int m_R_owned;
   int m_symmetry_number;
   explicit bad_symmetry_number
-    (const string& what_arg, int R_owned, int symmetry_number)
+    (const std::string& what_arg, int R_owned, int symmetry_number)
     : invalid_argument(what_arg),
       m_R_owned(R_owned),
       m_symmetry_number(symmetry_number)
@@ -58,7 +56,7 @@ class bad_direction : public invalid_argument{
   int m_direction_chosen;
   int m_z;
   explicit bad_direction
-    (const string& what_arg, int direction_chosen, int z)
+    (const std::string& what_arg, int direction_chosen, int z)
     : invalid_argument(what_arg),
       m_direction_chosen(direction_chosen),
       m_z(z)
@@ -68,12 +66,14 @@ class bad_direction : public invalid_argument{
 
 class Lattice{
  public:
-  typedef vector<Site*> NeighborVect;
-  typedef vector<Site*> SiteVect;  //Site vector
-  typedef vector<int> Coord;
-  typedef vector<int> BondVect;
+  typedef std::vector<Site*> NeighborVect;
+  typedef std::vector<Site*> SiteVect;  //Site vector
+  typedef std::vector<int> Coord;
+  typedef std::vector<int> BondVect;
   enum LatticeType{kSquareLattice};
-  enum Phase{ GAS, LIQUID, SOLID, FERRO };
+  enum Phase{ GAS, LIQUID, SOLID, FERRO, N_PHASES };
+  //Defined below
+  std::string PhaseStringLookup(Phase p);
   /*----------------------------------------------------
     Variables
     ----------------------------------------------------*/
@@ -89,12 +89,12 @@ class Lattice{
   //Vector of pointers to the neighbors.
   //Ownership of pointed-to Sites belongs to m_lattice.
   // (RAII safe)
-  vector<NeighborVect> m_site_neighbors;
+  std::vector<NeighborVect> m_site_neighbors;
   //Quantity specified by the derived class.
   int m_dimensionality;
   //Format specified by the derived class, usually simple
   // like {length, width}
-  vector<int> m_measurements;
+  std::vector<int> m_measurements;
   LatticeFile* m_lattice_handler;
 
   /*--------------------------------------------------
@@ -104,7 +104,7 @@ class Lattice{
   Lattice();
   //Passes a reference to itself to the m_lattice_handler object!
   // The constructor for m_lattice_handler must do nothing but store this variable.
-  Lattice(int R, int z, int dimensionality, const vector<int>& sizes)
+  Lattice(int R, int z, int dimensionality, const std::vector<int>& sizes)
     : m_R(R), m_z(z), m_dimensionality(dimensionality), m_measurements(sizes), m_lattice_handler(new LatticeFile(*this)){};
   ~Lattice();
  Lattice(const Lattice &cSource);
@@ -113,7 +113,7 @@ class Lattice{
   /*--------------------------------------------------
     Accessors and Mutators
     --------------------------------------------------*/
-  inline vector<int>& 	measurements()			 {return m_measurements;}
+  inline std::vector<int>& 	measurements()			 {return m_measurements;}
   inline int            dimensionality()                 {return m_dimensionality;}
   inline int            R()                              {return m_R;}
   inline int            z()                              {return m_z;}
@@ -125,6 +125,11 @@ class Lattice{
       (*return_coord) = IndexToCoord(site_index);
     return m_lattice[site_index];
   }
+  //Performs a "soft" change of R; unphysically, none of the lattice values change
+  //Thus, this method does not make much sense on its own; it should be followed up
+  //with some sort of "reset default phase"
+  void reset_R(int R);
+
  protected:
   inline Site*         	get_site     (int site_index)	 {return m_lattice[site_index];}
   inline NeighborVect* 	get_neighbors(int site_index)	 {return &(m_site_neighbors[site_index]);}
@@ -133,7 +138,7 @@ class Lattice{
   //It also incorporates occupancy; If a site is unoccupied,
   // it is given a sentinel value of -1.
   //This allows for traversal of the state data in the lattice without breaking encapsulation.
-  vector<int>    view_site(int site_index);
+  std::vector<int>    view_site(int site_index);
 
  public:
   //All public functions are accessed with coordinates instead of array indexes to increase
@@ -141,7 +146,7 @@ class Lattice{
   //All of these are already defined because they call the VIRTUAL CoordToIndex function.
   inline Site*         	get_site     (const Coord& coords){return get_site     (CoordToIndex(coords));}
   inline NeighborVect* 	get_neighbors(const Coord& coords){return get_neighbors(CoordToIndex(coords));}
-  inline vector<int>    view_site    (const Coord& coords){return view_site(CoordToIndex(coords));}
+  inline std::vector<int>    view_site    (const Coord& coords){return view_site(CoordToIndex(coords));}
 
   inline LatticeFile& lattice_handler(){return *m_lattice_handler;}
 
@@ -165,7 +170,7 @@ class Lattice{
 };
 
 
-int FindIndexOf(vector<Site*> array, Site* s);
+int FindIndexOf(std::vector<Site*> array, Site* s);
 
 
   /*----------------------------------------------------
@@ -182,7 +187,7 @@ class SquareLattice : public Lattice
 
  public:
   //Constructor will throw vector_size_error if it does not receive exactly two sizes
-  SquareLattice(Phase default_phase = LIQUID, const vector<int>& measurements = vector<int>(), int R = 8, MTRand* rng = 0);
+  SquareLattice(Phase default_phase = LIQUID, const std::vector<int>& measurements = std::vector<int>(), int R = 8, MTRand* rng = 0);
 
   void Print();
  protected:

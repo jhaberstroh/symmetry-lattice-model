@@ -24,7 +24,9 @@ public slots:
     void on_go_toggled(bool checked);
     void on_parameter_changed(double new_parameter_value, Parameter p);
 
+
 protected:
+    friend class MainWindow;
     void run();
 
     QPushButton* m_go;

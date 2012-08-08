@@ -52,6 +52,7 @@ class MonteCarlo{
   MTRand m_rng;
   OrderParamFile* m_file_handler;
   LogFile m_log_file;
+  Lattice::Phase m_initialize_phase;
 
 
  /*----------------------------------------------------
@@ -86,12 +87,17 @@ class MonteCarlo{
 
   inline std::string op_image_location(){return m_log_file.ReadLog();}
   inline std::string lattice_image_location(){return "";}
+  inline string PhaseStringLookup(Lattice::Phase p){return m_lattice.PhaseStringLookup(p);}
 
   void reset_default_phase(Lattice::Phase new_phase);
-  inline void set_j  (double J)  {m_interaction.set_j(J);    ResetEnergy();}
-  inline void set_qN1(double Q1) {m_interaction.set_qN1(Q1); ResetEnergy();}
-  inline void set_qN2(double Q2) {m_interaction.set_qN2(Q2); ResetEnergy();}
-  inline void set_T  (double T)  {m_T = T;}
+  void reset_R(int R);
+  void reset_N1_symmetry_num(int N1_symmetry_num);
+  void reset_N2_symmetry_num(int N2_symmetry_num);
+  inline void set_j   (double J)   {m_interaction.set_j(J);    ResetEnergy();}
+  inline void set_qN1 (double Q1)  {m_interaction.set_qN1(Q1); ResetEnergy();}
+  inline void set_qN2 (double Q2)  {m_interaction.set_qN2(Q2); ResetEnergy();}
+  inline void set_T   (double T)   {m_T = T;}
+  inline void set_pdel(double pdel){m_delete_probability = pdel;}
   inline int R(){return m_lattice.R();}
   inline int N1_symmetry_num(){return m_interaction.N1_symmetry_number();};
   inline int N2_symmetry_num(){return m_interaction.N2_symmetry_number();};

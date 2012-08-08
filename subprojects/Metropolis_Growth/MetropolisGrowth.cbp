@@ -31,25 +31,24 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="../inc/Metropolis_Growth/MersenneTwister.h" />
-		<Unit filename="../inc/Metropolis_Growth/filehandler.h" />
-		<Unit filename="../inc/Metropolis_Growth/interaction.h" />
-		<Unit filename="../inc/Metropolis_Growth/lattice.h" />
-		<Unit filename="../inc/Metropolis_Growth/latticefile.h" />
-		<Unit filename="../inc/Metropolis_Growth/logfile.h" />
-		<Unit filename="../inc/Metropolis_Growth/montecarlo.h" />
-		<Unit filename="../inc/Metropolis_Growth/orderparamfile.h" />
-		<Unit filename="../inc/Metropolis_Growth/site.h" />
-		<Unit filename="../inc/Metropolis_Growth/version.h" />
-		<Unit filename="../src/filehandler.cpp" />
-		<Unit filename="../src/interaction.cpp" />
-		<Unit filename="../src/lattice.cpp" />
-		<Unit filename="../src/latticefile.cpp" />
-		<Unit filename="../src/logfile.cpp" />
-		<Unit filename="../src/montecarlo.cpp" />
-		<Unit filename="../src/orderparamfile.cpp" />
-		<Unit filename="../src/site.cpp" />
-		<Unit filename="../src/version.cpp" />
+		<Unit filename="inc/Metropolis_Growth/filehandler.h" />
+		<Unit filename="inc/Metropolis_Growth/interaction.h" />
+		<Unit filename="inc/Metropolis_Growth/lattice.h" />
+		<Unit filename="inc/Metropolis_Growth/latticefile.h" />
+		<Unit filename="inc/Metropolis_Growth/logfile.h" />
+		<Unit filename="inc/Metropolis_Growth/montecarlo.h" />
+		<Unit filename="inc/Metropolis_Growth/orderparamfile.h" />
+		<Unit filename="inc/Metropolis_Growth/site.h" />
+		<Unit filename="inc/Metropolis_Growth/version.h" />
+		<Unit filename="src/filehandler.cpp" />
+		<Unit filename="src/interaction.cpp" />
+		<Unit filename="src/lattice.cpp" />
+		<Unit filename="src/latticefile.cpp" />
+		<Unit filename="src/logfile.cpp" />
+		<Unit filename="src/montecarlo.cpp" />
+		<Unit filename="src/orderparamfile.cpp" />
+		<Unit filename="src/site.cpp" />
+		<Unit filename="src/version.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

@@ -50,7 +50,7 @@ SET(ModelQT_GUI_HEADERS
 SET(ModelQT_GUI_FORMS ${PROJ_NAME}/ui/mainwindow.ui)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJ_NAME}/bin)
 #Code is unhappy about this being the current directory. But then, the WRAP_UI doesn't seem to be going to this directory. But it is going to the working directory, so that seems to be a satisfactory resolution?
-set(CMAKE_CURRENT_BINARY_DIRECTORY ./)
+set(CMAKE_CURRENT_BINARY_DIRECTORY ./${PROJ_NAME}/inc/${PROJ_NAME})
 
 #Build the moc headers which are needed to process Q_OBJECT header macros
 QT4_WRAP_CPP(ModelQT_GUI_HEADERS_MOC ${ModelQT_GUI_HEADERS})

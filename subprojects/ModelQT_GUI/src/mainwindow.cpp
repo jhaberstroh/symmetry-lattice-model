@@ -20,8 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->J, SIGNAL(valueChanged(int)), this, SLOT(on_parameter_value_changed(int)));
     connect(ui->QN1, SIGNAL(valueChanged(int)), this,  SLOT(on_parameter_value_changed(int)));
     connect(ui->QN2, SIGNAL(valueChanged(int)), this,  SLOT(on_parameter_value_changed(int)));
+    connect(ui->reset,SIGNAL(clicked(bool)), this, SLOT(on_reset_clicked(bool)));
     //connect(this, SIGNAL(parameter_changed(double,FunctionThread::Parameter)),
     //        ft, SLOT(on_parameter_changed(double, FunctionThread::Parameter)));
+
+    for (int i = 0 ; i < Lattice::N_PHASES ; i++){
+        ui->default_phase->addItem(ft->m_montecarlo.PhaseStringLookup(i),i);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -30,6 +35,36 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+double MainWindow::SliderToDouble(int slider_value){
+    return double(slider_value) / 1000;
+}
+
+
+double MainWindow::get_j(){ return SliderToDouble(ui->J->value());}
+double MainWindow::get_qn1(){return SliderToDouble(ui->QN1->value());}
+double MainWindow::get_qn2(){return SliderToDouble(ui->QN2->value());}
+double MainWindow::get_pdel(){return ui->pdel_spin_box->value();}
+double MainWindow::get_T(){return ui->T_spin_box->value();};
+
+void MainWindow::UpdateMCValuesRuntime(){
+    ft->m_montecarlo.set_j(get_j());
+    ft->m_montecarlo.set_qN1(get_qn1());
+    ft->m_montecarlo.set_qN2(get_qn2());
+    ft->m_montecarlo.set_pdel(get_pdel());
+    ft->m_montecarlo.set_T(get_T());
+}
+
+void MainWindow::UpdateMCValuesReset(){
+    UpdateMCValuesRuntime();
+}
+
+
+
+
+/*-------------------------------------------
+    SLOTS
+    -----------------------------------------*/
 
 void MainWindow::on_go_toggled(bool checked)
 {
@@ -40,9 +75,12 @@ void MainWindow::on_go_toggled(bool checked)
     ui->dialogueText->setText(*txt_buf.string());
 }
 
-double MainWindow::SliderToDouble(int slider_value){
-    return double(slider_value) / 1000;
+void MainWindow::on_reset_clicked(bool checked)
+{
+
+
 }
+
 
 void MainWindow::on_parameter_value_changed(int value)
 {
@@ -70,9 +108,7 @@ void MainWindow::on_parameter_value_changed(int value)
     }
 }
 
-double MainWindow::get_j(){ return SliderToDouble(ui->J->value());}
-double MainWindow::get_qn1(){return SliderToDouble(ui->QN1->value());}
-double MainWindow::get_qn2(){return SliderToDouble(ui->QN2->value());}
+
 
 void MainWindow::on_thread_returned_value(QString image_name)
 {
@@ -87,4 +123,6 @@ void MainWindow::on_thread_returned_value(QString image_name)
         ui->MainDisplay->setPixmap(QPixmap::fromImage(image));
         Q_ASSERT(ui->MainDisplay->pixmap());
     }
+    UpdateMCValuesRuntime();
 }
+

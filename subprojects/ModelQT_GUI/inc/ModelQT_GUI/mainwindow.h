@@ -30,7 +30,7 @@ public:
 private slots:
     void on_go_toggled(bool checked);
     void on_parameter_value_changed(int value);
-
+    void on_reset_clicked(bool checked);
     void on_thread_returned_value(QString image_location);
 
 signals:
@@ -42,6 +42,10 @@ private:
     double get_j();
     double get_qn1();
     double get_qn2();
+    double get_pdel();
+    double get_T();
+    void UpdateMCValuesRuntime();
+    void UpdateMCValuesReset();
 
     Ui::MainWindow *ui;
     FunctionThread* ft;
