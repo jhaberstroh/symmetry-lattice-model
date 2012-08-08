@@ -27,6 +27,7 @@ public slots:
 
 protected:
     friend class MainWindow;
+    void OutputLatticeImage();
     void run();
 
     QPushButton* m_go;

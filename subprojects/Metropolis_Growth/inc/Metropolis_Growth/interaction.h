@@ -75,9 +75,11 @@ class Interaction{
   int N1_division() {return m_N1_division;}
   int N2_symmetry_number(){return m_N2;}
   int N2_division() {return m_N2_division;}
-  void set_j  (double J) {m_J  = J;}
-  void set_qN1(int Q1){m_QN1= Q1;}
-  void set_qN2(int Q2){m_QN2= Q2;}
+  inline void reset_N1_symmetry_number(int N1_symmetry_number){m_N1 = N1_symmetry_number; InitOrderParameters();}
+  inline void reset_N2_symmetry_number(int N2_symmetry_number){m_N2 = N2_symmetry_number; InitOrderParameters();}
+  inline void set_j  (double J) {m_J  = J;}
+  inline void set_qN1(int Q1){m_QN1= Q1;}
+  inline void set_qN2(int Q2){m_QN2= Q2;}
   double J(){return m_J;}
   int QN1(){return m_QN1;}
   int QN2(){return m_QN2;}

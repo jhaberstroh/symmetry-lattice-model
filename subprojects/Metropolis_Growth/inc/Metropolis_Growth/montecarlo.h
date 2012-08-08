@@ -88,11 +88,21 @@ class MonteCarlo{
   inline std::string op_image_location(){return m_log_file.ReadLog();}
   inline std::string lattice_image_location(){return "";}
   inline string PhaseStringLookup(Lattice::Phase p){return m_lattice.PhaseStringLookup(p);}
+  inline string PhaseStringLookup(int p){return m_lattice.PhaseStringLookup(m_lattice.IntToPhase(p));}
+  inline Lattice::Phase IntToPhase(int p){return m_lattice.IntToPhase(p);}
+
+
 
   void reset_default_phase(Lattice::Phase new_phase);
-  void reset_R(int R);
-  void reset_N1_symmetry_num(int N1_symmetry_num);
-  void reset_N2_symmetry_num(int N2_symmetry_num);
+  //A soft-reset of R; all values stay the same (This might leave rot > R. What is the effect of that?)
+  inline void reset_R(int R){m_lattice.reset_R(R);}
+  inline void reset_N1_symmetry_num(int N1_symmetry_num){m_interaction.reset_N1_symmetry_number(N1_symmetry_num);}
+  inline void reset_N2_symmetry_num(int N2_symmetry_num){m_interaction.reset_N2_symmetry_number(N2_symmetry_num);}
+  //Order of operations matters! reset_R is a soft reset, and then the reset_default_phase does a hard reset.
+  //Afterwards, the baseline for order parameters is re-computed with reset_Nx_symmetry_num.
+  inline void reset_full(Lattice::Phase new_phase, int R, int N1_symmetry_num, int N2_symmetry_num){
+      reset_R(R);reset_default_phase(new_phase);reset_N1_symmetry_num(N1_symmetry_num);reset_N2_symmetry_num(N2_symmetry_num);}
+
   inline void set_j   (double J)   {m_interaction.set_j(J);    ResetEnergy();}
   inline void set_qN1 (double Q1)  {m_interaction.set_qN1(Q1); ResetEnergy();}
   inline void set_qN2 (double Q2)  {m_interaction.set_qN2(Q2); ResetEnergy();}

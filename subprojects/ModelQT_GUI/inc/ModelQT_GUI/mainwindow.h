@@ -44,6 +44,9 @@ private:
     double get_qn2();
     double get_pdel();
     double get_T();
+    int get_R();
+    int get_N1();
+    int get_N2();
     void UpdateMCValuesRuntime();
     void UpdateMCValuesReset();
 

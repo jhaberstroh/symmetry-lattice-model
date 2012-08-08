@@ -446,9 +446,9 @@
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>510</x>
+      <x>500</x>
       <y>80</y>
-      <width>71</width>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -523,6 +523,16 @@
      </property>
     </widget>
    </widget>
+   <widget class="QComboBox" name="default_phase">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>80</y>
+      <width>181</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -530,7 +540,7 @@
      <x>0</x>
      <y>0</y>
      <width>798</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuThe_Model_with_no_name">

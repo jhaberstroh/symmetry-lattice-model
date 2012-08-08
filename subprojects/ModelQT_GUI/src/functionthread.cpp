@@ -44,10 +44,20 @@ void FunctionThread::on_parameter_changed(double new_parameter_value, Parameter 
     }
 }
 
+void FunctionThread::OutputLatticeImage(){
+    m_montecarlo.MakeLatticePNG();
+    //TODO: Insert "if radiobutton.Lattice" vs. "if radiobutton.OrderParameter"
+    //If radiobutton.Lattice :
+    QString emitter("./testing");
+    //If radiobutton.OrderParameter :
+    //QString emitter(m_montecarlo.op_image_location().c_str())
+    qDebug() << emitter;
+    emit sendOutput(emitter);
+}
 
 void FunctionThread::run(){
     while (m_go->isChecked()){
-        sleep(1);
+        sleep(.1);
         m_montecarlo.set_j(m_J);
         m_montecarlo.set_qN1(m_QN1);
         m_montecarlo.set_qN2(m_QN2);
@@ -59,14 +69,7 @@ void FunctionThread::run(){
         }
         m_montecarlo.order_parameter_handler().Track();
         m_montecarlo.order_parameter_handler().MakeImage();
-        m_montecarlo.MakeLatticePNG();
-        //TODO: Insert "if radiobutton.Lattice" vs. "if radiobutton.OrderParameter"
-        //If radiobutton.Lattice :
-        QString emitter("./testing");
-        //If radiobutton.OrderParameter :
-        //QString emitter(m_montecarlo.op_image_location().c_str())
-        qDebug() << emitter;
-        emit sendOutput(emitter);
+        OutputLatticeImage();
     }
 }
 

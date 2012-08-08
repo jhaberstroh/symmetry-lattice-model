@@ -25,8 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //        ft, SLOT(on_parameter_changed(double, FunctionThread::Parameter)));
 
     for (int i = 0 ; i < Lattice::N_PHASES ; i++){
-        ui->default_phase->addItem(ft->m_montecarlo.PhaseStringLookup(i),i);
+        ui->default_phase->addItem(ft->m_montecarlo.PhaseStringLookup(i).c_str(),i);
     }
+    ft->OutputLatticeImage();
 }
 
 MainWindow::~MainWindow()
@@ -45,7 +46,10 @@ double MainWindow::get_j(){ return SliderToDouble(ui->J->value());}
 double MainWindow::get_qn1(){return SliderToDouble(ui->QN1->value());}
 double MainWindow::get_qn2(){return SliderToDouble(ui->QN2->value());}
 double MainWindow::get_pdel(){return ui->pdel_spin_box->value();}
-double MainWindow::get_T(){return ui->T_spin_box->value();};
+double MainWindow::get_T(){return ui->T_spin_box->value();}
+int MainWindow::get_R(){return ui->R_spin_box->value();}
+int MainWindow::get_N1(){return ui->N1_spin_box->value();}
+int MainWindow::get_N2(){return ui->N2_spin_box->value();}
 
 void MainWindow::UpdateMCValuesRuntime(){
     ft->m_montecarlo.set_j(get_j());
@@ -57,6 +61,10 @@ void MainWindow::UpdateMCValuesRuntime(){
 
 void MainWindow::UpdateMCValuesReset(){
     UpdateMCValuesRuntime();
+    //Worst conversion ever...
+    ft->m_montecarlo.reset_full(ft->m_montecarlo.IntToPhase(ui->default_phase->itemData(ui->default_phase->currentIndex()).toInt()),
+                                get_R(), get_N1(), get_N2());
+    ft->OutputLatticeImage();
 }
 
 
@@ -77,7 +85,7 @@ void MainWindow::on_go_toggled(bool checked)
 
 void MainWindow::on_reset_clicked(bool checked)
 {
-
+    UpdateMCValuesReset();
 
 }
 

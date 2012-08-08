@@ -55,6 +55,21 @@ string Lattice::PhaseStringLookup(Lattice::Phase p){
     }
 }
 
+Lattice::Phase Lattice::IntToPhase(int p){
+    switch (p){
+        case GAS:
+            return Lattice::GAS; break;
+        case LIQUID:
+            return Lattice::LIQUID; break;
+        case SOLID:
+            return Lattice::SOLID; break;
+        case FERRO:
+            return Lattice::FERRO; break;
+        default:
+            return Lattice::N_PHASES; break;
+    }
+}
+
 /*--------------------------------------------------
   Constructors, Destructors, Assignment (Non-trivial!)
   --------------------------------------------------*/

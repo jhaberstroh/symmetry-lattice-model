@@ -24,6 +24,8 @@ void MonteCarlo::reset_default_phase(Lattice::Phase new_phase){
     ResetEnergy();
 }
 
+
+
 //Requires an include of "site.h"
 void MonteCarlo::DoMetropolisMove(){
   Site* current_site;

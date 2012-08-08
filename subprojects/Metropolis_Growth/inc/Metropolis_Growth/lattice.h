@@ -72,8 +72,9 @@ class Lattice{
   typedef std::vector<int> BondVect;
   enum LatticeType{kSquareLattice};
   enum Phase{ GAS, LIQUID, SOLID, FERRO, N_PHASES };
-  //Defined below
+
   std::string PhaseStringLookup(Phase p);
+  Phase IntToPhase(int p);
   /*----------------------------------------------------
     Variables
     ----------------------------------------------------*/
