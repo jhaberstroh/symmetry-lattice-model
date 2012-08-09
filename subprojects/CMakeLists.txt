@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+enable_language(C)
+
+
 set(PROJ_NAME "ModelQT_GUI")
 set(LIBR_NAME "Metropolis_Growth")
 

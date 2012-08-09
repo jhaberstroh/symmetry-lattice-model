@@ -1,4 +1,4 @@
-# Install script for directory: /home/john/Coding/project/subprojects/Metropolis_Growth/src
+# Install script for directory: /nfs/nano-filer/theory_home/jhaberstroh/Coding/project/subprojects/Metropolis_Growth/src
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
