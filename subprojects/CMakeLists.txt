@@ -32,7 +32,7 @@ include_directories(${QT_INC_DIR}
   ${LIBR_NAME}/bin 
   ${LIBR_NAME}/inc/${LIBR_NAME})
 
-add_definitions(-g -O2 -Wall)
+add_definitions(-g -Wall)
 
 #loads package which contains macros beginning with QT_
 find_package(Qt4 REQUIRED)

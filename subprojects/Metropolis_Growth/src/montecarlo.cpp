@@ -4,16 +4,15 @@
 #include "site.h"
 
 MonteCarlo::MonteCarlo(double J_in, double Q_in, double Q2_in,
-                       int R_in, double T_in, double pdel_in)
+                       int R_in, double T_in, double pdel_in, int size_x, int size_y)
   :m_delete_probability(pdel_in), m_T(T_in)
 {
   m_rng = MTRand();
-  vector<int> dimensions;
-  dimensions.push_back(25);dimensions.push_back(25);
+  m_dimensions.push_back(size_x);m_dimensions.push_back(size_y);
   m_initialize_phase = Lattice::LIQUID;
-  m_lattice = SquareLattice(m_initialize_phase, dimensions, R_in, &m_rng);
-
+  m_lattice = SquareLattice(m_initialize_phase, m_dimensions, R_in, &m_rng);
   m_interaction = Interaction(J_in, Q_in, Q2_in, 2, 4, &m_lattice);
+
   m_file_handler = new OrderParamFile(*this, &m_log_file);
 }
 

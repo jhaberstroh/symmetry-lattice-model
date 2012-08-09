@@ -52,6 +52,7 @@ class MonteCarlo{
   MTRand m_rng;
   OrderParamFile* m_file_handler;
   LogFile m_log_file;
+  vector<int> m_dimensions;
   Lattice::Phase m_initialize_phase;
 
 
@@ -60,7 +61,8 @@ class MonteCarlo{
     ----------------------------------------------------*/
  public:
   MonteCarlo(double J_in = Jdft, double Q_in = Qdft, double Q2_in = Q2dft,
-             int R_in = Rdft, double T_in = Tdft, double pdel_in = pdeldft);
+             int R_in = Rdft, double T_in = Tdft, double pdel_in = pdeldft,
+             int size_x = 40, int size_y = 40);
   ~MonteCarlo(){delete m_file_handler;}
 //TODO: make a copy constructor and an assignment operator. Fortunately, I'm not likely to be
 //      using either of those anytime soon on MonteCarlo objects!
@@ -94,14 +96,23 @@ class MonteCarlo{
 
 
   void reset_default_phase(Lattice::Phase new_phase);
-  //A soft-reset of R; all values stay the same (This might leave rot > R. What is the effect of that?)
-  inline void reset_R(int R){m_lattice.reset_R(R);}
+  //A hard-reset of R; all values are reset.
+  inline void reset_R(int R){
+    if (R > 2){
+        m_lattice = SquareLattice(m_initialize_phase, m_dimensions, R, &m_rng);
+        m_interaction.ChangeLattice(&m_lattice); }  }
+
+  inline void reset_geometry(int size_x, int size_y){
+    m_dimensions[0] = size_x; m_dimensions[1] = size_y;
+    reset_R(m_lattice.R());
+  }
+
   inline void reset_N1_symmetry_num(int N1_symmetry_num){m_interaction.reset_N1_symmetry_number(N1_symmetry_num);}
   inline void reset_N2_symmetry_num(int N2_symmetry_num){m_interaction.reset_N2_symmetry_number(N2_symmetry_num);}
   //Order of operations matters! reset_R is a soft reset, and then the reset_default_phase does a hard reset.
   //Afterwards, the baseline for order parameters is re-computed with reset_Nx_symmetry_num.
-  inline void reset_full(Lattice::Phase new_phase, int R, int N1_symmetry_num, int N2_symmetry_num){
-      reset_R(R);reset_default_phase(new_phase);reset_N1_symmetry_num(N1_symmetry_num);reset_N2_symmetry_num(N2_symmetry_num);}
+  inline void reset_full(Lattice::Phase new_phase, int R, int N1_symmetry_num, int N2_symmetry_num, int size_x, int size_y){
+      reset_geometry(size_x, size_y), reset_R(R);reset_default_phase(new_phase);reset_N1_symmetry_num(N1_symmetry_num);reset_N2_symmetry_num(N2_symmetry_num);}
 
   inline void set_j   (double J)   {m_interaction.set_j(J);    ResetEnergy();}
   inline void set_qN1 (double Q1)  {m_interaction.set_qN1(Q1); ResetEnergy();}

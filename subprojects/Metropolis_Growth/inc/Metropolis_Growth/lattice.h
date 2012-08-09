@@ -129,7 +129,6 @@ class Lattice{
   //Performs a "soft" change of R; unphysically, none of the lattice values change
   //Thus, this method does not make much sense on its own; it should be followed up
   //with some sort of "reset default phase"
-  void reset_R(int R);
 
  protected:
   inline Site*         	get_site     (int site_index)	 {return m_lattice[site_index];}

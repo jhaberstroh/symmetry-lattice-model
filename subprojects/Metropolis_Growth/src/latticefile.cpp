@@ -93,7 +93,7 @@ void LatticeFile::DrawSite(pngwriter& png, int pixel_size, Lattice::Coord coord,
       int center_displacement = (pixel_size + 1) / 2;
       x += center_displacement;
       y += center_displacement;
-      cout << center_displacement << endl;
+      //cout << center_displacement << endl;
       const double PI = 3.141592;
       double theta = ((double)rot / R) * 2 * PI;
       int x_head = - (center_displacement - 1) * sin(theta);
@@ -127,10 +127,13 @@ void LatticeFile::MakeSquareLatticeColorImage(Interaction& lattice_interaction){
       int n2_bonds = lattice_interaction.get_n2_bonds_at_site(coord);
       current_site = m_lattice.get_site(coord);
 
+      //cout << "in LatticeFile::MakeSquareLatticeColorImage" << endl;
+      //cout << current_site->occ() << " = occ\n" ;
+      //cout << current_site->rot() << " = rot\n" ;
       int rot = (current_site->occ())? current_site->rot() : -1;
       DrawSite(png, pixel_size, coord, rot, m_lattice.R(), n1_bonds, n2_bonds);
     }
-    cout << "iterating sites";
+    //cout << "iterating sites";
   }
   cout <<endl;
   png.close();

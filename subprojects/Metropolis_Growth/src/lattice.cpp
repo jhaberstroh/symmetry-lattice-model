@@ -33,13 +33,6 @@ vector<int> Lattice::view_site(int site_index){
 }
 
 
-void Lattice::reset_R(int R){
-    m_R = R;
-    for (unsigned int i = 0 ; i < m_lattice.size() ; i++){
-        get_site(i)->set_R(R);
-    }
-}
-
 string Lattice::PhaseStringLookup(Lattice::Phase p){
     switch (p){
         case GAS:

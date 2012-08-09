@@ -1,48 +1,29 @@
 #include "functionthread.h"
 
-FunctionThread::FunctionThread(QObject *parent, QPushButton* go) :
-    QThread(parent), m_go(go), m_count(0),
-    m_J(0), m_QN1(0), m_QN2(0)
+FunctionThread::FunctionThread(QObject *parent, QPushButton* go, double J, double QN1, double QN2, int sweeps, double delay_seconds, int size_x, int size_y, int R, int N1, int N2) :
+    QThread(parent), m_go(go), m_count(0), m_open_thread(false),
+    m_sweeps_between_image(sweeps), m_delay_seconds(delay_seconds)
 {
-    m_montecarlo.set_j(m_J);
-    m_montecarlo.set_qN1(m_QN1);
-    m_montecarlo.set_qN2(m_QN2);
-    m_montecarlo.reset_default_phase(Lattice::LIQUID);
+    m_montecarlo.set_j(J);
+    m_montecarlo.set_qN1(QN1);
+    m_montecarlo.set_qN2(QN2);
+    m_montecarlo.reset_full(Lattice::LIQUID, R, N1, N2, size_x, size_y);
     m_montecarlo.order_parameter_handler().Track();
 }
 
 
 void FunctionThread::beginMCRunning(){
+    qDebug()<< "TRYING TO START() THREAD";
     start();
 }
 
 void FunctionThread::on_go_toggled(bool checked){
-    if (checked)
+    if (checked && !m_open_thread){
         beginMCRunning();
-}
-
-void FunctionThread::on_parameter_changed(double new_parameter_value, Parameter p){
-    qDebug()<<"Recieved on_parameter_changed signal in FunctionThread!";
-    switch (p){
-    case kParamJ:
-        m_J = new_parameter_value;
-        qDebug() << "new J value = "<<m_J;
-        //m.UpdateJ(QN2);
-        break;
-    case kParamQN1:
-        m_QN1 = new_parameter_value;
-        qDebug() << "new QN1 value = "<<m_QN1;
-        //m.UpdateQN1(QN2);
-        break;
-    case kParamQN2:
-        m_QN2 = new_parameter_value;
-        qDebug() << "new QN2 value = "<<m_QN2;
-        //m.UpdateQN2(QN2);
-        break;
-    default:
-        qDebug() << "Recieved an erroneous  or not-yet-handled parameter change.";
+        m_open_thread = true;
     }
 }
+
 
 void FunctionThread::OutputLatticeImage(){
     m_montecarlo.MakeLatticePNG();
@@ -52,25 +33,26 @@ void FunctionThread::OutputLatticeImage(){
     //If radiobutton.OrderParameter :
     //QString emitter(m_montecarlo.op_image_location().c_str())
     qDebug() << emitter;
+    qDebug() << "In FunctionThread::OutputLatticeImage(), m_go->isChecked() = " << m_go->isChecked();
     emit sendOutput(emitter);
 }
 
 void FunctionThread::run(){
+    qDebug() << "In FunctionThread::run(), m_go->isChecked() = " << m_go->isChecked();
     while (m_go->isChecked()){
-        sleep(.1);
-        m_montecarlo.set_j(m_J);
-        m_montecarlo.set_qN1(m_QN1);
-        m_montecarlo.set_qN2(m_QN2);
+        sleep(m_delay_seconds);
 
-        qDebug() << "count = " << m_count++;
-        for (int i = 0 ; i < 10 ; i++){
+        //qDebug() << "count = " << m_count++;
+        for (int i = 0 ; i < m_sweeps_between_image && m_go->isChecked() ; i++){
             m_montecarlo.DoMetropolisSweep();
-            m_montecarlo.PrintTextLattice();
+            //m_montecarlo.PrintTextLattice();
         }
         m_montecarlo.order_parameter_handler().Track();
         m_montecarlo.order_parameter_handler().MakeImage();
         OutputLatticeImage();
     }
+    cout << "In FunctionThread::run(), m_open_thread set false" << endl;
+    m_open_thread = false;
 }
 
 

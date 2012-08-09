@@ -29,7 +29,9 @@ public:
 
 private slots:
     void on_go_toggled(bool checked);
-    void on_parameter_value_changed(int value);
+    void on_J_value_changed(int value);
+    void on_QN1_value_changed(int value);
+    void on_QN2_value_changed(int value);
     void on_reset_clicked(bool checked);
     void on_thread_returned_value(QString image_location);
 
@@ -52,7 +54,7 @@ private:
 
     Ui::MainWindow *ui;
     FunctionThread* ft;
-    bool open_thread;
+    bool reset_queued;
 };
 
 #endif // MAINWINDOW_H

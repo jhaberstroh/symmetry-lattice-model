@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>798</width>
-    <height>570</height>
+    <height>701</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,31 +75,6 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QSlider" name="n_sweeps">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>220</y>
-      <width>19</width>
-      <height>160</height>
-     </rect>
-    </property>
-    <property name="minimum">
-     <number>1000</number>
-    </property>
-    <property name="maximum">
-     <number>10000</number>
-    </property>
-    <property name="singleStep">
-     <number>100</number>
-    </property>
-    <property name="pageStep">
-     <number>1000</number>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Vertical</enum>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="filename">
     <property name="geometry">
      <rect>
@@ -115,8 +90,8 @@
      <rect>
       <x>630</x>
       <y>380</y>
-      <width>87</width>
-      <height>27</height>
+      <width>51</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -130,9 +105,9 @@
     <property name="geometry">
      <rect>
       <x>630</x>
-      <y>420</y>
-      <width>87</width>
-      <height>27</height>
+      <y>410</y>
+      <width>51</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -142,10 +117,10 @@
    <widget class="QPushButton" name="reset">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>360</x>
       <y>70</y>
-      <width>87</width>
-      <height>27</height>
+      <width>51</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -155,7 +130,7 @@
    <widget class="QRadioButton" name="lattice">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>610</x>
       <y>480</y>
       <width>71</width>
       <height>16</height>
@@ -168,8 +143,8 @@
    <widget class="QRadioButton" name="orderparam">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>480</y>
+      <x>610</x>
+      <y>500</y>
       <width>121</width>
       <height>16</height>
      </rect>
@@ -298,7 +273,7 @@
    <widget class="QScrollArea" name="dialogueArea">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>320</x>
       <y>30</y>
       <width>161</width>
       <height>31</height>
@@ -390,9 +365,9 @@
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>10</y>
+      <y>16</y>
       <width>52</width>
-      <height>27</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="minimum">
@@ -409,9 +384,9 @@
     <property name="geometry">
      <rect>
       <x>660</x>
-      <y>10</y>
+      <y>16</y>
       <width>52</width>
-      <height>27</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="minimum">
@@ -428,9 +403,9 @@
     <property name="geometry">
      <rect>
       <x>740</x>
-      <y>10</y>
+      <y>16</y>
       <width>52</width>
-      <height>27</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="minimum">
@@ -460,9 +435,9 @@
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>40</y>
+      <y>46</y>
       <width>51</width>
-      <height>27</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="maximum">
@@ -479,9 +454,9 @@
     <property name="geometry">
      <rect>
       <x>660</x>
-      <y>40</y>
+      <y>46</y>
       <width>51</width>
-      <height>27</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="maximum">
@@ -497,10 +472,10 @@
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>10</x>
       <y>120</y>
-      <width>381</width>
-      <height>351</height>
+      <width>561</width>
+      <height>511</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -514,8 +489,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>381</width>
-       <height>351</height>
+       <width>561</width>
+       <height>511</height>
       </rect>
      </property>
      <property name="text">
@@ -529,6 +504,132 @@
       <x>590</x>
       <y>80</y>
       <width>181</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="sweeps_spin_box">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>5000</number>
+    </property>
+    <property name="singleStep">
+     <number>10</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>62</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Delay (s)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>121</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Sweeps per cycle</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="delay_spin_box">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>61</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="maximum">
+     <double>10.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="x_spin_box">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>30</y>
+      <width>55</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="maximum">
+     <number>200</number>
+    </property>
+    <property name="value">
+     <number>40</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="y_spin_box">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>80</y>
+      <width>55</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="maximum">
+     <number>200</number>
+    </property>
+    <property name="value">
+     <number>40</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>10</y>
+      <width>62</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>x-width</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>60</y>
+      <width>62</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>y-height</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="order_param_to_display">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>520</y>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>

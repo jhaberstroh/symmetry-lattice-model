@@ -12,14 +12,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->MainDisplay->setScaledContents(true);
     ui->MainDisplay->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    ft = new FunctionThread(0, ui->go);
-    open_thread = 0;
+    ft = new FunctionThread(0, ui->go, get_j(), get_qn1(), get_qn2(),
+                            ui->sweeps_spin_box->value(),ui->delay_spin_box->value(),
+                            ui->x_spin_box->value(), ui->y_spin_box->value(), get_R(), get_N1(), get_N2());
+    reset_queued = false;
 
     connect(ui->go, SIGNAL(toggled(bool)), ft, SLOT(on_go_toggled(bool)));
     connect(ft, SIGNAL(sendOutput(QString)), this, SLOT(on_thread_returned_value(QString)));
-    connect(ui->J, SIGNAL(valueChanged(int)), this, SLOT(on_parameter_value_changed(int)));
-    connect(ui->QN1, SIGNAL(valueChanged(int)), this,  SLOT(on_parameter_value_changed(int)));
-    connect(ui->QN2, SIGNAL(valueChanged(int)), this,  SLOT(on_parameter_value_changed(int)));
+    connect(ui->J, SIGNAL(valueChanged(int)), this, SLOT(on_J_value_changed(int)));
+    connect(ui->QN1, SIGNAL(valueChanged(int)), this,  SLOT(on_QN1_value_changed(int)));
+    connect(ui->QN2, SIGNAL(valueChanged(int)), this,  SLOT(on_QN2_value_changed(int)));
     connect(ui->reset,SIGNAL(clicked(bool)), this, SLOT(on_reset_clicked(bool)));
     //connect(this, SIGNAL(parameter_changed(double,FunctionThread::Parameter)),
     //        ft, SLOT(on_parameter_changed(double, FunctionThread::Parameter)));
@@ -57,13 +59,16 @@ void MainWindow::UpdateMCValuesRuntime(){
     ft->m_montecarlo.set_qN2(get_qn2());
     ft->m_montecarlo.set_pdel(get_pdel());
     ft->m_montecarlo.set_T(get_T());
+    ft->m_sweeps_between_image = ui->sweeps_spin_box->value();
+    ft->m_delay_seconds = ui->delay_spin_box->value();
 }
 
 void MainWindow::UpdateMCValuesReset(){
+    qDebug() << "Should be displaying image right about now";
     UpdateMCValuesRuntime();
-    //Worst conversion ever...
+    //Most round-about conversion ever...
     ft->m_montecarlo.reset_full(ft->m_montecarlo.IntToPhase(ui->default_phase->itemData(ui->default_phase->currentIndex()).toInt()),
-                                get_R(), get_N1(), get_N2());
+                                get_R(), get_N1(), get_N2(), ui->x_spin_box->value(), ui->y_spin_box->value());
     ft->OutputLatticeImage();
 }
 
@@ -85,41 +90,40 @@ void MainWindow::on_go_toggled(bool checked)
 
 void MainWindow::on_reset_clicked(bool checked)
 {
-    UpdateMCValuesReset();
-
+    if (ft->has_open_thread()){
+        reset_queued = true;
+        ui->go->setChecked(false);
+    }
+    else
+        UpdateMCValuesReset();
 }
 
-
-void MainWindow::on_parameter_value_changed(int value)
-{
- // When sliders change, disable the running.
-    //ui->go->setChecked(false);
-    //QString txt;
-    //QTextStream txt_buf(&txt);
-    //txt_buf << "Paused: " << !ui->go->isChecked();
-    //ui->dialogueText->setText(*txt_buf.string());
-
-    if (SliderToDouble(ui->J->value()) != ft->J()){
-        qDebug() << "J_value_changed";
-        ui->labelJ->setNum(get_j());
-        ft->on_parameter_changed(get_j(), FunctionThread::kParamJ);
-    }
-    if (SliderToDouble(ui->QN1->value()) != ft->QN1()){
-        qDebug() << "QN1_value_changed";
-        ui->labelQN1->setNum(get_qn1());
-        ft->on_parameter_changed(get_qn1(),FunctionThread::kParamQN1);
-    }
-    if (SliderToDouble(ui->QN2->value()) != ft->QN2()){
-        qDebug() << "QN2_value_changed";
-        ui->labelQN2->setNum(get_qn2());
-        ft->on_parameter_changed(get_qn2(),FunctionThread::kParamQN2);
-    }
+void MainWindow::on_J_value_changed(int value){
+    ui->labelJ->setNum(get_j());
 }
 
+void MainWindow::on_QN1_value_changed(int value){
+    ui->labelQN1->setNum(get_qn1());
+}
 
+void MainWindow::on_QN2_value_changed(int value){
+    ui->labelQN2->setNum(get_qn2());
+}
 
 void MainWindow::on_thread_returned_value(QString image_name)
 {
+    //TODO: could optimize with a "parameter-changed" variable
+    if (reset_queued){
+        while (ft->has_open_thread()){/*wait until the current thread completes*/}
+        cout << "In MainWindow::on_thread_returned_value(), UpdateMCValuesReset() to be run" << endl;
+        reset_queued = false; //Must be before UpdateMCValuesReset() in order to avoid recursion
+        UpdateMCValuesReset();
+        ui->go->setChecked(true);
+    }
+    else{
+        UpdateMCValuesRuntime();
+    }
+
     qDebug() << "Thread returned "<< image_name;
     QString txt;
     QTextStream txt_buf(&txt);
@@ -131,6 +135,14 @@ void MainWindow::on_thread_returned_value(QString image_name)
         ui->MainDisplay->setPixmap(QPixmap::fromImage(image));
         Q_ASSERT(ui->MainDisplay->pixmap());
     }
-    UpdateMCValuesRuntime();
+
+    if (reset_queued){
+        UpdateMCValuesReset();
+        reset_queued = false;
+    }
+    else{
+        UpdateMCValuesRuntime();
+    }
+
 }
 
