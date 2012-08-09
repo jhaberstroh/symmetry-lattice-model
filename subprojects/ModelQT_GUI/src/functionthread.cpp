@@ -34,7 +34,7 @@ void FunctionThread::OutputDisplayImage(){
         emit sendOutput(name);
     }
     else{
-        QString name("testing.png");
+        QString name("./.tempdisplay.png");
         string std_name = name.toStdString();
         m_montecarlo.order_parameter_handler().MakeImage(&std_name);
         emit sendOutput(name);

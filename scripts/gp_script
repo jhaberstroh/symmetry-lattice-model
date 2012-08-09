@@ -10,4 +10,5 @@ echo set output >> plotfile.gp
 echo set terminal pop >> plotfile.gp
 # echo pause -1 >> plotfile.gp
 gnuplot plotfile.gp
+rm plotfile.gp
 

@@ -218,7 +218,7 @@ class SquareLattice : public Lattice
 
 };
 
-static bool abs_compare(int a, int b){
+static inline bool abs_compare(int a, int b){
   return (abs(a) < abs(b));
 }
 
