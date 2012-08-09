@@ -2,10 +2,10 @@
 #define FUNCTIONTHREAD_H
 
 #include <QPushButton>
+#include <QRadioButton>
 #include <QThread>
 #include <QString>
 #include <QDebug>
-#include "simpleclass.h"
 #include "montecarlo.h"
 
 
@@ -14,7 +14,7 @@ class FunctionThread : public QThread
     Q_OBJECT
 public:
     enum Parameter{kParamJ, kParamQN1, kParamQN2, kNone};
-    explicit FunctionThread(QObject *parent = 0, QPushButton* go = 0, double J=0, double QN1=0, double QN2=0, int sweeps=10, double delay_seconds =1,
+    explicit FunctionThread(QObject *parent = 0, QPushButton* go = 0, QRadioButton* lat_radio = 0, double J=0, double QN1=0, double QN2=0, int sweeps=10, double delay_seconds =1,
                             int size_x = 25, int size_y = 25, int R = 8, int N1 = 2, int N2 = 4);
     void beginMCRunning();
 
@@ -28,10 +28,11 @@ public slots:
 
 protected:
     friend class MainWindow;
-    void OutputLatticeImage();
+    void OutputDisplayImage();
     void run();
 
     QPushButton* m_go;
+    QRadioButton* m_lat_radio;
     MonteCarlo m_montecarlo;
     int m_count;
     bool m_open_thread;

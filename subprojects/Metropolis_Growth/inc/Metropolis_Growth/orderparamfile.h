@@ -48,9 +48,8 @@ class OrderParamFile : public FileHandler{
   void Track();
 
   //Outsources to gnuplot
-  int MakeImage(FColumn y_axis = kN1OP);
-
-  void MakeLatticeImage();
+  //Note: filename is not checked for being available; it is hard-overwritten when supplied
+  int MakeImage(std::string* filename = 0, FColumn y_axis = kN1OP);
 };
 
 #endif // __ORDERPARAMFILE_H_INCLUDED__

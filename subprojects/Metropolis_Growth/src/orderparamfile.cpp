@@ -122,23 +122,23 @@ void OrderParamFile::Track(){
 }
 
 
-int OrderParamFile::MakeImage(FileHandler::FColumn y_axis){
-  ostringstream system_request("");
-  string image_write_name = write_name();
+int OrderParamFile::MakeImage(string* filename, FileHandler::FColumn y_axis){
+  string image_write_name;
+  if (filename != 0) image_write_name = *filename;
+  else image_write_name = write_name();
 
-  FindIndexedName(&image_write_name, "png");
+  ostringstream system_request("");
   system_request << "gp_script "
     << write_name() << " "
     << image_write_name << " "<< (y_axis+1);
 
-
   if (m_log_file != 0){
-    cout << "There is a non-null LogFile pointer in the OrderParamFile!" << endl;
-    cout << "Updating file name to " << image_write_name << endl;
+    cout << "OrderParamFile has a proper LogFile:" << endl;
+    cout << "Updating last-written image name to " << image_write_name << endl;
     m_log_file->UpdateLog(image_write_name);
   }
   else{
-    cout << "There ISN'T!!! IS NOT!!! a non-null LogFile pointer in the OrderParamFile!" << endl;
+    cout << "There IS NOT a non-null LogFile pointer in the OrderParamFile! No log written" << endl;
   }
   return system(system_request.str().c_str());
 }

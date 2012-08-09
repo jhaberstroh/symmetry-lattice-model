@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QSlider>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QString>
 #include <QTextStream>
 #include <QThread>
@@ -36,7 +37,7 @@ private slots:
     void on_thread_returned_value(QString image_location);
 
 signals:
-    void parameter_changed(double parameter_value, FunctionThread::Parameter p);
+    void valueChanged(double parameter_value, FunctionThread::Parameter p);
 
 private:
     double SliderToDouble(int);

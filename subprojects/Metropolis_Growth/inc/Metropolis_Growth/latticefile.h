@@ -26,15 +26,15 @@ class LatticeFile : public FileHandler{
   LatticeFile(Lattice& lattice_to_save);
 
  public:
-  //MakeSimpleFile() saves only the rot and occ data
+  //TODO: MakeSimpleFile() saves only the rot and occ data
   void MakeSimpleFile(){};
 
-  //MakeBondFile() saves the rot and occ data, as well
+  //TODO: MakeBondFile() saves the rot and occ data, as well
   // as the number of active bonds at each site
   void MakeBondNumberFile(Interaction& lattice_interaction){};
 
   //MakeColorImage() uses the interactions N1 and N2 to create a gnuplot file
-  void MakeSquareLatticeColorImage(Interaction& lattice_interaction);
+  void MakeSquareLatticeColorImage(Interaction& lattice_interaction, std::string* filename = 0);
 
  private:
 

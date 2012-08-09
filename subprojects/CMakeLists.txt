@@ -44,12 +44,10 @@ find_package(Qt4 REQUIRED)
 SET(ModelQT_GUI_SOURCES   
   ${PROJ_NAME}/src/main.cpp 
   ${PROJ_NAME}/src/functionthread.cpp 
-  ${PROJ_NAME}/src/mainwindow.cpp 
-  ${PROJ_NAME}/src/simpleclass.cpp)
+  ${PROJ_NAME}/src/mainwindow.cpp )
 SET(ModelQT_GUI_HEADERS 
   ${PROJ_NAME}/inc/${PROJ_NAME}/functionthread.h 
-  ${PROJ_NAME}/inc/${PROJ_NAME}/mainwindow.h 
-  ${PROJ_NAME}/inc/${PROJ_NAME}/simpleclass.h)
+  ${PROJ_NAME}/inc/${PROJ_NAME}/mainwindow.h)
 SET(ModelQT_GUI_FORMS ${PROJ_NAME}/ui/mainwindow.ui)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJ_NAME}/bin)
 #Code is unhappy about this being the current directory. But then, the WRAP_UI doesn't seem to be going to this directory. But it is going to the working directory, so that seems to be a satisfactory resolution?

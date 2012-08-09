@@ -133,7 +133,7 @@ class MonteCarlo{
   inline double N2_OP(){return m_interaction.get_N2();}
 
 
-  inline void MakeLatticePNG(){ lattice_handler().MakeSquareLatticeColorImage(m_interaction);}
+  inline void MakeLatticePNG(std::string* filename = 0){ lattice_handler().MakeSquareLatticeColorImage(m_interaction, filename);}
 };
 
 

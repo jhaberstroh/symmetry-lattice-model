@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->MainDisplay->setScaledContents(true);
     ui->MainDisplay->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    ft = new FunctionThread(0, ui->go, get_j(), get_qn1(), get_qn2(),
+    ft = new FunctionThread(0, ui->go, ui->lattice_radio_button, get_j(), get_qn1(), get_qn2(),
                             ui->sweeps_spin_box->value(),ui->delay_spin_box->value(),
                             ui->x_spin_box->value(), ui->y_spin_box->value(), get_R(), get_N1(), get_N2());
     reset_queued = false;
@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     for (int i = 0 ; i < Lattice::N_PHASES ; i++){
         ui->default_phase->addItem(ft->m_montecarlo.PhaseStringLookup(i).c_str(),i);
     }
-    ft->OutputLatticeImage();
+    ft->OutputDisplayImage();
 }
 
 MainWindow::~MainWindow()
@@ -69,7 +69,7 @@ void MainWindow::UpdateMCValuesReset(){
     //Most round-about conversion ever...
     ft->m_montecarlo.reset_full(ft->m_montecarlo.IntToPhase(ui->default_phase->itemData(ui->default_phase->currentIndex()).toInt()),
                                 get_R(), get_N1(), get_N2(), ui->x_spin_box->value(), ui->y_spin_box->value());
-    ft->OutputLatticeImage();
+    ft->OutputDisplayImage();
 }
 
 
@@ -129,7 +129,6 @@ void MainWindow::on_thread_returned_value(QString image_name)
     QTextStream txt_buf(&txt);
     txt_buf << "Return Value: " << image_name;
     //TODO: make MainDisplay show the last created image file
-    image_name += ".png";
     QImage image(image_name);
     if (!image.isNull()){
         ui->MainDisplay->setPixmap(QPixmap::fromImage(image));

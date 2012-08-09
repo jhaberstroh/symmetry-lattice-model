@@ -106,13 +106,19 @@ void LatticeFile::DrawSite(pngwriter& png, int pixel_size, Lattice::Coord coord,
   }
 }
 
-void LatticeFile::MakeSquareLatticeColorImage(Interaction& lattice_interaction){
+void LatticeFile::MakeSquareLatticeColorImage(Interaction& lattice_interaction, string* filename){
   vector<int> measurements = m_lattice.measurements();
 
   //cout << "MAKING SQUARE LATTICE IMAGE?!" <<endl;
   //pixel_size should be odd
   int pixel_size = 15;
-  pngwriter png(measurements[1]*pixel_size,measurements[0]*pixel_size,1.0,"testing.png");
+
+  string write_name;
+  if (filename != 0) write_name = *filename;
+  else write_name = "temp.png";
+  cout << "In LatticeFile::MakeSquareLatticeColorImage - Selected file name "<<write_name<<endl;
+
+  pngwriter png(measurements[1]*pixel_size,measurements[0]*pixel_size,1.0,write_name.c_str());
   Lattice::Coord coord(2,0);
   Site* current_site;
 

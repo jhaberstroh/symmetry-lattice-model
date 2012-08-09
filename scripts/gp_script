@@ -1,0 +1,13 @@
+#! /bin/sh
+rm plotfile.gp
+# WD = pwd
+echo set title \"$1\" > plotfile.gp
+echo set terminal push >> plotfile.gp
+echo set terminal png >> plotfile.gp
+echo set output \"./$2\" >> plotfile.gp
+echo plot \"./$1\" u 0:$3 w lp >> plotfile.gp
+echo set output >> plotfile.gp
+echo set terminal pop >> plotfile.gp
+# echo pause -1 >> plotfile.gp
+gnuplot plotfile.gp
+

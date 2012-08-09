@@ -1,7 +1,7 @@
 #include "functionthread.h"
 
-FunctionThread::FunctionThread(QObject *parent, QPushButton* go, double J, double QN1, double QN2, int sweeps, double delay_seconds, int size_x, int size_y, int R, int N1, int N2) :
-    QThread(parent), m_go(go), m_count(0), m_open_thread(false),
+FunctionThread::FunctionThread(QObject *parent, QPushButton* go, QRadioButton* lat_radio, double J, double QN1, double QN2, int sweeps, double delay_seconds, int size_x, int size_y, int R, int N1, int N2) :
+    QThread(parent), m_go(go), m_lat_radio(lat_radio), m_count(0), m_open_thread(false),
     m_sweeps_between_image(sweeps), m_delay_seconds(delay_seconds)
 {
     m_montecarlo.set_j(J);
@@ -25,22 +25,26 @@ void FunctionThread::on_go_toggled(bool checked){
 }
 
 
-void FunctionThread::OutputLatticeImage(){
-    m_montecarlo.MakeLatticePNG();
-    //TODO: Insert "if radiobutton.Lattice" vs. "if radiobutton.OrderParameter"
-    //If radiobutton.Lattice :
-    QString emitter("./testing");
-    //If radiobutton.OrderParameter :
-    //QString emitter(m_montecarlo.op_image_location().c_str())
-    qDebug() << emitter;
-    qDebug() << "In FunctionThread::OutputLatticeImage(), m_go->isChecked() = " << m_go->isChecked();
-    emit sendOutput(emitter);
+void FunctionThread::OutputDisplayImage(){
+
+    if (m_lat_radio->isChecked()){
+        QString name("./.tempdisplay.png");
+        string std_name = name.toStdString();
+        m_montecarlo.MakeLatticePNG(&std_name);
+        emit sendOutput(name);
+    }
+    else{
+        QString name("testing.png");
+        string std_name = name.toStdString();
+        m_montecarlo.order_parameter_handler().MakeImage(&std_name);
+        emit sendOutput(name);
+    }
+
 }
 
 void FunctionThread::run(){
-    qDebug() << "In FunctionThread::run(), m_go->isChecked() = " << m_go->isChecked();
+    //qDebug() << "In FunctionThread::run(), m_go->isChecked() = " << m_go->isChecked();
     while (m_go->isChecked()){
-        sleep(m_delay_seconds);
 
         //qDebug() << "count = " << m_count++;
         for (int i = 0 ; i < m_sweeps_between_image && m_go->isChecked() ; i++){
@@ -48,10 +52,10 @@ void FunctionThread::run(){
             //m_montecarlo.PrintTextLattice();
         }
         m_montecarlo.order_parameter_handler().Track();
-        m_montecarlo.order_parameter_handler().MakeImage();
-        OutputLatticeImage();
+        OutputDisplayImage();
+        sleep(m_delay_seconds);
     }
-    cout << "In FunctionThread::run(), m_open_thread set false" << endl;
+    //qDebug() << "In FunctionThread::run(), m_open_thread set false";
     m_open_thread = false;
 }
 

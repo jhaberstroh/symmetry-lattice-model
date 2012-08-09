@@ -127,7 +127,7 @@
      <string>Reset</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="lattice">
+   <widget class="QRadioButton" name="lattice_radio_button">
     <property name="geometry">
      <rect>
       <x>610</x>
@@ -139,8 +139,11 @@
     <property name="text">
      <string>Lattice</string>
     </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
    </widget>
-   <widget class="QRadioButton" name="orderparam">
+   <widget class="QRadioButton" name="orderparam_radio_button">
     <property name="geometry">
      <rect>
       <x>610</x>
@@ -641,7 +644,7 @@
      <x>0</x>
      <y>0</y>
      <width>798</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuThe_Model_with_no_name">
