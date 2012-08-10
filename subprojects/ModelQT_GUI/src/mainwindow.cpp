@@ -34,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    ui->go->setChecked(false);
+    while (ft->has_open_thread()){}
     delete ft;
     delete ui;
 }

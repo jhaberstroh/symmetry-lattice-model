@@ -23,7 +23,6 @@ signals:
 
 public slots:
     void on_go_toggled(bool checked);
-//    void on_parameter_changed(double new_parameter_value, Parameter p);
 
 
 protected:
@@ -31,7 +30,9 @@ protected:
     void OutputDisplayImage();
     void run();
 
+    //owned by MainWindow
     QPushButton* m_go;
+    //owned by MainWindow
     QRadioButton* m_lat_radio;
     MonteCarlo m_montecarlo;
     int m_count;
