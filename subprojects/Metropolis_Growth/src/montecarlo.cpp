@@ -60,7 +60,7 @@ void MonteCarlo::DoMetropolisMove(){
     else{
       //We have selected a rotation move
       int plus_minus;
-      plus_minus = (rand() < .5)? 1:-1 ;
+      plus_minus = (m_rng.rand() < .5)? 1:-1 ;
       transition_probability =
         exp(-m_interaction.get_rot_energy_difference
             (current_site, *current_neighbors, plus_minus, new_N1_bonds, new_N2_bonds)/m_T);
