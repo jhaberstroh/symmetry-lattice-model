@@ -1,7 +1,7 @@
 #include "functionthread.h"
 
-FunctionThread::FunctionThread(QObject *parent, QPushButton* go, QRadioButton* lat_radio, double J, double QN1, double QN2, int sweeps, double delay_seconds, int size_x, int size_y, int R, int N1, int N2) :
-    QThread(parent), m_go(go), m_lat_radio(lat_radio), m_count(0), m_open_thread(false),
+FunctionThread::FunctionThread(QObject *parent, QPushButton* go, QRadioButton* lat_radio, QComboBox* OP_box, double J, double QN1, double QN2, int sweeps, double delay_seconds, int size_x, int size_y, int R, int N1, int N2) :
+    QThread(parent), m_go(go), m_lat_radio(lat_radio), m_OP_box(OP_box), m_count(0), m_open_thread(false),
     m_sweeps_between_image(sweeps), m_delay_seconds(delay_seconds)
 {
     m_montecarlo.set_j(J);
@@ -36,7 +36,8 @@ void FunctionThread::OutputDisplayImage(){
     else{
         QString name("./.tempdisplay.png");
         string std_name = name.toStdString();
-        m_montecarlo.order_parameter_handler().MakeImage(&std_name);
+        //Creates the order parameter image with the filename and the OP column selected by the combo box
+        m_montecarlo.order_parameter_handler().MakeImage(&std_name, m_montecarlo.IntToFColumn(m_OP_box->itemData(m_OP_box->currentIndex()).toInt()));
         emit sendOutput(name);
     }
 

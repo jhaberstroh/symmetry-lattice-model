@@ -37,7 +37,7 @@ int Interaction::InitNAligned(int symmetry_num, vector<int>* n_aligned_direction
         if (current_site[0] == l->R()){
           //LHS: Uses only the range of [0, R/symmetry_num-1]
           //RHS: Maps alternating sections to +1 and -1
-          (*n_aligned_direction)[current_site[0] % (l->R()/2)] 
+          (*n_aligned_direction)[current_site[0] % (l->R()/2)]
             += (((current_site[0] / (l->R()/symmetry_num)) % symmetry_num) * (-2)) + 1;
         }
         //TODO:throw container_value_mismatch_error() if R's in different places are not equal.
@@ -113,11 +113,12 @@ int Interaction::InitSpecificOP(OrderParameterType opt){
     if (kOrderN2Bond == false) throw not_implemented_error("Site-based directional order parameters");
     if (kOrderN2Bond == true)  InitNBond(m_N2, &m_N2_bond_lattice);
     break;
+  default: break;
   }
   return 0; ///UHHHH what's this here for? TODO for suuuure.
 }
-  
-  
+
+
 void Interaction::InitOrderParameters(){
   if (m_lattice_being_tracked != 0){
     Lattice* l = m_lattice_being_tracked;
@@ -135,8 +136,8 @@ void Interaction::InitOrderParameters(){
     InitSpecificOP(kOrderTypeN2);
   }
 }
- 
- 
+
+
 
 void Interaction::UpdateOrderParameters(Lattice::Coord& coord, int old_rot, vector<int>& new_N1_bonds, vector<int>& new_N2_bonds){
   //new_r is -1 if not occupied, and a natural number (< R) if occupied.
@@ -204,7 +205,7 @@ void Interaction::UpdateOrderParameters(Lattice::Coord& coord, int old_rot, vect
 
 //--------------------------------------------------
 //Interaction of single sites
-double Interaction::get_interaction_energy(Site* s, Site* s_neighbor, 
+double Interaction::get_interaction_energy(Site* s, Site* s_neighbor,
                                            int& retn_N1_bond, int& retn_N2_bond){
   //TODO: (jhaberstroh@lbl.gov) optimize the m_N1_division calculation
   retn_N1_bond = 0;
@@ -217,14 +218,14 @@ double Interaction::get_interaction_energy(Site* s, Site* s_neighbor,
   if (s->occ()==1 && s_neighbor->occ()==1){
     energy += m_J;
     if ((s->rot() % m_N1_division) == (s_neighbor->rot() %m_N1_division)){
-      add_amt = (( ( (   (s->rot()          /m_N1_division) %2) 
-                     == ((s_neighbor->rot() /m_N1_division) %2) ) *2) -1); 
+      add_amt = (( ( (   (s->rot()          /m_N1_division) %2)
+                     == ((s_neighbor->rot() /m_N1_division) %2) ) *2) -1);
       retn_N1_bond += add_amt;
       energy +=  m_QN1 * add_amt;
     }
     if ((s->rot() % m_N2_division) == (s_neighbor->rot() %m_N2_division)){
-      add_amt = (( ( (   (s->rot()          /m_N2_division) %2) 
-                     == ((s_neighbor->rot() /m_N2_division) %2) ) *2) -1); 
+      add_amt = (( ( (   (s->rot()          /m_N2_division) %2)
+                     == ((s_neighbor->rot() /m_N2_division) %2) ) *2) -1);
       retn_N2_bond += add_amt;
       energy +=   m_QN2 * add_amt;
     }
@@ -239,7 +240,7 @@ double Interaction::get_interaction_energy(Site* s, Site* s_neighbor,
 //--------------------------------------------------
 //Interaction of a single site with a vector of neighbors
 //  Used in get_occ_energy_difference && get_rot_energy_difference
-double Interaction::get_interaction_energy(Site* s, Lattice::NeighborVect& neighbors, 
+double Interaction::get_interaction_energy(Site* s, Lattice::NeighborVect& neighbors,
                                            LocalBondVect& new_N1_bond, LocalBondVect& new_N2_bond){
   //TODO: (jhaberstroh@lbl.gov) optimize for redundant accesses on s.
   double energy = 0;
@@ -257,7 +258,7 @@ double Interaction::get_interaction_energy(Site* s, Lattice::NeighborVect& neigh
 
 //--------------------------------------------------
 //Energy difference for flipping the occupation of a center site
-double Interaction::get_occ_energy_difference(Site* s, Lattice::NeighborVect& neighbors, 
+double Interaction::get_occ_energy_difference(Site* s, Lattice::NeighborVect& neighbors,
                                               double T, LocalBondVect& new_N1_bond, LocalBondVect& new_N2_bond){
   Lattice* l = m_lattice_being_tracked;
   double dE = 0;
@@ -287,7 +288,7 @@ double Interaction::get_occ_energy_difference(Site* s, Lattice::NeighborVect& ne
 
 //--------------------------------------------------
 //Energy difference for rotating a center site
-double Interaction::get_rot_energy_difference(Site* s, Lattice::NeighborVect& neighbors, 
+double Interaction::get_rot_energy_difference(Site* s, Lattice::NeighborVect& neighbors,
                                               int plus_minus, LocalBondVect& new_N1_bond, LocalBondVect& new_N2_bond){
   Lattice* l = m_lattice_being_tracked;
   double dE = 0;
@@ -317,7 +318,7 @@ double Interaction::get_rot_energy_difference(Site* s, Lattice::NeighborVect& ne
 //Chemical potential function for a single site
 double Interaction::get_chemical_potential(Site* s, double T){
   if (m_lattice_being_tracked != 0){
-    return (-m_J * m_lattice_being_tracked->z() / 2.0) 
+    return (-m_J * m_lattice_being_tracked->z() / 2.0)
       - T * log( m_lattice_being_tracked->R() );
   }
   else
@@ -334,11 +335,11 @@ int TestInteractionCode(){
   Interaction my_interaction;
   my_lattice = SquareLattice(Lattice::LIQUID, dimensions, 4, &rng);
   my_interaction = Interaction(1, .33, .7, 2, 4, &my_lattice);
-  
+
 
   vector<int> coord(2,0);
   coord[0] = 2 ; coord[1] = 7;
-  
+
   //for some reason, the get_site(int) wraps around to the next row at 4.
   Site* s = my_lattice.get_site(coord);
   Lattice::NeighborVect* n = my_lattice.get_neighbors(coord);
@@ -349,14 +350,14 @@ int TestInteractionCode(){
 
   for (unsigned int i = 0; i < n->size() ; i++){
     cout << "Neighbor has occ: " << n->at(i)->occ() << " rot: "<<n->at(i)->rot()<<endl;
-    
+
   }
 
   //interaction behavior
   vector<int> N1_test, N2_test;
-  double my_interaction_energy = 
+  double my_interaction_energy =
     my_interaction.get_interaction_energy(s, *n, N1_test,N2_test);
-  
+
   cout <<"Interaction energy: " << my_interaction_energy <<endl;
 
   return 0;

@@ -26,7 +26,26 @@ class not_implemented_error : runtime_error{
 class Interaction{
  public:
   typedef vector<int> LocalBondVect;
-  enum OrderParameterType{kOrderTypeOcc,kOrderTypeN1,kOrderTypeN2};
+
+  enum OrderParameterType{kOrderTypeOcc,kOrderTypeN1,kOrderTypeN2, kNumberOfOP};
+  std::string OPStringLookup(Interaction::OrderParameterType t){
+      switch (t){
+          case kOrderTypeOcc: return "rho: Occupation density"; break;
+          case kOrderTypeN1:  return "N1: High-symmetry alignment density"; break;
+          case kOrderTypeN2:  return "N2: Low-symmetry alignment density"; break;
+          default: return "N/A"; break;
+      }
+    }
+  OrderParameterType IntToOPType(int t){
+      switch (t){
+        case 0 : return kOrderTypeOcc; break;
+        case 1 : return kOrderTypeN1; break;
+        case 2 : return kOrderTypeN2; break;
+        default: return kNumberOfOP; break;
+      }
+    }
+
+
   /*----------------------------------------------------
     Variables
     ----------------------------------------------------*/

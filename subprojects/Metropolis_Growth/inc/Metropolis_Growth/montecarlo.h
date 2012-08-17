@@ -89,10 +89,21 @@ class MonteCarlo{
 
   inline std::string op_image_location(){return m_log_file.ReadLog();}
   inline std::string lattice_image_location(){return "";}
-  inline string PhaseStringLookup(Lattice::Phase p){return m_lattice.PhaseStringLookup(p);}
-  inline string PhaseStringLookup(int p){return m_lattice.PhaseStringLookup(m_lattice.IntToPhase(p));}
-  inline Lattice::Phase IntToPhase(int p){return m_lattice.IntToPhase(p);}
 
+  //Phase-Enum handlers
+  inline Lattice::Phase IntToPhase(int p){return m_lattice.IntToPhase(p);}
+  inline string PhaseStringLookup(Lattice::Phase p){return m_lattice.PhaseStringLookup(p);}
+  inline string PhaseStringLookup(int p){return m_lattice.PhaseStringLookup(IntToPhase(p));}
+
+  //OPType-Enum handlers
+  inline Interaction::OrderParameterType IntToOPType(int t){return m_interaction.IntToOPType(t);}
+  inline string OPStringLookup(Interaction::OrderParameterType t){return m_interaction.OPStringLookup(t);}
+  inline string OPStringLookup(int t){return m_interaction.OPStringLookup(IntToOPType(t));}
+
+  //FColumn-Enum handlers
+  inline OrderParamFile::FColumn IntToFColumn(int f){return order_parameter_handler().IntToFColumn(f);}
+  inline string FColumnStringLookup(OrderParamFile::FColumn f){return order_parameter_handler().FColumnStringLookup(f);}
+  inline string FColumnStringLookup(int f){return order_parameter_handler().FColumnStringLookup(IntToFColumn(f));}
 
 
   void reset_default_phase(Lattice::Phase new_phase);

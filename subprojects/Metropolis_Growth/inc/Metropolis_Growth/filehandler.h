@@ -43,8 +43,8 @@ class Lattice;
 
 class FileHandler{
  public:
-  enum FNameOpt{kR, kJ,kQN1,kQN2,kT,kPDel};
-  enum FColumn{kRho, kRhoSq,kN1OP,kN1OPSq,kN2OP,kN2OPSq,kNColumns};
+
+
   /*--------------------------------------------------
     Member Variables
     --------------------------------------------------*/

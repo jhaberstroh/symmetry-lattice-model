@@ -122,7 +122,7 @@ void OrderParamFile::Track(){
 }
 
 
-int OrderParamFile::MakeImage(string* filename, FileHandler::FColumn y_axis){
+int OrderParamFile::MakeImage(string* filename, OrderParamFile::FColumn y_axis){
   string image_write_name;
   if (filename != 0) image_write_name = *filename;
   else image_write_name = write_name();

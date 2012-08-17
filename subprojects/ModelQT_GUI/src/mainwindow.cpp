@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->MainDisplay->setScaledContents(true);
     ui->MainDisplay->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    ft = new FunctionThread(0, ui->go, ui->lattice_radio_button, get_j(), get_qn1(), get_qn2(),
+    ft = new FunctionThread(0, ui->go, ui->lattice_radio_button, ui->OP_combo_box, get_j(), get_qn1(), get_qn2(),
                             ui->sweeps_spin_box->value(),ui->delay_spin_box->value(),
                             ui->x_spin_box->value(), ui->y_spin_box->value(), get_R(), get_N1(), get_N2());
     reset_queued = false;
@@ -23,12 +23,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->QN1, SIGNAL(valueChanged(int)), this,  SLOT(on_QN1_value_changed(int)));
     connect(ui->QN2, SIGNAL(valueChanged(int)), this,  SLOT(on_QN2_value_changed(int)));
     connect(ui->reset,SIGNAL(clicked(bool)), this, SLOT(on_reset_clicked(bool)));
+    connect(ui->lattice_radio_button, SIGNAL(toggled(bool)), this, SLOT(redraw()));
+    connect(ui->OP_combo_box, SIGNAL(currentIndexChanged(int)),this, SLOT(redraw()));
     //connect(this, SIGNAL(parameter_changed(double,FunctionThread::Parameter)),
     //        ft, SLOT(on_parameter_changed(double, FunctionThread::Parameter)));
 
     for (int i = 0 ; i < Lattice::N_PHASES ; i++){
         ui->default_phase->addItem(ft->m_montecarlo.PhaseStringLookup(i).c_str(),i);
     }
+    for (int i = 0 ; i < OrderParamFile::kNColumns; i++){
+        ui->OP_combo_box->addItem(ft->m_montecarlo.FColumnStringLookup(i).c_str(),i);
+    }
+
     ft->OutputDisplayImage();
 }
 
@@ -71,7 +77,7 @@ void MainWindow::UpdateMCValuesReset(){
     //Most round-about conversion ever...
     ft->m_montecarlo.reset_full(ft->m_montecarlo.IntToPhase(ui->default_phase->itemData(ui->default_phase->currentIndex()).toInt()),
                                 get_R(), get_N1(), get_N2(), ui->x_spin_box->value(), ui->y_spin_box->value());
-    ft->OutputDisplayImage();
+    redraw();
 }
 
 
@@ -98,6 +104,10 @@ void MainWindow::on_reset_clicked(bool checked)
     }
     else
         UpdateMCValuesReset();
+}
+
+void MainWindow::redraw(){
+    ft->OutputDisplayImage();
 }
 
 void MainWindow::on_J_value_changed(int value){

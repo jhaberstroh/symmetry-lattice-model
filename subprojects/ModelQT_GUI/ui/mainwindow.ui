@@ -627,7 +627,7 @@
      <string>y-height</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="order_param_to_display">
+   <widget class="QComboBox" name="OP_combo_box">
     <property name="geometry">
      <rect>
       <x>630</x>

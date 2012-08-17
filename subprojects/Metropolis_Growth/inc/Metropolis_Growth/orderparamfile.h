@@ -19,6 +19,32 @@ class OrderParamFile : public FileHandler{
  public:
   //Friendship because of the private ctor.
   friend class MonteCarlo;
+  enum FNameOpt{kR, kJ,kQN1,kQN2,kT,kPDel};
+  enum FColumn{kRho, kRhoSq,kN1OP,kN1OPSq,kN2OP,kN2OPSq,kNColumns};
+  std::string FColumnStringLookup(FColumn f){
+    switch (f){
+      case kRho: return "Rho"; break;
+      case kRhoSq: return "Rho Squared"; break;
+      case kN1OP: return "N1"; break;
+      case kN1OPSq: return "N1 Squared"; break;
+      case kN2OP: return "N2"; break;
+      case kN2OPSq: return "N2 Squared"; break;
+      default: return "N/A"; break;
+    }
+  }
+  FColumn IntToFColumn(int f){
+    //In this case, the number is not arbitrary. It corresponds to the actual column.
+     switch (f){
+        case 0: return kRho; break;
+        case 1: return kRhoSq; break;
+        case 2: return kN1OP; break;
+        case 3: return kN1OPSq; break;
+        case 4: return kN2OP; break;
+        case 5: return kN2OPSq; break;
+        default: return kNColumns; break;
+     }
+  }
+
   /*--------------------------------------------------
     Member Variables
     --------------------------------------------------*/
