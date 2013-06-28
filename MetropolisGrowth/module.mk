@@ -1,0 +1,11 @@
+SRC += MetropolisGrowth/src/filehandler.cpp
+SRC += MetropolisGrowth/src/interaction.cpp
+SRC += MetropolisGrowth/src/lattice.cpp
+SRC += MetropolisGrowth/src/latticefile.cpp
+SRC += MetropolisGrowth/src/logfile.cpp
+SRC += MetropolisGrowth/src/montecarlo.cpp
+SRC += MetropolisGrowth/src/orderparamfile.cpp
+SRC += MetropolisGrowth/src/site.cpp
+SRC += MetropolisGrowth/src/version.cpp
+MAIN += MetropolisGrowth/test/pngtest.cpp
+MAIN += MetropolisGrowth/test/metrotest.cpp

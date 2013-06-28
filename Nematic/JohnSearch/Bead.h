@@ -1,0 +1,79 @@
+//Bead.h
+
+#ifndef __BEAD_H_INCLUDED__
+#define __BEAD_H_INCLUDED__
+
+#include <cmath>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+using namespace std;
+
+
+class Bead
+{
+public:
+  enum Phase{
+    NO,FLUID,PHASE_SEP,FERRO,SUPER_FERRO,NEMATIC,SUPER_NEMATIC,BAD_FERRO};
+  enum Order_Param{
+    NONE,PHI,TAU,OMEGA};
+  
+  Bead();
+
+  Bead(double phi, double tau=.02, double omega=.02, double timestep=.01);
+  Bead(Order_Param t1, double v1,
+       Order_Param t2 = NONE, double v2 = 0, 
+       Order_Param t3 = NONE, double v3 = 0,
+       double timestep = .01);
+
+  double getP();
+  double getT();
+  double getO();
+  double getdt();
+  
+  void setP(double p_in);
+  void setT(double t_in);
+  void setO(double o_in);
+  void setMobP(double mob_in);
+  void setMobT(double mob_in);
+  void setMobO(double mob_in);
+  void setdt(double timestep);
+
+  int changeTrackSet(double T, int R,
+                     double J, double Q, double Q2);
+
+  Phase decide_phase();
+  void cout_phase(Phase p = NO);
+  
+  void heun_step(double T, int R,
+                 double J, double Q, double Q2);
+
+  void check_bounds();
+
+  static const double PMIN = -1, TMIN = 0, OMIN = 0;
+  static const double PMAX = 1 , TMAX = 1, OMAX = 1;
+
+private:
+  void compute_forces_mft(double T, int R,
+                          double J, double Q, double Q2);
+
+  int doTrack(double T, int R, double J, double Q, double Q2);
+
+  double p,t,o;    //phi, tau, and omega order parameters
+  double p0,t0,o0; //previous step positions for pto
+  double pF,tF,oF; //forces in p, t, and o
+  double e;        //f(p,t,o): the free energy at the current position
+  double mob_p,mob_t,mob_o; //freedom of movement in parameter space
+  double dt;
+
+  double *pPath,*tPath,*oPath;
+
+  bool track;      //determines whether the bead tracks its path
+  ostringstream filename;
+  FILE *pFile;
+
+};
+
+
+#endif // __BEAD_H_INCLUDED__
